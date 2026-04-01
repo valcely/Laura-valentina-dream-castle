@@ -49,7 +49,6 @@
     @keyframes glow { 0%, 100% { text-shadow: 0 0 15px var(--gold); } 50% { text-shadow: 0 0 30px var(--p-pink), 0 0 10px var(--gold); } }
     @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(247, 37, 133, 0); } 100% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0); } }
     
-    /* Novo Fundo de Estrelas Puro CSS Otimizado */
     @keyframes twinkleStars { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
     
     .stars-bg {
@@ -113,8 +112,8 @@
       "Pronta para mais uma aventura?"
     ];
 
-    // Função auxiliar para burlar temporariamente o bloqueio do Imgur
-    const getImg = (url) => `https://wsrv.nl/?url=${encodeURIComponent(url)}`;
+    // NOVO PROXY AQUI: Isso resolve o problema sem baixar as imagens
+    const getImg = (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
 
     const CHARACTERS = [
       { id:"giovanna",  name:"Giovanna",  img: getImg("https://i.imgur.com/vHq49XU.png") },
