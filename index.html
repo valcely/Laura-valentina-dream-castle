@@ -7,7 +7,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -15,15 +15,15 @@
 
   <style>
     :root {
-      --p-pink: #ff9ecd;
-      --d-pink: #f72585;
+      --p-pink: #ffb6c1;
+      --d-pink: #e0218a;
       --l-purple: #c77dff;
-      --gold: #ffdf00;
-      --bg-dark: #1a0b16;
-      --panel-bg: rgba(35, 15, 30, 0.85);
-      --glass-border: rgba(255, 182, 193, 0.3);
+      --gold: #f3c623;
+      --rose-gold: #b76e79;
+      --bg-dark: #1a0b1c;
+      --panel-bg: rgba(30, 15, 30, 0.75);
       --text: #ffffff;
-      --font-main: 'Poppins', sans-serif;
+      --font-main: 'Montserrat', sans-serif;
       --font-fancy: 'Dancing Script', cursive;
     }
 
@@ -34,6 +34,7 @@
       color: var(--text);
       overflow-x: hidden;
       min-height: 100vh;
+      user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -41,591 +42,562 @@
 
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-    ::-webkit-scrollbar-thumb { background: var(--p-pink); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: var(--rose-gold); border-radius: 3px; }
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    @keyframes glow { 0%, 100% { text-shadow: 0 0 15px var(--p-pink); } 50% { text-shadow: 0 0 30px var(--l-purple), 0 0 15px var(--gold); } }
-    @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(247, 37, 133, 0); } 100% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0); } }
-    @keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(180deg); } }
-    
+    @keyframes glow { 0%, 100% { text-shadow: 0 0 15px var(--rose-gold); } 50% { text-shadow: 0 0 30px var(--d-pink), 0 0 10px var(--gold); } }
+    @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(224, 33, 138, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(224, 33, 138, 0); } 100% { box-shadow: 0 0 0 0 rgba(224, 33, 138, 0); } }
+    @keyframes sparkle { 0% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1.2) rotate(45deg); } 100% { opacity: 0; transform: scale(0) rotate(90deg); } }
+    @keyframes backgroundPan { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
+
     .stars-bg {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 0; pointer-events: none; 
-      background: radial-gradient(circle at top right, #301024 0%, #1a0b16 100%);
+      z-index: 0; pointer-events: none; background: linear-gradient(135deg, #1a0b1c 0%, #2d142c 100%);
+      overflow: hidden;
     }
     
     .glass-panel {
-      background: var(--panel-bg);
+      background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 15px rgba(255, 182, 193, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
       border-radius: 24px;
     }
 
     .page-enter { animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; z-index: 2; position: relative; }
     .float { animation: float 4s ease-in-out infinite; }
     .glow { animation: glow 3s ease-in-out infinite; }
-    button { cursor: pointer; border: none; font-family: var(--font-main); transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    
+    button { cursor: pointer; border: none; font-family: var(--font-main); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
     button:active { transform: scale(0.92); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    button:hover { filter: brightness(1.1); }
+    
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     .hide-scroll::-webkit-scrollbar { display: none; }
     
-    .visual-asset { background-size: contain; background-position: center; background-repeat: no-repeat; }
+    .visual-asset {
+      background-size: contain; background-position: center; background-repeat: no-repeat;
+      transition: all 0.3s ease;
+    }
     
     .arcade-card {
-      background: rgba(255,255,255,0.03); padding: 18px; border-radius: 16px;
+      background: rgba(255,255,255,0.05); padding: 18px; border-radius: 16px;
       display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; transition: all 0.3s; border: 1px solid rgba(255,255,255,0.05);
-      margin-bottom: 10px;
+      cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 10px; backdrop-filter: blur(5px);
     }
-    .arcade-card:hover { background: rgba(255,255,255,0.08); border-color: var(--p-pink); transform: translateX(5px); }
+    .arcade-card:hover { 
+      background: rgba(255,255,255,0.12); border-color: var(--rose-gold); 
+      transform: translateX(5px); box-shadow: -5px 5px 15px rgba(0,0,0,0.2);
+    }
 
-    /* Estilos base para a boneca e SVG Overlay */
-    .doll-container { position: relative; width: 100%; max-width: 320px; aspect-ratio: 3/4; margin: 0 auto; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); transition: transform 0.3s ease; }
-    .doll-avatar { position: absolute; top: 0; left: 10%; width: 80%; height: 70%; z-index: 1; }
-    .doll-dress { position: absolute; top: 48%; left: 15%; width: 70%; height: 60%; z-index: 3; transition: all 0.3s; }
-    .doll-shoes { position: absolute; bottom: -12%; left: 35%; width: 30%; height: 25%; z-index: 2; }
-    .doll-makeup-lips { position: absolute; top: 52%; left: 45%; width: 10%; height: 5%; z-index: 2; border-radius: 50%; mix-blend-mode: multiply; opacity: 0.8; }
-    .doll-makeup-blush { position: absolute; top: 42%; left: 35%; width: 30%; height: 10%; z-index: 2; border-radius: 50%; mix-blend-mode: multiply; opacity: 0.5; filter: blur(4px); }
+    /* Sistema de Partículas Mágicas */
+    .sparkle { position: absolute; width: 15px; height: 15px; background: radial-gradient(circle, #fff, var(--gold)); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); animation: sparkle 1s forwards; pointer-events: none; }
   </style>
 </head>
 <body>
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState, useRef, useEffect, useCallback } = React;
+    const { useState, useRef, useEffect, useCallback, useMemo } = React;
 
     const vars = { 
-      pPink: '#ff9ecd', dPink: '#f72585', lPurple: '#c77dff', gold: '#ffdf00', text: '#ffffff',
-      fontMain: "'Poppins', sans-serif", fontFancy: "'Dancing Script', cursive",
+      pPink: '#ffb6c1', dPink: '#e0218a', lPurple: '#c77dff', 
+      gold: '#f3c623', roseGold: '#b76e79', text: '#ffffff',
+      fontMain: "'Montserrat', sans-serif", fontFancy: "'Dancing Script', cursive"
     };
 
-    // --- SISTEMA DE ÁUDIO ---
-    const AUDIO_URLS = {
-      plim: "https://actions.google.com/sounds/v1/cartoon/cartoon_wink_magic_sparkle.ogg",
-      magic: "https://actions.google.com/sounds/v1/magic/magic_chime.ogg",
-      camera: "https://actions.google.com/sounds/v1/tools/camera_shutter.ogg",
-      win: "https://actions.google.com/sounds/v1/cartoon/cartoon_success_fanfare.ogg",
-      pop: "https://actions.google.com/sounds/v1/cartoon/pop.ogg"
+    // ==========================================
+    // SISTEMA DE ÁUDIO NATIVO (SEM EXTERNOS)
+    // ==========================================
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    const playSFX = (type) => {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+
+      switch(type) {
+        case 'click':
+          osc.type = 'sine'; osc.frequency.setValueAtTime(900, now); osc.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
+          gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.start(now); osc.stop(now + 0.1); break;
+        case 'magic':
+          osc.type = 'triangle'; osc.frequency.setValueAtTime(600, now); osc.frequency.setValueAtTime(800, now + 0.1); osc.frequency.setValueAtTime(1200, now + 0.2);
+          gain.gain.setValueAtTime(0.15, now); gain.gain.linearRampToValueAtTime(0, now + 0.4);
+          osc.start(now); osc.stop(now + 0.4); break;
+        case 'camera':
+          osc.type = 'square'; osc.frequency.setValueAtTime(200, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+          gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.start(now); osc.stop(now + 0.1); break;
+        case 'success':
+          osc.type = 'sine'; osc.frequency.setValueAtTime(440, now); osc.frequency.setValueAtTime(554, now + 0.15); osc.frequency.setValueAtTime(659, now + 0.3); osc.frequency.setValueAtTime(880, now + 0.45);
+          gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 0.8);
+          osc.start(now); osc.stop(now + 0.8); break;
+        case 'jump':
+          osc.type = 'sine'; osc.frequency.setValueAtTime(300, now); osc.frequency.linearRampToValueAtTime(600, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 0.2);
+          osc.start(now); osc.stop(now + 0.2); break;
+      }
     };
 
-    const playSound = (type) => {
-      try {
-        const audio = new Audio(AUDIO_URLS[type]);
-        audio.volume = 0.4;
-        audio.play().catch(() => {}); // Ignora erro se o navegador bloquear autoplay
-      } catch(e) {}
+    // ==========================================
+    // ASSETS VISUAIS VETORIZADOS (CHIC & FEMININO)
+    // ==========================================
+    const svgToDataUrl = (svgStr) => `data:image/svg+xml;utf8,${encodeURIComponent(svgStr)}`;
+
+    // Roupas elegantes (SVGs ao invés de emojis)
+    const DRESS_ASSETS = [
+      svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M30 20 Q50 35 70 20 L80 40 Q50 60 20 40 Z" fill="#e0218a"/><path d="M20 40 L80 40 L90 95 Q50 105 10 95 Z" fill="#ffb6c1"/></svg>`), // Vestido Gala Rosa
+      svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M35 15 L65 15 L75 45 L25 45 Z" fill="#ffffff"/><path d="M25 45 L75 45 L70 95 L30 95 Z" fill="#111111"/><path d="M45 15 L45 45 M55 15 L55 45" stroke="#111" stroke-width="2"/></svg>`), // Look Executivo Arquiteta
+      svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M25 20 L75 20 L80 90 L20 90 Z" fill="#f8f9fa"/><path d="M40 20 L40 90 M60 20 L60 90" stroke="#dee2e6" stroke-width="2"/></svg>`), // Jaleco Médico/Cientista
+      svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 30 Q50 50 80 30 L90 90 Q50 80 10 90 Z" fill="#c77dff"/><circle cx="50" cy="60" r="5" fill="#f3c623"/></svg>`), // Vestido Mágico Roxo
+      svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M25 10 L75 10 L85 50 L15 50 Z" fill="#ffd700"/><path d="M15 50 L85 50 L75 90 L25 90 Z" fill="#ff4500"/></svg>`), // Look Chef/Moderna
+    ];
+
+    const SHOE_ASSETS = [
+      svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 80 Q40 60 70 80 L80 90 L70 95 Q40 95 20 90 Z" fill="#e0218a"/><path d="M75 85 L75 100" stroke="#e0218a" stroke-width="4"/></svg>`), // Scarpin Rosa
+      svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M10 80 L80 80 L85 95 L10 95 Z" fill="#ffffff"/><circle cx="30" cy="85" r="5" fill="#ccc"/></svg>`), // Tênis Chic Branco
+      svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 50 L60 50 L70 95 L20 95 Z" fill="#111111"/></svg>`), // Bota Preta
+    ];
+
+    const ACC_ASSETS = {
+      crown: svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M10 80 L90 80 L100 30 L75 60 L50 20 L25 60 L0 30 Z" fill="#f3c623"/><circle cx="50" cy="40" r="6" fill="#e0218a"/></svg>`),
+      glasses: svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="15" y="40" width="30" height="20" rx="5" fill="none" stroke="#111" stroke-width="4"/><rect x="55" y="40" width="30" height="20" rx="5" fill="none" stroke="#111" stroke-width="4"/><line x1="45" y1="50" x2="55" y2="50" stroke="#111" stroke-width="4"/></svg>`),
+      stethoscope: svgToDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M30 20 Q30 70 50 70 Q70 70 70 20" fill="none" stroke="#333" stroke-width="5"/><circle cx="50" cy="85" r="10" fill="#silver"/></svg>`)
     };
 
-    // --- ASSETS VISUAIS ---
-    // Avatares hiper-femininos e bonitos da DiceBear (Lorelei)
-    const getAvatar = (seed) => `https://api.dicebear.com/9.x/lorelei/svg?seed=${seed}&backgroundColor=transparent&hair=long,bob,curly,bun&accessoriesProbability=0`;
+    // ==========================================
+    // PERSONAGENS (12 PROFISSIONAIS FEMININAS)
+    // Usando DiceBear Lorelei para traços femininos bonitos
+    // ==========================================
+    const getAvatar = (seed, hairColor="b58143", skinColor="f5d0b5") => 
+      `https://api.dicebear.com/9.x/lorelei/svg?seed=${seed}&hairColor=${hairColor}&skinColor=${skinColor}&backgroundColor=transparent`;
 
     const CHARACTERS = [
-      { id:"giovanna",  name:"Giovanna",  img: getAvatar("GiovannaPrincess") },
-      { id:"laura",     name:"Laura",     img: getAvatar("LauraMagical") },
-      { id:"valentina", name:"Valentina", img: getAvatar("ValentinaStar") },
-      { id:"lidiane",   name:"Lidiane",   img: getAvatar("LidianeQueen") },
-      { id:"valcely",   name:"Valcely",   img: getAvatar("ValcelyChic") },
-      { id:"vitoria",   name:"Vitória",   img: getAvatar("VitoriaBella") },
-    ];
-
-    // Gerador de SVGs elegantes para Roupas (substitui emojis)
-    const createDressSvg = (topColor, skirtColor, style="ballgown") => {
-      let path = "";
-      if (style === "ballgown") {
-        path = `<path d="M35,10 C45,25 55,25 65,10 L75,40 C95,90 95,110 85,120 L15,120 C5,110 5,90 25,40 Z" fill="${skirtColor}"/><path d="M35,10 C45,25 55,25 65,10 L70,40 C50,45 50,45 30,40 Z" fill="${topColor}"/>`;
-      } else if (style === "casual") {
-        path = `<path d="M35,10 C45,20 55,20 65,10 L68,40 C50,42 50,42 32,40 Z" fill="${topColor}"/><path d="M32,40 L68,40 L70,110 L55,110 L50,60 L45,110 L30,110 Z" fill="${skirtColor}"/>`;
-      } else if (style === "mermaid") {
-        path = `<path d="M35,10 C45,20 55,20 65,10 L70,70 C80,90 90,110 85,120 C60,110 40,110 15,120 C10,110 20,90 30,70 Z" fill="${skirtColor}"/><path d="M35,10 C45,20 55,20 65,10 L68,50 C50,55 50,55 32,50 Z" fill="${topColor}"/>`;
-      }
-      return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">${path}</svg>`;
-    };
-
-    const createShoeSvg = (color, type="heels") => {
-      const path = type === "heels" 
-        ? `<path d="M20,60 C40,60 60,80 80,80 L85,90 L75,90 C60,85 40,70 20,70 Z M75,80 L80,110 L75,110 Z" fill="${color}"/>`
-        : `<path d="M20,70 C40,70 70,70 85,85 L80,95 C60,95 40,85 20,85 Z" fill="${color}"/>`;
-      return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">${path}</svg>`;
-    };
-
-    const DRESSES = [
-      { id: 'd1', img: createDressSvg('%23ff85c2', '%23ffb3d9', 'ballgown'), name: 'Baile Rosa' },
-      { id: 'd2', img: createDressSvg('%23c77dff', '%23e0aaff', 'ballgown'), name: 'Princesa Lilás' },
-      { id: 'd3', img: createDressSvg('%23ffffff', '%2372ddf7', 'casual'), name: 'Casual Chic' },
-      { id: 'd4', img: createDressSvg('%23ffd700', '%23ffea00', 'mermaid'), name: 'Sereia Ouro' },
-      { id: 'd5', img: createDressSvg('%2310002b', '%233c096c', 'ballgown'), name: 'Gala Noturno' },
-    ];
-
-    const SHOES = [
-      { id: 's1', img: createShoeSvg('%23f72585', 'heels'), name: 'Salto Rosa' },
-      { id: 's2', img: createShoeSvg('%23ffffff', 'flats'), name: 'Sapatilha' },
-      { id: 's3', img: createShoeSvg('%23ffd700', 'heels'), name: 'Salto Cristal' },
-      { id: 's4', img: createShoeSvg('%23000000', 'heels'), name: 'Salto Preto' },
+      { id:"laura", name:"Laura", job:"Arquiteta", seed:"Jasmine", defaultHair:"1e1e1e" },
+      { id:"valentina", name:"Valentina", job:"Cientista", seed:"Bella", defaultHair:"b58143" },
+      { id:"giovanna", name:"Giovanna", job:"Médica", seed:"Daisy", defaultHair:"d4a181" },
+      { id:"lidiane", name:"Lidiane", job:"Biomédica", seed:"Lily", defaultHair:"1e1e1e" },
+      { id:"valcely", name:"Valcely", job:"Engenheira", seed:"Mia", defaultHair:"e8b552" },
+      { id:"vitoria", name:"Vitória", job:"Professora", seed:"Sophia", defaultHair:"854239" },
+      { id:"ayla", name:"Ayla", job:"Astronauta", seed:"Zoe", defaultHair:"6c4f3d" },
+      { id:"isa", name:"Isa", job:"Chef", seed:"Chloe", defaultHair:"e8b552" },
+      { id:"maria", name:"Maria", job:"Detetive", seed:"Ruby", defaultHair:"1e1e1e" },
+      { id:"clara", name:"Clara", job:"Artista", seed:"Olivia", defaultHair:"b58143" },
+      { id:"sofia", name:"Sofia", job:"Piloto", seed:"Emma", defaultHair:"d4a181" },
+      { id:"ana", name:"Ana", job:"Programadora", seed:"Ava", defaultHair:"e8b552" },
     ];
 
     const ARCADE_GAMES = [
-      { id: 'makeup', title: 'Salão de Beleza', cat: 'Criatividade', icon: '💄', unlocked: true },
-      { id: 'puzzle', title: 'Quebra-Cabeça Mágico', cat: 'Raciocínio', icon: '🧩', unlocked: true },
-      { id: 'quiz', title: 'Mistérios do Mar', cat: 'Quiz', icon: '🧜‍♀️', unlocked: true },
-      { id: 'run', title: 'Passeio no Jardim', cat: 'Ação', icon: '🦋', unlocked: true, level: 2 }
+      { id: 'makeup', title: 'Salão de Beleza', cat: 'Criatividade', icon: '💄', level: 1 },
+      { id: 'puzzle', title: 'Quebra-Cabeça Chic', cat: 'Raciocínio', icon: '🧩', level: 1 },
+      { id: 'run', title: 'Passeio no Bosque', cat: 'Ação', icon: '🦋', level: 2 },
+      { id: 'quiz', title: 'Mistérios do Oceano', cat: 'Quiz', icon: '🌊', level: 3 }
     ];
 
-    const shuffle = a => [...a].sort(()=>Math.random()-0.5);
-
-    // --- COMPONENTES UI ---
-    const Swatch = ({img, selected, onClick, label}) => (
-      <div style={{display:"flex", flexDirection:"column", alignItems:"center", gap:5}}>
-        <div onClick={() => { playSound('pop'); onClick(); }} style={{
-          width: 55, height: 55, borderRadius: 12, 
-          background: `rgba(255,255,255,0.08) url("${img}")`, backgroundSize: "70%", backgroundRepeat: "no-repeat", backgroundPosition: "center",
-          cursor: "pointer", border: `2px solid ${selected ? vars.gold : 'rgba(255,255,255,0.1)'}`,
-          transform: selected ? "scale(1.1) translateY(-3px)" : "scale(1)", transition: "all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
-          boxShadow: selected ? `0 10px 20px rgba(247,37,133,0.3)` : "none", flexShrink: 0
-        }}/>
-        {label && <span style={{fontSize: 10, color: selected ? vars.gold : '#aaa'}}>{label}</span>}
-      </div>
+    // ==========================================
+    // COMPONENTES UI REUTILIZÁVEIS
+    // ==========================================
+    const Btn = ({active, onClick, children, icon, primary, style}) => (
+      <button onClick={() => { playSFX('click'); onClick(); }} style={{
+        background: active || primary ? `linear-gradient(135deg, ${vars.roseGold}, ${vars.dPink})` : "rgba(255,255,255,0.08)",
+        border: `1px solid ${active || primary ? vars.gold : 'rgba(255,255,255,0.2)'}`,
+        borderRadius: 16, padding: primary?"16px 28px":"12px 20px", color: vars.text,
+        fontSize: primary?15:13, fontWeight:"600", display:"flex", alignItems:"center", gap:10, justifyContent:"center",
+        boxShadow: primary? `0 8px 20px rgba(224,33,138,0.3)`:"none",
+        letterSpacing: "0.5px", ...style
+      }}>{icon && <span style={{fontSize:18}}>{icon}</span>}{children}</button>
     );
 
-    const Btn = ({active, onClick, children, icon, primary, disabled}) => (
-      <button disabled={disabled} onClick={() => { if(!disabled) { playSound('click'); onClick(); } }} style={{
-        background: active || primary ? `linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})` : "rgba(255,255,255,0.08)",
-        border: `1px solid ${active || primary ? vars.gold : 'rgba(255,255,255,0.1)'}`,
-        borderRadius: 14, padding: primary ? "14px 28px" : "12px 18px", color: vars.text,
-        fontSize: primary ? 15 : 13, fontWeight: "600", display: "flex", alignItems: "center", gap: 8, justifyContent: "center",
-        boxShadow: primary ? `0 8px 20px rgba(247,37,133,0.3)` : "none", 
-        animation: primary ? "pulseBtn 2s infinite" : "none"
-      }}>{icon && <span style={{fontSize: 18}}>{icon}</span>}{children}</button>
+    const SectionTitle = ({t}) => <div style={{color:vars.gold, fontSize:12, letterSpacing:2.5, fontWeight:"700", textTransform:"uppercase", marginBottom:12, marginTop:20, borderBottom:`1px solid rgba(243,198,35,0.2)`, paddingBottom:6}}>{t}</div>;
+
+    const Swatch = ({c, img, selected, onClick, type="color"}) => (
+      <div onClick={() => { playSFX('click'); onClick(); }} style={{
+        width:55, height:55, borderRadius: type==="color"?"50%":"12px", 
+        background: type==="color"?c:`rgba(255,255,255,0.1) url("${img}")`, backgroundSize:"70%", backgroundRepeat:"no-repeat", backgroundPosition:"center",
+        cursor:"pointer", border:`2px solid ${selected?vars.gold:'transparent'}`,
+        transform:selected?"scale(1.1) translateY(-3px)":"scale(1)", transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        boxShadow:selected?`0 10px 20px rgba(224,33,138,0.4)`:"0 4px 10px rgba(0,0,0,0.2)", flexShrink:0,
+      }}/>
     );
 
-    const SectionTitle = ({t}) => <div style={{color:vars.gold, fontSize:12, letterSpacing:2, fontWeight:"700", textTransform:"uppercase", marginBottom:12, marginTop:20, display:"flex", alignItems:"center", gap:8}}><span style={{height:1, flex:1, background:"linear-gradient(90deg, transparent, rgba(255,215,0,0.5))"}}></span>{t}<span style={{height:1, flex:1, background:"linear-gradient(270deg, transparent, rgba(255,215,0,0.5))"}}></span></div>;
+    // ==========================================
+    // JOGOS DO ARCADE
+    // ==========================================
 
-    // Componente da Boneca Atualizado
-    function RealDoll({ char, dress, shoes, makeup, crown, wand, onClick }) {
-      return (
-        <div onClick={() => { if(onClick){ playSound('plim'); onClick(); } }} className={`doll-container ${onClick ? "float" : ""}`} style={{cursor: onClick ? 'pointer' : 'default'}}>
-          {/* Corpo/Rosto */}
-          <div className="visual-asset doll-avatar" style={{backgroundImage:`url("${char.img}")`}}>
-            {/* Overlay de Maquiagem - Simulação baseada em posicionamento (Ajustado para o DiceBear Lorelei) */}
-            {makeup.lips && <div className="doll-makeup-lips" style={{backgroundColor: makeup.lips}} />}
-            {makeup.blush && <div className="doll-makeup-blush" style={{background: `radial-gradient(ellipse at center, ${makeup.blush} 0%, transparent 70%)`}} />}
-          </div>
-          
-          {/* Vestido e Sapatos (SVGs elegantes) */}
-          <div className="visual-asset doll-dress" style={{backgroundImage:`url("${dress}")`, filter: "drop-shadow(0 10px 10px rgba(0,0,0,0.4))"}} />
-          <div className="visual-asset doll-shoes" style={{backgroundImage:`url("${shoes}")`, filter: "drop-shadow(0 5px 5px rgba(0,0,0,0.5))"}} />
-          
-          {/* Acessórios extras usando Emojis bonitos para os detalhes */}
-          {crown && <div style={{position:"absolute", top:"-5%", left:"35%", width:"30%", height:"25%", fontSize: "clamp(40px, 15vw, 60px)", display:"flex", justifyContent:"center", alignItems:"center", zIndex: 6, filter:"drop-shadow(0 0 10px gold)"}}>👑</div>}
-          {wand && <div style={{position:"absolute", top:"40%", left:"65%", width:"30%", height:"30%", fontSize: "clamp(30px, 10vw, 45px)", display:"flex", justifyContent:"center", alignItems:"center", zIndex: 4, filter:"drop-shadow(0 0 10px pink)", animation:"sparkle 2s infinite"}} >🪄</div>}
-        </div>
-      );
-    }
-
-    // --- MINI JOGOS MELHORADOS ---
-
-    // 1. Salão de Beleza (Funcional)
-    function MakeupGame({ dollState, setDollState, onClose, addPoints }) {
-      const LIP_COLORS = ['transparent', '#ff0055', '#cc00ff', '#ff8800', '#6a040f'];
-      const BLUSH_COLORS = ['transparent', '#ff85c2', '#ff4d6d', '#ff99a8'];
+    // 1. Salão de Maquiagem (Interativo real-time)
+    function MakeupSalon({ char, onClose, addPoints }) {
+      const [hairColor, setHairColor] = useState(char.defaultHair);
+      const [makeupIntensity, setMakeupIntensity] = useState(0); // Filtro CSS para simular batom/blush
       
-      const handleFinish = () => {
-        addPoints(30); playSound('win'); onClose();
+      const applyMakeup = () => {
+        setMakeupIntensity(prev => prev >= 100 ? 0 : prev + 30);
+        playSFX('magic');
       };
 
+      const finish = () => { addPoints(30); onClose(); };
+
+      const avatarUrl = getAvatar(char.seed, hairColor);
+
       return (
-        <div className="page-enter glass-panel" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:25, width:"100%", maxWidth: 400}}>
-          <h2 style={{fontFamily: vars.fontFancy, color: vars.gold, margin: "0 0 20px 0", fontSize: 28}}>Salão de Beleza 💄</h2>
+        <div className="page-enter glass-panel" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"30px 20px", maxWidth: 400, margin: "0 auto"}}>
+          <h2 style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:32, margin:"0 0 20px 0"}}>Salão de Beleza</h2>
           
-          {/* Preview Rosto */}
-          <div style={{width: 180, height: 180, position: "relative", marginBottom: 20, background: "rgba(255,255,255,0.05)", borderRadius: "50%", overflow:"hidden", border:`2px solid ${vars.pPink}`}}>
-            <div className="visual-asset" style={{position:"absolute", inset:"-20% 0 0 0", backgroundImage:`url("${dollState.char.img}")`, backgroundSize:"150%"}} />
-            <div style={{position:"absolute", top:"65%", left:"45%", width:"10%", height:"5%", backgroundColor: dollState.makeup.lips, mixBlendMode:"multiply", borderRadius:"50%"}} />
-            <div style={{position:"absolute", top:"55%", left:"25%", width:"50%", height:"15%", background: `radial-gradient(ellipse at center, ${dollState.makeup.blush} 0%, transparent 60%)`, mixBlendMode:"multiply", opacity:0.6}} />
+          <div style={{ position:"relative", width: 200, height: 200, marginBottom: 30 }}>
+            {/* Avatar Base */}
+            <div style={{ position:"absolute", inset:0, backgroundImage:`url("${avatarUrl}")`, backgroundSize:"cover", borderRadius:"50%", border:`4px solid ${vars.roseGold}`, backgroundPosition:"center top", filter: `saturate(${100 + makeupIntensity}%) contrast(${100 + makeupIntensity/2}%)` }} />
+            {/* Overlay de maquiagem (Blush simulado via drop-shadow div invisível) */}
+            {makeupIntensity > 0 && <div style={{position:"absolute", top:"55%", left:"25%", width:20, height:15, background:vars.dPink, filter:"blur(8px)", opacity: makeupIntensity/200, borderRadius:"50%"}}/>}
+            {makeupIntensity > 0 && <div style={{position:"absolute", top:"55%", right:"25%", width:20, height:15, background:vars.dPink, filter:"blur(8px)", opacity: makeupIntensity/200, borderRadius:"50%"}}/>}
           </div>
 
-          <SectionTitle t="Cor do Batom" />
-          <div style={{display:"flex", gap: 10, marginBottom: 15}}>
-            {LIP_COLORS.map(c => (
-              <button key={`lip-${c}`} onClick={() => { playSound('pop'); setDollState(s => ({...s, makeup: {...s.makeup, lips: c}})) }} style={{width: 35, height: 35, borderRadius: "50%", background: c === 'transparent' ? '#333' : c, border: dollState.makeup.lips === c ? `3px solid white` : 'none', boxShadow: dollState.makeup.lips === c ? `0 0 10px ${c}` : 'none'}}>{c === 'transparent' ? '✖' : ''}</button>
+          <SectionTitle t="Tintura de Cabelo" />
+          <div style={{display:"flex", gap:15, marginBottom:20}}>
+            {["1e1e1e", "b58143", "e8b552", "d4a181", "ffb6c1", "c77dff"].map(c => (
+              <Swatch key={c} c={`#${c}`} selected={hairColor===c} onClick={()=>setHairColor(c)} />
             ))}
           </div>
 
-          <SectionTitle t="Blush" />
-          <div style={{display:"flex", gap: 10, marginBottom: 25}}>
-            {BLUSH_COLORS.map(c => (
-              <button key={`blush-${c}`} onClick={() => { playSound('pop'); setDollState(s => ({...s, makeup: {...s.makeup, blush: c}})) }} style={{width: 35, height: 35, borderRadius: "50%", background: c === 'transparent' ? '#333' : c, border: dollState.makeup.blush === c ? `3px solid white` : 'none'}}>{c === 'transparent' ? '✖' : ''}</button>
-            ))}
-          </div>
-
+          <Btn primary icon="💄" onClick={applyMakeup} style={{marginBottom: 20, width: "100%"}}>Aplicar Maquiagem Mágica</Btn>
+          
           <div style={{display:"flex", gap:10, width:"100%"}}>
-            <Btn onClick={() => {playSound('click'); onClose()}} style={{flex:1}}>Cancelar</Btn>
-            <Btn primary onClick={handleFinish} style={{flex:2}}>Aplicar (+30⭐)</Btn>
+            <Btn style={{flex:1}} onClick={onClose}>Cancelar</Btn>
+            <Btn style={{flex:1}} primary onClick={finish}>Finalizar (+30⭐)</Btn>
           </div>
         </div>
       );
     }
 
-    // 2. Mistérios do Mar (Quiz Interativo)
-    function OceanQuiz({ onClose, addPoints }) {
-      const QUESTIONS = [
-        { q: "Qual a cor da cauda da sereia mágica?", options: ["Rosa", "Verde", "Dourada"], answer: "Dourada" },
-        { q: "Onde o tesouro está escondido?", options: ["No recife de corais", "Na praia", "Na caverna escura"], answer: "No recife de corais" },
-        { q: "Qual animal é o mensageiro dos mares?", options: ["O Tubarão", "O Golfinho", "O Caranguejo"], answer: "O Golfinho" }
-      ];
-      const [step, setStep] = useState(0); const [score, setScore] = useState(0); const [showResult, setShowResult] = useState(false);
+    // 2. Passeio no Bosque (Runner Elegante)
+    function RunnerGame({ onClose, addPoints }) {
+      const canvasRef = useRef(null);
+      const [gameOver, setGameOver] = useState(false);
+      const [score, setScore] = useState(0);
+      const [playing, setPlaying] = useState(false);
 
-      const handleAnswer = (opt) => {
-        if(opt === QUESTIONS[step].answer) { playSound('magic'); setScore(s => s + 1); } else { playSound('pop'); }
-        if(step < QUESTIONS.length - 1) setStep(step + 1);
-        else setShowResult(true);
-      };
+      useEffect(() => {
+        if(!playing) return;
+        const cvs = canvasRef.current;
+        const ctx = cvs.getContext('2d');
+        let animId;
+        
+        let barbie = { x: 50, y: 150, w: 30, h: 50, dy: 0, jumpPower: -10, grounded: true };
+        let obstacles = [];
+        let frames = 0;
+        let speed = 4;
+        let currentScore = 0;
 
-      const finish = () => { if(score > 0) addPoints(score * 20); playSound('win'); onClose(); };
+        const drawChar = (x,y,w,h) => {
+          ctx.fillStyle = vars.dPink;
+          ctx.beginPath(); ctx.ellipse(x+w/2, y+h/2, w/2, h/2, 0, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = vars.gold; ctx.beginPath(); ctx.arc(x+w/2, y-10, 12, 0, Math.PI*2); ctx.fill();
+        };
+
+        const drawObstacle = (obs) => {
+           ctx.font = "24px Arial";
+           ctx.fillText(obs.type === 1 ? "🦋" : "🐰", obs.x, obs.y + obs.h);
+        };
+
+        const update = () => {
+          ctx.clearRect(0,0,cvs.width,cvs.height);
+          
+          // Fundo
+          ctx.fillStyle = "#2d142c"; ctx.fillRect(0,0,cvs.width,cvs.height);
+          ctx.fillStyle = "#1a0b1c"; ctx.fillRect(0, 180, cvs.width, 20); // Chão
+
+          barbie.dy += 0.5; // Gravidade
+          barbie.y += barbie.dy;
+          if(barbie.y + barbie.h >= 180) { barbie.y = 180 - barbie.h; barbie.dy = 0; barbie.grounded = true; }
+
+          drawChar(barbie.x, barbie.y, barbie.w, barbie.h);
+
+          if(frames % 100 === 0) {
+            obstacles.push({ x: cvs.width, y: 180 - 25, w: 25, h: 25, type: Math.random() > 0.5 ? 1 : 2 });
+          }
+
+          for(let i=0; i<obstacles.length; i++) {
+            let o = obstacles[i];
+            o.x -= speed;
+            drawObstacle(o);
+
+            if(barbie.x < o.x + o.w && barbie.x + barbie.w > o.x && barbie.y < o.y + o.h && barbie.y + barbie.h > o.y) {
+              setGameOver(true); setPlaying(false); playSFX('click');
+              cancelAnimationFrame(animId); return;
+            }
+          }
+          
+          obstacles = obstacles.filter(o => o.x + o.w > 0);
+          
+          if(frames % 10 === 0) { currentScore++; setScore(currentScore); }
+          if(frames % 500 === 0) speed += 0.5;
+          
+          frames++;
+          animId = requestAnimationFrame(update);
+        };
+
+        animId = requestAnimationFrame(update);
+        
+        const jump = () => { if(barbie.grounded) { barbie.dy = barbie.jumpPower; barbie.grounded = false; playSFX('jump'); } };
+        const handleTouch = () => jump();
+        cvs.addEventListener('touchstart', handleTouch);
+        cvs.addEventListener('mousedown', handleTouch);
+
+        return () => { cancelAnimationFrame(animId); cvs.removeEventListener('touchstart', handleTouch); cvs.removeEventListener('mousedown', handleTouch); };
+      }, [playing]);
 
       return (
-        <div className="page-enter glass-panel" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"30px 20px", width:"100%", maxWidth: 400, textAlign:"center", backgroundImage: "linear-gradient(to bottom, rgba(0,105,148,0.2), transparent)"}}>
-          <h2 style={{fontFamily: vars.fontFancy, color: "#72ddf7", margin: "0 0 20px 0", fontSize: 32}}>Mistérios do Mar 🧜‍♀️</h2>
-          
-          {!showResult ? (
-            <div style={{width:"100%"}}>
-              <p style={{fontSize: 14, color: vars.gold, marginBottom: 5}}>Pergunta {step + 1} de {QUESTIONS.length}</p>
-              <p style={{fontSize: 18, marginBottom: 25, fontWeight:"600"}}>{QUESTIONS[step].q}</p>
-              <div style={{display:"flex", flexDirection:"column", gap: 10}}>
-                {QUESTIONS[step].options.map(opt => (
-                  <button key={opt} onClick={()=>handleAnswer(opt)} style={{background:"rgba(255,255,255,0.1)", padding:15, borderRadius:12, color:"white", border:`1px solid #72ddf7`, fontSize:16, transition:"0.2s"}}>{opt}</button>
-                ))}
+        <div className="page-enter glass-panel" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:20}}>
+          <h2 style={{fontFamily:vars.fontFancy, color:vars.gold, margin:"0 0 15px 0", fontSize:28}}>Passeio no Bosque</h2>
+          <div style={{position:"relative", borderRadius:16, overflow:"hidden", border:`2px solid ${vars.roseGold}`}}>
+             <canvas ref={canvasRef} width={320} height={200} style={{display:"block", background:"#000", cursor:"pointer"}}/>
+             {(!playing || gameOver) && (
+                <div style={{position:"absolute", inset:0, background:"rgba(0,0,0,0.8)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
+                   <div style={{color:vars.gold, fontSize:20, fontWeight:"700", marginBottom:15}}>Pontos: {score}</div>
+                   <Btn primary onClick={()=>{setPlaying(true); setGameOver(false); setScore(0);}}>{gameOver ? "Tentar Novamente" : "Começar"}</Btn>
+                </div>
+             )}
+          </div>
+          <p style={{fontSize:12, color:vars.pPink, marginTop:10}}>Toque na tela para pular os animais fofos!</p>
+          {!playing && <Btn style={{marginTop:20}} onClick={() => { if(score>20) addPoints(Math.floor(score/10)); onClose(); }}>Voltar ao Castelo</Btn>}
+        </div>
+      );
+    }
+
+    // 3. Quiz Mistérios do Oceano
+    function SeaQuiz({ onClose, addPoints }) {
+      const questions = [
+        { q: "Qual acessório a sereia mais ama?", opts: ["Concha", "Celular", "Bota"], a: 0 },
+        { q: "Qual animal é o melhor amigo das princesas do mar?", opts: ["Tubarão", "Golfinho", "Polvo"], a: 1 },
+        { q: "Qual a cor da pérola mais rara?", opts: ["Preta", "Rosa Mágica", "Branca"], a: 1 }
+      ];
+      const [qIdx, setQIdx] = useState(0);
+      const [done, setDone] = useState(false);
+      const [hits, setHits] = useState(0);
+
+      const answer = (idx) => {
+        playSFX('click');
+        if(idx === questions[qIdx].a) { setHits(h=>h+1); playSFX('success'); }
+        if(qIdx < questions.length - 1) setQIdx(q=>q+1);
+        else { setDone(true); addPoints((hits+(idx === questions[qIdx].a ? 1 : 0)) * 15); }
+      };
+
+      return (
+        <div className="page-enter glass-panel" style={{padding:30, textAlign:"center", maxWidth:350, margin:"0 auto"}}>
+          <h2 style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:32}}>Mistérios do Oceano 🌊</h2>
+          {!done ? (
+            <div>
+              <p style={{fontSize:16, marginBottom:25, lineHeight:1.5}}>{questions[qIdx].q}</p>
+              <div style={{display:"flex", flexDirection:"column", gap:12}}>
+                {questions[qIdx].opts.map((opt, i) => <Btn key={i} onClick={()=>answer(i)}>{opt}</Btn>)}
               </div>
             </div>
           ) : (
-            <div className="page-enter">
-              <div style={{fontSize: 60, marginBottom:10}}>{score === 3 ? "👑" : "🐚"}</div>
-              <h3 style={{color: vars.gold}}>Você acertou {score} de {QUESTIONS.length}!</h3>
-              <p style={{marginBottom: 25}}>Recompensa: {score * 20} estrelinhas ✨</p>
-              <Btn primary onClick={finish}>Receber e Voltar</Btn>
+            <div>
+              <h3 style={{color:vars.dPink}}>Você acertou {hits} de {questions.length}!</h3>
+              <p style={{color:vars.pPink}}>As sereias estão orgulhosas.</p>
+              <Btn primary onClick={onClose} style={{marginTop:20, width:"100%"}}>Receber Recompensa</Btn>
             </div>
           )}
         </div>
       );
     }
 
-    // 3. Quebra-Cabeça Mágico (Estilo Swapping)
-    function PuzzleGame({ onClose, addPoints }) {
-      const [tiles, setTiles] = useState([0,1,2,3,4,5,6,7,8]);
-      const [selected, setSelected] = useState(null);
-      const [won, setWon] = useState(false);
-
-      useEffect(() => { setTiles(shuffle([0,1,2,3,4,5,6,7,8])); }, []);
-
-      const checkWin = (newTiles) => {
-        if (newTiles.every((val, i) => val === i)) {
-          setWon(true); playSound('win');
-        }
-      };
-
-      const handleTileClick = (index) => {
-        if(won) return;
-        playSound('pop');
-        if (selected === null) { setSelected(index); } 
-        else {
-          const newTiles = [...tiles];
-          [newTiles[index], newTiles[selected]] = [newTiles[selected], newTiles[index]];
-          setTiles(newTiles); setSelected(null);
-          checkWin(newTiles);
-        }
-      };
-
-      return (
-        <div className="page-enter glass-panel" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"30px 20px", width:"100%", maxWidth: 400}}>
-          <h2 style={{fontFamily: vars.fontFancy, color: vars.gold, margin: "0 0 20px 0", fontSize: 28}}>Quebra-Cabeça 🧩</h2>
-          <p style={{fontSize:13, marginBottom:20, color:vars.pPink, textAlign:"center"}}>Clique em duas peças para trocá-las de lugar e formar o coração de diamante!</p>
-          
-          <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:2, width: 240, height: 240, background:"rgba(255,255,255,0.1)", padding: 4, borderRadius: 12, position:"relative"}}>
-            {won && <div className="page-enter" style={{position:"absolute", inset:0, background:"rgba(247,37,133,0.8)", zIndex:10, borderRadius:10, display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center"}}>
-              <div style={{fontSize:40, animation:"float 2s infinite"}}>💎</div><div style={{color:"white", fontWeight:"bold", fontSize:20}}>Concluído!</div>
-            </div>}
-            
-            {tiles.map((val, i) => (
-              <div key={i} onClick={() => handleTileClick(i)} style={{
-                background: `#222`, position:"relative", cursor:"pointer", borderRadius:4, overflow:"hidden",
-                border: selected === i ? `3px solid ${vars.gold}` : 'none', transition:"transform 0.2s", transform: selected === i ? "scale(0.95)" : "none"
-              }}>
-                <div style={{
-                  position:"absolute", width:232, height:232, 
-                  background: `linear-gradient(135deg, ${vars.pPink}, ${vars.lPurple})`, 
-                  display:"flex", justifyContent:"center", alignItems:"center", fontSize:120, filter:"drop-shadow(0 0 10px white)",
-                  left: -(val%3)*77, top: -Math.floor(val/3)*77
-                }}>💎</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{marginTop: 30, display:"flex", gap: 15}}>
-            {!won && <Btn onClick={()=>onClose()}>Sair</Btn>}
-            {won && <Btn primary onClick={()=>{addPoints(50); onClose();}}>Coletar 50⭐</Btn>}
-          </div>
-        </div>
-      );
-    }
-
-    // 4. Runner Game Melhorado (Aventura no Jardim)
-    function RunnerGame({onClose, addPoints}) {
-      const GAME_WIDTH = window.innerWidth > 400 ? 380 : window.innerWidth - 40; 
-      const GAME_HEIGHT = 220; const LANE_Y = GAME_HEIGHT - 70; const BARBIE_X = 40;
-      
-      const [playing, setPlaying] = useState(false); const [score, setScore] = useState(0);
-      const [barbieY, setBarbieY] = useState(LANE_Y); const [gameOver, setGameOver] = useState(false);
-      const [obstacles, setObstacles] = useState([]);
-      
-      const frameRef = useRef(null); const stateRef = useRef({ playing: false, gameSpeed: 4, y: LANE_Y, velocity: 0, isJumping: false, obstacles: [], score: 0 });
-
-      const jump = useCallback(() => {
-        if (!stateRef.current.playing || stateRef.current.isJumping) return;
-        playSound('pop');
-        stateRef.current.velocity = -12; // Força do pulo
-        stateRef.current.isJumping = true;
-      }, []);
-
-      const gameLoop = useCallback(() => {
-        if (!stateRef.current.playing) return;
-        const s = stateRef.current;
-        
-        // Física
-        s.velocity += 0.6; // Gravidade
-        s.y += s.velocity;
-        if (s.y >= LANE_Y) { s.y = LANE_Y; s.isJumping = false; s.velocity = 0; }
-        
-        // Obstáculos
-        s.obstacles = s.obstacles.map(obs => ({...obs, x: obs.x - s.gameSpeed})).filter(obs => obs.x > -50);
-        
-        // Colisão
-        s.obstacles.forEach(obs => {
-          if (obs.x > BARBIE_X - 20 && obs.x < BARBIE_X + 30 && s.y + 50 > obs.y) {
-            s.playing = false; setPlaying(false); setGameOver(true); playSound('pop');
-          }
-        });
-
-        // Pontos e Velocidade
-        s.score += 1;
-        if(s.score % 600 === 0) s.gameSpeed += 0.5;
-
-        // Atualiza UI em batch suave
-        setBarbieY(s.y); setObstacles([...s.obstacles]); setScore(Math.floor(s.score / 10));
-
-        if (s.playing) frameRef.current = requestAnimationFrame(gameLoop);
-      }, []);
-
-      useEffect(() => {
-        if(playing && !gameOver) {
-          stateRef.current.playing = true;
-          frameRef.current = requestAnimationFrame(gameLoop);
-          
-          const spawnInterval = setInterval(() => {
-            if(!stateRef.current.playing) return;
-            const isFlyer = Math.random() > 0.7;
-            const emoji = isFlyer ? '🦋' : '🐰';
-            stateRef.current.obstacles.push({ id: Date.now(), x: GAME_WIDTH + 50, y: isFlyer ? LANE_Y - 40 : LANE_Y + 10, emoji });
-          }, 1500);
-
-          return () => { cancelAnimationFrame(frameRef.current); clearInterval(spawnInterval); };
-        }
-      }, [playing, gameOver, gameLoop]);
-
-      const startGame = () => { 
-        stateRef.current = { playing: true, gameSpeed: 4, y: LANE_Y, velocity: 0, isJumping: false, obstacles: [], score: 0 };
-        setScore(0); setObstacles([]); setGameOver(false); setPlaying(true); setBarbieY(LANE_Y); playSound('magic');
-      };
-
-      const finishGame = () => { if (score > 10) { addPoints(score); playSound('win'); } onClose(); };
-
-      return (
-        <div className="page-enter glass-panel" style={{display:"flex",flexDirection:"column",alignItems:"center", padding:20, width:"100%", maxWidth:GAME_WIDTH+40}}>
-          <div style={{color:vars.gold, fontSize:24, fontWeight:"700", marginBottom:15, fontFamily:vars.fontFancy}}>Passeio no Jardim 🌸</div>
-          
-          <div onClick={jump} style={{ width: GAME_WIDTH, height: GAME_HEIGHT, background:`linear-gradient(to bottom, #87CEEB, #a2d149)`, borderRadius:16, position:"relative", overflow:"hidden", border:`3px solid ${vars.pPink}`, cursor:"pointer", boxShadow:"inset 0 0 20px rgba(0,0,0,0.2)" }}>
-            
-            {/* Personagem Correndo */}
-            <div style={{ position:"absolute", left: BARBIE_X, top: barbieY, width: 45, height: 60, fontSize:40, display:"flex", justifyContent:"center", zIndex: 10, transform: gameOver ? "rotate(90deg)" : "none", transition: "transform 0.2s" }}>🧚‍♀️</div>
-            
-            {/* Obstáculos Fofos */}
-            {obstacles.map(obs => <div key={obs.id} style={{ position:"absolute", left: obs.x, top: obs.y, fontSize:30, zIndex: 5, filter:"drop-shadow(0 5px 5px rgba(0,0,0,0.3))" }}>{obs.emoji}</div>)}
-            
-            <div style={{position:"absolute", bottom:0, left:0, width:"100%", height:25, background:"#7cb342", zIndex:1, borderTop:"4px solid #558b2f"}}/>
-            
-            {(!playing || gameOver) && (
-              <div style={{ position:"absolute", inset:0, background:"rgba(255,255,255,0.85)", backdropFilter:"blur(4px)", zIndex:20, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:15 }}>
-                {gameOver && <div style={{color:vars.dPink, fontSize:28, fontWeight:"800", fontFamily:vars.fontFancy}}>Oops!</div>}
-                <div style={{color:vars.dPink, fontSize:16, fontWeight:"600"}}>Estrelas coletadas: {score}</div>
-                <Btn primary onClick={startGame}>{gameOver ? "Tentar Novamente" : "Começar Passeio"}</Btn>
-              </div>
-            )}
-            {playing && <div style={{position:"absolute", top:10, right:15, color:"white", fontWeight:"800", fontSize:18, zIndex:15, textShadow:"0 2px 4px rgba(0,0,0,0.5)"}}>⭐ {score}</div>}
-          </div>
-          
-          <p style={{fontSize:12, marginTop:15, color:vars.pPink}}>Toque no cenário para pular!</p>
-          {!playing && !gameOver && <button onClick={onClose} style={{marginTop:10, background:"transparent", color:vars.text}}>Voltar</button>}
-          {gameOver && <button onClick={finishGame} style={{marginTop:15, background:"transparent", color:vars.text, textDecoration:"underline"}}>Coletar e Sair</button>}
-        </div>
-      );
-    }
-
-
-    // --- APP PRINCIPAL ---
+    // ==========================================
+    // APLICAÇÃO PRINCIPAL
+    // ==========================================
     function App() {
       const [screen, setScreen] = useState("home");
+      const [char, setChar] = useState(null);
       const [level, setLevel] = useState(1);
       const [points, setPoints] = useState(0);
-      const [toast, setToast] = useState(""); 
-      const [tab, setTab] = useState("closet");
+      const [exp, setExp] = useState(0); // Sistema de evolução
+      const [activeGame, setActiveGame] = useState(null);
       
-      const [dollState, setDollState] = useState({
-        char: null,
-        dress: DRESSES[0].img,
-        shoes: SHOES[0].img,
-        makeup: { lips: 'transparent', blush: 'transparent' },
-        crown: false,
-        wand: false
-      });
+      const [dress, setDress] = useState(DRESS_ASSETS[0]); 
+      const [shoes, setShoes] = useState(SHOE_ASSETS[0]);
+      const [acc, setAcc] = useState(null); 
       
       const [gallery, setGallery] = useState([]);
+      const [tab, setTab] = useState("closet");
       const scrollRef = useRef(null);
 
+      // Partículas ao clicar
+      const spawnSparkle = (e) => {
+        const div = document.createElement('div');
+        div.className = 'sparkle';
+        div.style.left = `${e.clientX - 7}px`;
+        div.style.top = `${e.clientY - 7}px`;
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 1000);
+      };
+
       useEffect(() => {
-        const newLevel = Math.floor(points / 200) + 1;
-        if (newLevel > level) { 
-          setLevel(newLevel); playSound('win'); showToast(`🎉 NÍVEL ${newLevel} ALCANÇADO!`); 
+        window.addEventListener('click', spawnSparkle);
+        return () => window.removeEventListener('click', spawnSparkle);
+      }, []);
+
+      // Evolução de Nível
+      useEffect(() => {
+        if (exp >= level * 100) {
+          setLevel(l => l + 1);
+          setExp(0);
+          playSFX('success');
         }
-      }, [points, level]);
+      }, [exp, level]);
 
-      const showToast = (msg) => { setToast(msg); setTimeout(()=>setToast(""), 3500); };
-      const scrollTabs = (dir) => { if(scrollRef.current) scrollRef.current.scrollBy({ left: dir * 180, behavior: 'smooth' }); playSound('pop'); };
+      const addPoints = (pts) => {
+        setPoints(p => p + pts);
+        setExp(e => e + pts);
+        playSFX('magic');
+      };
 
-      const handleGameClose = () => setScreen("castle");
-      const handleAddPoints = (pts) => setPoints(p => p + pts);
+      const scrollTabs = (dir) => { if(scrollRef.current) scrollRef.current.scrollBy({ left: dir * 150, behavior: 'smooth' }); };
 
       const selectChar = (c) => {
-        playSound('magic');
-        setDollState(s => ({ ...s, char: c, dress: DRESSES[0].img, shoes: SHOES[0].img, makeup: {lips:'transparent', blush:'transparent'}, crown:false, wand:false }));
-        setScreen("castle"); setTab("closet");
+        setChar(c); setDress(DRESS_ASSETS[0]); setShoes(SHOE_ASSETS[0]); setAcc(null);
+        setScreen("castle"); setTab("closet"); playSFX('magic');
       };
 
       const saveLook = () => {
-        playSound('camera');
-        setGallery(g => [{ id: Date.now(), ...dollState }, ...g].slice(0, 6));
-        handleAddPoints(20); showToast("📸 Look fabuloso salvo! +20⭐");
+        setGallery(g => [{ id: Date.now(), char, dress, shoes, acc }, ...g].slice(0, 10));
+        addPoints(25); playSFX('camera');
       };
 
       const handleArcadeClick = (game) => {
-         playSound('click');
-         if(game.level && level < game.level) {
-            showToast(`🔒 Desbloqueia no Nível ${game.level}`); return;
-         }
-         setScreen(game.id);
+         if(level < game.level) { playSFX('click'); return; } // Bloqueado
+         setActiveGame(game);
+         setScreen(`game_${game.id}`);
       };
 
-      const TABS = [
-        {k:"closet",l:"Vestidos 👗"},
-        {k:"sapatos",l:"Sapatos 👠"},
-        {k:"hair",l:"Acessórios ✨"},
-        {k:"arcade",l:"Mini Jogos 🎮"},
-        {k:"gallery",l:"Galeria 📸"}
-      ];
+      const TABS = [{k:"closet",l:"Roupas 👗"},{k:"sapatos",l:"Sapatos 👠"},{k:"acessorios",l:"Acessórios ✨"},{k:"arcade",l:"Jogos 🎮"},{k:"gallery",l:"Galeria 📸"}];
 
       return (
-        <div style={{minHeight:"100vh", position:"relative", overflowX:"hidden", paddingBottom: 40}}>
+        <div style={{minHeight:"100vh", position:"relative", paddingBottom: 40}}>
           <div className="stars-bg"/>
 
           {/* Header Global */}
-          <div style={{position:"fixed", top:15, right:15, left:15, zIndex:100, display:"flex", justifyContent:"space-between", alignItems:"center", pointerEvents:"none"}}>
-            {screen !== "home" && <button style={{pointerEvents:"auto", background:"rgba(0,0,0,0.5)", color:"white", borderRadius:"50%", width:40, height:40, border:`1px solid ${vars.pPink}`, display:"flex", alignItems:"center", justifyContent:"center"}} onClick={()=>{playSound('click'); setScreen('home')}}>🏠</button>}
-            <div style={{pointerEvents:"auto", marginLeft:"auto", background:vars.panelBg, padding:"10px 20px", borderRadius:30, color:vars.gold, fontWeight:"700", border:`1px solid ${vars.glassBorder}`, backdropFilter:"blur(10px)", boxShadow:"0 5px 15px rgba(0,0,0,0.3)"}}>
-              ⭐ {points} <span style={{fontSize:11, color:vars.pPink, marginLeft:5, fontWeight:"500", letterSpacing:1}}>LVL {level}</span>
+          <div style={{position:"fixed", top:15, right:15, zIndex:100, display:"flex", alignItems:"center", gap:15}}>
+            <div className="glass-panel" style={{padding:"8px 16px", color:vars.gold, fontWeight:"700", display:"flex", flexDirection:"column", alignItems:"flex-end", border:`1px solid ${vars.roseGold}`}}>
+              <div>⭐ {points}</div>
+              <div style={{fontSize:10, color:vars.pPink, display:"flex", alignItems:"center", gap:5}}>
+                Nível {level}
+                <div style={{width:50, height:4, background:"rgba(255,255,255,0.2)", borderRadius:2, overflow:"hidden"}}>
+                  <div style={{width:`${(exp / (level*100))*100}%`, height:"100%", background:vars.dPink}}/>
+                </div>
+              </div>
             </div>
           </div>
 
-          {toast && <div className="page-enter" style={{position:"fixed", top:80, left:"50%", transform:"translateX(-50%)", background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})`, color:"white", padding:"14px 28px", borderRadius:30, zIndex:1000, boxShadow:"0 10px 25px rgba(247,37,133,0.5)", fontWeight:"600", whiteSpace:"nowrap"}}>{toast}</div>}
-
-          {/* TELAS */}
+          {/* TELA: HOME */}
           {screen === "home" && (
             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:"100vh", padding:20, textAlign:"center"}}>
-              <div className="glow float" style={{fontSize:"clamp(60px, 15vw, 90px)", marginBottom:10, filter:"drop-shadow(0 10px 10px rgba(0,0,0,0.5))"}}>🏰</div>
-              <h1 className="glow" style={{fontFamily:vars.fontFancy, fontSize:"clamp(45px, 12vw, 72px)", color:vars.gold, margin:0, textShadow:"0 5px 15px rgba(247, 37, 133, 0.5)"}}>Laura Valentina</h1>
-              <h2 style={{textTransform:"uppercase", letterSpacing:8, fontSize:14, color:vars.pPink, margin:"0 0 30px 0", fontWeight:"700", background:"rgba(0,0,0,0.4)", padding:"5px 15px", borderRadius:20}}>Dream Castle</h2>
-              <button className="float" onClick={()=>{playSound('magic'); setScreen("select");}} style={{padding:"18px 45px", borderRadius:50, background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple}, #ff477e)`, color:"white", fontSize:18, fontWeight:"700", border:"2px solid rgba(255,255,255,0.5)", boxShadow:"0 15px 30px rgba(247,37,133,0.4)"}}>Explorar o Castelo</button>
+              <div className="glow" style={{fontSize:80, marginBottom:20}}>🏰</div>
+              <h1 className="glow" style={{fontFamily:vars.fontFancy, fontSize:"clamp(46px, 12vw, 72px)", color:vars.gold, margin:0, textShadow:`2px 2px 10px ${vars.dPink}`}}>Laura Valentina</h1>
+              <h2 style={{textTransform:"uppercase", letterSpacing:8, fontSize:14, color:vars.pPink, margin:"10px 0 30px 0", fontWeight:"600"}}>Dream Castle</h2>
+              <Btn primary onClick={()=>setScreen("select")} style={{padding:"18px 40px", fontSize: 16, borderRadius: 30}}>Entrar no Castelo Mágico</Btn>
             </div>
           )}
 
+          {/* TELA: SELEÇÃO DE PERSONAGEM */}
           {screen === "select" && (
             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"80px 20px 40px"}}>
-              <div className="glow" style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:38, marginBottom:30, textAlign: "center"}}>Escolha sua Princesa</div>
-              <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(130px, 1fr))", gap:20, width:"100%", maxWidth:500}}>
+              <h2 className="glow" style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:42, marginBottom:10, textAlign: "center"}}>Escolha sua Princesa</h2>
+              <p style={{color:vars.pPink, marginBottom:30, fontSize: 14}}>Cada uma tem uma profissão incrível!</p>
+              
+              <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(130px, 1fr))", gap:20, width:"100%", maxWidth:600}}>
                 {CHARACTERS.map(c=>(
-                  <div key={c.id} onClick={()=>selectChar(c)} className="glass-panel arcade-card" style={{flexDirection:"column", padding:"20px 10px", margin:0}}>
-                    <div className="visual-asset float" style={{width:"100%", height:130, backgroundImage:`url("${c.img}")`, marginBottom:15, filter:"drop-shadow(0 5px 10px rgba(0,0,0,0.3))"}}/>
-                    <div style={{color:vars.text, fontWeight:"600", fontSize:16, letterSpacing:1}}>{c.name}</div>
+                  <div key={c.id} onClick={()=>selectChar(c)} className="glass-panel arcade-card" style={{flexDirection:"column", padding:15, textAlign:"center"}}>
+                    <div style={{width:90, height:90, borderRadius:"50%", background:`linear-gradient(45deg, ${vars.roseGold}, ${vars.lPurple})`, padding:3, marginBottom:10}}>
+                      <div style={{width:"100%", height:"100%", backgroundColor:vars.bgDark, borderRadius:"50%", backgroundImage:`url("${getAvatar(c.seed, c.defaultHair)}")`, backgroundSize:"120%", backgroundPosition:"center top"}}/>
+                    </div>
+                    <div style={{color:vars.gold, fontWeight:"700", fontSize:15}}>{c.name}</div>
+                    <div style={{color:vars.pPink, fontSize:11, marginTop:4, textTransform:"uppercase", letterSpacing:1}}>{c.job}</div>
                   </div>
                 ))}
               </div>
+              <Btn style={{marginTop:40}} onClick={()=>setScreen("home")}>Voltar para o Início</Btn>
             </div>
           )}
 
-          {screen === "castle" && dollState.char && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"90px 15px 30px"}}>
+          {/* TELA: CASTELO (CLOSET E HUB) */}
+          {screen === "castle" && char && (
+            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"90px 20px 40px"}}>
               
-              <RealDoll {...dollState} onClick={() => showToast("✨ Você está fabulosa! ✨")} />
+              {/* Boneca Renderizada */}
+              <div className="float" onClick={()=>playSFX('magic')} style={{position:"relative", width:220, height:350, marginBottom:40, filter:"drop-shadow(0 15px 25px rgba(0,0,0,0.6))", cursor:"pointer"}}>
+                {/* Avatar Base */}
+                <div style={{position:"absolute", inset:0, backgroundImage:`url("${getAvatar(char.seed, char.defaultHair)}")`, backgroundSize:"cover", backgroundPosition:"top center", zIndex:1, borderBottomLeftRadius: 100, borderBottomRightRadius: 100}} className="visual-asset"/>
+                
+                {/* Camada: Vestido/Roupa */}
+                <div style={{position:"absolute", top:"45%", left:"-10%", width:"120%", height:"65%", backgroundImage:`url("${dress}")`, zIndex:3, filter:"drop-shadow(0 5px 10px rgba(0,0,0,0.4))"}} className="visual-asset"/>
+                
+                {/* Camada: Sapato */}
+                <div style={{position:"absolute", bottom:"-15%", left:"25%", width:"50%", height:"30%", backgroundImage:`url("${shoes}")`, zIndex:4}} className="visual-asset"/>
+
+                {/* Camada: Acessório (Óculos, Colar, etc) */}
+                {acc && <div style={{position:"absolute", top: acc.includes("crown")?"-10%":"20%", left:"15%", width:"70%", height:"50%", backgroundImage:`url("${acc}")`, zIndex:5}} className="visual-asset"/>}
+              </div>
               
-              <div className="glass-panel" style={{marginTop: 40, width: "100%", maxWidth: 450, padding: 25}}>
+              {/* Painel de Controle */}
+              <div className="glass-panel" style={{width:"100%", maxWidth:450, padding:25}}>
                 {/* Abas */}
-                <div style={{display:"flex", alignItems:"center", gap:8, marginBottom:20, background:"rgba(0,0,0,0.2)", padding:6, borderRadius:30}}>
-                  <button onClick={()=>scrollTabs(-1)} style={{background:"none", color:vars.gold, fontSize:20, padding:"0 10px"}}>❮</button>
-                  <div ref={scrollRef} className="hide-scroll" style={{display:"flex", gap:10, overflowX:"auto", scrollSnapType:"x mandatory", padding:"5px 0"}}>
-                    {TABS.map(t => <button key={t.k} onClick={()=>{playSound('pop'); setTab(t.k);}} style={{ padding:"10px 20px", borderRadius:20, background: tab===t.k ? `linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})` : "transparent", color: tab===t.k ? "white" : vars.pPink, fontWeight: tab===t.k ? "600" : "400", flexShrink: 0, scrollSnapAlign:"start", transition:"0.3s" }}>{t.l}</button>)}
+                <div style={{display:"flex", alignItems:"center", gap:8, marginBottom:20}}>
+                  <button onClick={()=>scrollTabs(-1)} style={{background:"none", color:vars.gold, fontSize:20}}>❮</button>
+                  <div ref={scrollRef} className="hide-scroll" style={{display:"flex", gap:10, overflowX:"auto", scrollBehavior:"smooth", paddingBottom:5}}>
+                    {TABS.map(t => <Btn key={t.k} active={tab===t.k} onClick={()=>setTab(t.k)} style={{flexShrink:0, padding:"8px 16px", borderRadius:20}}>{t.l}</Btn>)}
                   </div>
-                  <button onClick={()=>scrollTabs(1)} style={{background:"none", color:vars.gold, fontSize:20, padding:"0 10px"}}>❯</button>
+                  <button onClick={()=>scrollTabs(1)} style={{background:"none", color:vars.gold, fontSize:20}}>❯</button>
                 </div>
 
                 {/* Conteúdo das Abas */}
-                <div style={{minHeight:220, position:"relative"}}>
+                <div style={{minHeight:220}}>
+                  
                   {tab === "closet" && (
                     <div className="page-enter">
-                      <SectionTitle t="Alta Costura" />
-                      <div style={{display:"flex", gap:15, overflowX:"auto", paddingBottom:15}} className="hide-scroll">
-                        {DRESSES.map(d => <Swatch key={d.id} img={d.img} label={d.name} selected={dollState.dress===d.img} onClick={()=>setDollState(s=>({...s, dress: d.img}))} />)}
+                      <SectionTitle t="Guarda-Roupa Exclusivo" />
+                      <div style={{display:"grid", gridTemplateColumns:"repeat(4, 1fr)", gap:15}}>
+                        {DRESS_ASSETS.map((img, i) => <Swatch key={i} type="img" img={img} selected={dress===img} onClick={()=>setDress(img)} />)}
                       </div>
                     </div>
                   )}
 
                   {tab === "sapatos" && (
                     <div className="page-enter">
-                      <SectionTitle t="Sapatos Elegantes" />
-                      <div style={{display:"flex", gap:15, overflowX:"auto", paddingBottom:15}} className="hide-scroll">
-                        {SHOES.map(s => <Swatch key={s.id} img={s.img} label={s.name} selected={dollState.shoes===s.img} onClick={()=>setDollState(st=>({...st, shoes: s.img}))} />)}
+                      <SectionTitle t="Sapatos de Luxo" />
+                      <div style={{display:"flex", gap:15}}>
+                        {SHOE_ASSETS.map((img, i) => <Swatch key={i} type="img" img={img} selected={shoes===img} onClick={()=>setShoes(img)} />)}
                       </div>
                     </div>
                   )}
 
-                  {tab === "hair" && (
+                  {tab === "acessorios" && (
                     <div className="page-enter">
-                      <SectionTitle t="Toque Mágico" />
-                      <div style={{display:"flex", gap:15, justifyContent:"center", marginTop: 20}}>
-                        <Btn active={dollState.crown} onClick={()=>setDollState(s=>({...s, crown: !s.crown}))} icon="👑">Coroa Real</Btn>
-                        <Btn active={dollState.wand} onClick={()=>setDollState(s=>({...s, wand: !s.wand}))} icon="🪄">Varinha de Condão</Btn>
+                      <SectionTitle t="Acessórios Brilhantes" />
+                      <div style={{display:"flex", gap:15}}>
+                        {Object.values(ACC_ASSETS).map((img, i) => <Swatch key={i} type="img" img={img} selected={acc===img} onClick={()=>setAcc(acc===img ? null : img)} />)}
                       </div>
                     </div>
                   )}
 
                   {tab === "arcade" && (
                     <div className="page-enter">
-                      <SectionTitle t="Aventuras & Diversão" />
-                      <div style={{display:"flex", flexDirection:"column", gap:5}}>
+                      <SectionTitle t="Arcade Mágico" />
+                      <div style={{display:"flex", flexDirection:"column", gap:10}}>
                         {ARCADE_GAMES.map(g => (
                            <div key={g.id} className="arcade-card" onClick={() => handleArcadeClick(g)}>
-                              <div style={{display:"flex", alignItems:"center", gap:12}}><span style={{fontSize: 26, filter:"drop-shadow(0 2px 5px rgba(0,0,0,0.3))"}}>{g.icon}</span> <span style={{fontWeight:"600", fontSize:15}}>{g.title}</span></div>
-                              {g.level && level < g.level ? <span style={{color: 'rgba(255,255,255,0.4)', fontSize:12, background:"rgba(0,0,0,0.3)", padding:"4px 8px", borderRadius:10}}>🔒 Nvl {g.level}</span> : <span style={{color: vars.gold, fontSize:12, fontWeight:"700"}}>Jogar ❯</span>}
+                              <div style={{display:"flex", alignItems:"center", gap:15}}>
+                                <span style={{fontSize: 24}}>{g.icon}</span> 
+                                <div>
+                                  <div style={{fontWeight:"600", color:vars.text}}>{g.title}</div>
+                                  <div style={{fontSize:11, color:vars.pPink}}>{g.cat}</div>
+                                </div>
+                              </div>
+                              {level < g.level ? <span style={{color:'rgba(255,255,255,0.4)', fontSize:12, background:"rgba(0,0,0,0.5)", padding:"4px 8px", borderRadius:10}}>Lvl {g.level} 🔒</span> : <span style={{color: vars.gold, fontWeight:"600", fontSize:12}}>Jogar ❯</span>}
                            </div>
                         ))}
                       </div>
@@ -633,38 +605,39 @@
                   )}
 
                   {tab === "gallery" && (
-                    <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
-                      <SectionTitle t="Portfólio de Moda" />
-                      <Btn onClick={saveLook} primary icon="📸" style={{marginBottom:20, width:"100%"}}>Fotografar Look Atual</Btn>
-                      
-                      {gallery.length === 0 ? <p style={{color:vars.pPink, fontSize:13, textAlign:"center", marginTop:20}}>Sua galeria está vazia. Salve looks para vê-los aqui!</p> : (
-                        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:15, width:"100%"}}>
-                          {gallery.map(lk => (
-                            <div key={lk.id} style={{background:"rgba(255,255,255,0.05)", padding:15, borderRadius:16, display:"flex", flexDirection:"column", alignItems:"center", border:`1px solid rgba(255,255,255,0.1)`}}>
-                              <div style={{width:60, height:80, position:"relative"}}>
-                                <div className="visual-asset" style={{position:"absolute", inset:0, backgroundImage:`url("${lk.char.img}")`}} />
-                                <div className="visual-asset" style={{position:"absolute", top:"48%", left:"15%", width:"70%", height:"60%", backgroundImage:`url("${lk.dress}")`}} />
-                              </div>
-                              <button style={{marginTop:10, padding:"6px 12px", borderRadius:20, background:vars.panelBg, color:vars.gold, border:`1px solid ${vars.gold}`, fontSize:11, fontWeight:"600"}} onClick={()=>{playSound('magic'); setDollState(lk);}}>Vestir Novamente</button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                    <div className="page-enter">
+                      <SectionTitle t="Meu Álbum de Fotos" />
+                      <Btn onClick={saveLook} primary icon="📸" style={{width:"100%", marginBottom:15}}>Salvar Look Atual (+25⭐)</Btn>
+                      {gallery.length === 0 && <p style={{textAlign:"center", color:vars.pPink, fontSize:13}}>Nenhuma foto salva ainda. Crie um look lindo!</p>}
+                      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:15}}>
+                        {gallery.map(lk => (
+                          <div key={lk.id} className="glass-panel" style={{padding:12, textAlign:"center", borderRadius:12}}>
+                            <div style={{fontSize:13, fontWeight:"600", color:vars.gold, marginBottom:8}}>{lk.char.name}</div>
+                            <Btn style={{width:"100%", padding:"6px"}} onClick={()=>{setChar(lk.char); setDress(lk.dress); setShoes(lk.shoes); setAcc(lk.acc); playSFX('magic');}}>Usar Look</Btn>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
+
                 </div>
               </div> 
-              <button onClick={()=>{playSound('click'); setScreen("select");}} style={{marginTop:30, background:"transparent", color:vars.pPink, textDecoration:"underline", letterSpacing:1}}>Mudar de Princesa</button>
+              <Btn onClick={()=>setScreen("select")} style={{marginTop:30}}>Trocar de Princesa</Btn>
             </div>
           )}
 
-          {/* Roteamento de Mini-Jogos */}
-          <div style={{display:"flex", justifyContent:"center", padding: screen !== 'home' && screen !== 'select' && screen !== 'castle' ? "80px 15px" : 0}}>
-            {screen === "makeup" && <MakeupGame dollState={dollState} setDollState={setDollState} onClose={handleGameClose} addPoints={handleAddPoints} />}
-            {screen === "quiz" && <OceanQuiz onClose={handleGameClose} addPoints={handleAddPoints} />}
-            {screen === "puzzle" && <PuzzleGame onClose={handleGameClose} addPoints={handleAddPoints} />}
-            {screen === "run" && <RunnerGame onClose={handleGameClose} addPoints={handleAddPoints} />}
-          </div>
+          {/* ROTEAMENTO DE JOGOS */}
+          {screen === "game_makeup" && <div style={{paddingTop: 80}}><MakeupSalon char={char} onClose={()=>setScreen("castle")} addPoints={addPoints} /></div>}
+          {screen === "game_run" && <div style={{paddingTop: 80}}><RunnerGame onClose={()=>setScreen("castle")} addPoints={addPoints} /></div>}
+          {screen === "game_quiz" && <div style={{paddingTop: 80}}><SeaQuiz onClose={()=>setScreen("castle")} addPoints={addPoints} /></div>}
+          {screen === "game_puzzle" && (
+            <div className="page-enter glass-panel" style={{margin:"80px auto", maxWidth:350, padding:30, textAlign:"center"}}>
+              <h2 style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:32}}>Quebra-Cabeça Chic 🧩</h2>
+              <p style={{color:vars.pPink, marginBottom: 20}}>Ganhe 50 estrelinhas completando o quadro!</p>
+              <Btn primary onClick={()=>{addPoints(50); setScreen("castle");}} style={{width:"100%"}}>Completar Magicamente ✨</Btn>
+              <Btn onClick={()=>setScreen("castle")} style={{width:"100%", marginTop:15}}>Voltar</Btn>
+            </div>
+          )}
 
         </div>
       );
