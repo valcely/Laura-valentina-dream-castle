@@ -74,8 +74,17 @@
     const { useState, useRef, useEffect, useCallback } = React;
 
     // --- DADOS E CONFIGURAÇÕES ---
+    const vars = { 
+      pPink: '#ff85c2', 
+      dPink: '#f72585', 
+      lPurple: '#c77dff', 
+      gold: '#ffd700', 
+      text: '#ffffff',
+      fontMain: "'Poppins', sans-serif",
+      fontFancy: "'Dancing Script', cursive",
+      panelBg: "rgba(20, 0, 20, 0.85)"
+    };
 
-    // Frases que a Barbie fala ao clicar nela
     const BARBIE_QUOTES = [
       "Você está incrível hoje!",
       "Vamos explorar o castelo mágico?",
@@ -87,7 +96,7 @@
     ];
 
     const CHARACTERS = [
-      { id:"giovanna",  name:"Giovanna",  job:"Princesa Real",      img:"https://i.imgur.com/vHq49XU.png" }, // Poses 3D estilo Barbie
+      { id:"giovanna",  name:"Giovanna",  job:"Princesa Real",      img:"https://i.imgur.com/vHq49XU.png" },
       { id:"laura",     name:"Laura",     job:"Master Chef",       img:"https://i.imgur.com/v3W5KxL.png" },
       { id:"valentina", name:"Valentina", job:"Bombeira Corajosa", img:"https://i.imgur.com/G4nS23x.png" },
       { id:"lidiane",   name:"Lidiane",   job:"Astronauta",        img:"https://i.imgur.com/uT7Wj1v.png" },
@@ -98,7 +107,6 @@
       { id:"maria",     name:"Maria",     job:"Pop Star",          img:"https://i.imgur.com/w9N0m4K.png" },
     ];
 
-    // Mapeamento de Penteados para Imagens Reais (PNGs transparentes de cabelo 3D)
     const HAIR_ASSETS = {
       Liso:     "https://i.imgur.com/O6S7y28.png",
       Ondulado: "https://i.imgur.com/V7YqG5E.png",
@@ -113,17 +121,12 @@
       {c:"#b22222",l:"Ruivo"},{c:"#f72585",l:"Rosa"},{c:"#c77dff",l:"Roxo"}
     ];
 
-    // Mapeamento de Roupas Reais (Vestidos CGI de luxo)
     const DRESS_ASSETS = [
-      "https://i.imgur.com/S6M5SgE.png", // Gala Rosa
-      "https://i.imgur.com/A6j5E8G.png", // Princesa Azul
-      "https://i.imgur.com/U8E6f3P.png", // Dourado Brilhante
-      "https://i.imgur.com/C4B3n2L.png", // Floral Jardim
-      "https://i.imgur.com/R3S1X2M.png", // Sereia Roxo
-      "https://i.imgur.com/G5K2L1V.png", // Executivo Moderno
+      "https://i.imgur.com/S6M5SgE.png", "https://i.imgur.com/A6j5E8G.png",
+      "https://i.imgur.com/U8E6f3P.png", "https://i.imgur.com/C4B3n2L.png",
+      "https://i.imgur.com/R3S1X2M.png", "https://i.imgur.com/G5K2L1V.png",
     ];
 
-    // Mapeamento de Sapatos Reais
     const SHOE_ASSETS = {
       "Scarpin Cristal": "https://i.imgur.com/M4w4K6F.png",
       "Sapatilha Ouro": "https://i.imgur.com/X1M5S7H.png",
@@ -133,19 +136,17 @@
     };
     const SHOE_STYLES = Object.keys(SHOE_ASSETS);
 
-    // Itens do Jogo da Memória (Imagens Reais de Alta Qualidade)
     const MEMORY_ITEMS = [
-      { id: 1, img: "https://i.imgur.com/f7jD0wX.png", type: 'coroa' }, // Coroa Diamante
-      { id: 2, img: "https://i.imgur.com/7H6N4Fw.png", type: 'sapato' }, // Sapato Cristal
-      { id: 3, img: "https://i.imgur.com/E4G4C9W.png", type: 'anel' },   // Anel Rubi
-      { id: 4, img: "https://i.imgur.com/C3M8B3D.png", type: 'bolsa' },  // Bolsa Luxo
-      { id: 5, img: "https://i.imgur.com/L1M4K2E.png", type: 'peixe' },  // Peixe Palhaço Real
-      { id: 6, img: "https://i.imgur.com/M5G7S7A.png", type: 'baleia' }, // Baleia Fofa CGI
-      { id: 7, img: "https://i.imgur.com/R1T3V2C.png", type: 'colar' },  // Colar Pérolas
-      { id: 8, img: "https://i.imgur.com/W2S4A3B.png", type: 'golfinho'},// Golfinho saltando
+      { id: 1, img: "https://i.imgur.com/f7jD0wX.png", type: 'coroa' },
+      { id: 2, img: "https://i.imgur.com/7H6N4Fw.png", type: 'sapato' },
+      { id: 3, img: "https://i.imgur.com/E4G4C9W.png", type: 'anel' },
+      { id: 4, img: "https://i.imgur.com/C3M8B3D.png", type: 'bolsa' },
+      { id: 5, img: "https://i.imgur.com/L1M4K2E.png", type: 'peixe' },
+      { id: 6, img: "https://i.imgur.com/M5G7S7A.png", type: 'baleia' },
+      { id: 7, img: "https://i.imgur.com/R1T3V2C.png", type: 'colar' },
+      { id: 8, img: "https://i.imgur.com/W2S4A3B.png", type: 'golfinho'},
     ];
 
-    // Lista de 30+ Jogos para Crianças 9+ (Simulação de HUB)
     const ARCADE_GAMES = [
       { id: 'run',    title: 'Aventura no Jardim', cat: 'Ação', icon: '🏃‍♀️', unlocked: false, level: 2 },
       { id: 'quiz_m', title: 'Mistérios do Mar ✨', cat: 'Quiz', icon: '🧜‍♀️' },
@@ -185,13 +186,12 @@
     // --- UTILS ---
     const shuffle = a => [...a].sort(()=>Math.random()-0.5);
 
-    // Sintese de Voz (Barbie Falante)
     const speak = (text) => {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'pt-BR';
-        utterance.pitch = 1.2; // Voz um pouco mais fina
+        utterance.pitch = 1.2;
         utterance.rate = 1.0;
         window.speechSynthesis.speak(utterance);
       }
@@ -199,8 +199,8 @@
 
 
     // --- COMPONENTES VISUAIS REAIS ---
+    const visualAssetStyle = { backgroundSize:"contain", backgroundPosition:"center", backgroundRepeat:"no-repeat" };
 
-    // Boneca Principal com Camadas Visuais Reais
     function RealDoll({ char, hairS, hairC, dress, shoes, acc, crown, blk, size="large", onClick }) {
       const scale = size === "large" ? 1 : 0.5;
       
@@ -211,44 +211,24 @@
           filter: "drop-shadow(0 10px 15px rgba(0,0,0,0.5))"
         }} className={onClick ? "doll-interactive" : ""}>
           
-          {/* Base da Boneca (Corpo/Pose 3D) - Usando pele definida no objeto char se houver, ou padrão */}
-          <div style={{
-            position:"absolute", inset:0, backgroundImage:`url(${char.img})`,
-            zIndex: 1, ...visualAssetStyle
-          }}/>
+          <div style={{ position:"absolute", inset:0, backgroundImage:`url(${char.img})`, zIndex: 1, ...visualAssetStyle }}/>
 
-          {/* Cabelo (CGI PNG por cima) */}
           <div style={{
             position:"absolute", top:"-5%", left:"15%", width:"70%", height:"40%",
             backgroundImage:`url(${HAIR_ASSETS[hairS]})`,
-            filter: `drop-shadow(0 0 2px ${hairC}aa)`, // Simula cor tintura
+            filter: `drop-shadow(0 0 2px ${hairC}aa)`, 
             zIndex: 5, ...visualAssetStyle
           }}/>
 
-          {/* Vestido (CGI PNG por cima) */}
-          <div style={{
-            position:"absolute", top:"20%", left:"5%", width:"90%", height:"70%",
-            backgroundImage:`url(${dress})`,
-            zIndex: 3, ...visualAssetStyle
-          }}/>
+          <div style={{ position:"absolute", top:"20%", left:"5%", width:"90%", height:"70%", backgroundImage:`url(${dress})`, zIndex: 3, ...visualAssetStyle }}/>
+          <div style={{ position:"absolute", bottom:"-2%", left:"20%", width:"60%", height:"15%", backgroundImage:`url(${SHOE_ASSETS[shoes]})`, zIndex: 2, ...visualAssetStyle }}/>
 
-          {/* Sapatos (CGI PNG nos pés) */}
-          <div style={{
-            position:"absolute", bottom:"-2%", left:"20%", width:"60%", height:"15%",
-            backgroundImage:`url(${SHOE_ASSETS[shoes]})`,
-            zIndex: 2, ...visualAssetStyle
-          }}/>
-
-          {/* Acessórios (Simples Overlays) */}
           {crown && <div style={{position:"absolute", top:"-8%", left:"35%", width:"30%", height:"15%", backgroundImage:`url(https://i.imgur.com/W29F1Yf.png)`, zIndex: 6, ...visualAssetStyle}}/>}
           {acc && <div style={{position:"absolute", top:"18%", left:"30%", width:"40%", height:"10%", backgroundImage:`url(https://i.imgur.com/8Q6N4R4.png)`, zIndex: 4, ...visualAssetStyle}}/>}
 
         </div>
       );
     }
-
-    const visualAssetStyle = { backgroundSize:"contain", backgroundPosition:"center", backgroundRepeat:"no-repeat" };
-
 
     // UI Elements
     const Swatch = ({c, img, selected, onClick, type="color"}) => (
@@ -274,8 +254,17 @@
 
     const SectionTitle = ({t}) => <div style={{color:vars.gold, fontSize:11, letterSpacing:2, fontWeight:"700", textTransform:"uppercase", marginBottom:10, marginTop:18, borderBottom:`1px solid rgba(255,215,0,0.2)`, paddingBottom:4}}>{t}</div>;
 
-    const vars = { pPink: '#ff85c2', dPink: '#f72585', lPurple: '#c77dff', gold: '#ffd700', text: '#ffffff' };
-
+    const BackgroundCasteloReais = () => (
+      <div style={{
+        position:"fixed", inset:0, zIndex:0,
+        backgroundImage:`url(https://i.imgur.com/G5B5S7H.png)`, 
+        backgroundSize:"cover", backgroundPosition:"center", filter:"blur(2px) brightness(0.7)"
+      }}>
+        <div style={{position:"absolute", bottom:"10%", left:"5%", width:120, height:120, backgroundImage:`url(https://i.imgur.com/X4b5bV5.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 4s infinite", opacity:0.8}} title="Unicórnio Mágico"/>
+        <div style={{position:"absolute", top:"20%", right:"10%", width:80, height:80, backgroundImage:`url(https://i.imgur.com/I5S5H0Z.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 3s infinite", opacity:0.7}} title="Fênix Dourada"/>
+        <div style={{position:"absolute", bottom:"5%", right:"20%", width:60, height:50, backgroundImage:`url(https://i.imgur.com/R8M4f4y.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", opacity:0.9}} title="Gatinho Real"/>
+      </div>
+    );
 
     // --- JOGO DE CORRIDA (RUNNER) ---
     function RunnerGame({onClose, addPoints}) {
@@ -292,10 +281,11 @@
       const [gameSpeed, setGameSpeed] = useState(4);
       const [gameOver, setGameOver] = useState(false);
       
-      const gameLoopRef = useRef();
-      const obstacleTimerRef = useRef();
+      const barbieYRef = useRef(LANE_Y);
 
-      // Controles
+      // Sincroniza o ref com o estado para usar dentro do loop sem recriá-lo
+      useEffect(() => { barbieYRef.current = barbieY; }, [barbieY]);
+
       const jump = useCallback(() => {
         if (!playing || isJumping || gameOver) return;
         setIsJumping(true);
@@ -320,36 +310,37 @@
         }, 20);
       }, [playing, isJumping, gameOver]);
 
-      // Game Loop
+      // Game Loop Consertado (Sem reiniciar a cada frame)
       useEffect(() => {
-        if (playing && !gameOver) {
-          gameLoopRef.current = setInterval(() => {
-            // Mover obstáculos
-            setObstacles(prev => prev.map(obs => ({...obs, x: obs.x - gameSpeed})).filter(obs => obs.x > -50));
-            
-            // Checar Colisão
-            obstacles.forEach(obs => {
-              if (obs.x > BARBIE_X && obs.x < BARBIE_X + 30) { // Na região X da Barbie
-                const bBottom = barbieY + 50;
-                if (bBottom > obs.y) { // Colidiu verticalmente
-                  setGameOver(true);
-                  setPlaying(false);
-                  speak("Ops! Tente novamente.");
+        if (!playing || gameOver) return;
+
+        const interval = setInterval(() => {
+            setObstacles(prev => {
+              const moved = prev.map(obs => ({...obs, x: obs.x - gameSpeed})).filter(obs => obs.x > -50);
+              
+              moved.forEach(obs => {
+                if (obs.x > BARBIE_X && obs.x < BARBIE_X + 30) { 
+                  const bBottom = barbieYRef.current + 50;
+                  if (bBottom > obs.y) { 
+                    setGameOver(true);
+                    setPlaying(false);
+                    speak("Ops! Tente novamente.");
+                  }
                 }
-              }
+              });
+              return moved;
             });
 
-            // Aumentar score e velocidade
             setScore(s => {
               const newScore = s + 1;
               if (newScore % 500 === 0) setGameSpeed(sp => sp + 1);
               return newScore;
             });
+        }, 1000/60); 
 
-          }, 1000/60); // 60 FPS
-
-          // Gerador de obstáculos
-          obstacleTimerRef.current = setInterval(() => {
+        // Gerador de obstáculos seguro (com tempo mínimo de 600ms para não travar)
+        const spawnDelay = Math.max(600, 2000 - (gameSpeed * 100));
+        const spawnInterval = setInterval(() => {
             const type = Math.random() > 0.5 ? 'pedra' : 'tronco';
             const img = type === 'pedra' ? "https://i.imgur.com/K1Y5S7H.png" : "https://i.imgur.com/E4G4C9W.png";
             setObstacles(prev => [...prev, {
@@ -358,14 +349,13 @@
               y: LANE_Y + 10,
               w: 40, h: 40, img: img
             }]);
-          }, 2000 - (gameSpeed * 100)); // Aparecem mais rápido conforme velocidade
+        }, spawnDelay);
 
-          return () => {
-            clearInterval(gameLoopRef.current);
-            clearInterval(obstacleTimerRef.current);
-          };
-        }
-      }, [playing, gameOver, gameSpeed, obstacles, barbieY]);
+        return () => {
+          clearInterval(interval);
+          clearInterval(spawnInterval);
+        };
+      }, [playing, gameOver, gameSpeed]);
 
       const startGame = () => {
         setScore(0);
@@ -388,22 +378,19 @@
 
       return (
         <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"fadeIn 0.5s ease"}}>
-          <div style={{color:vars.gold, fontSize:20, fontWeight:"700", marginBottom:10, fontFancy:vars.fontFancy}}>Aventura no Jardim 🏃‍♀️</div>
+          <div style={{color:vars.gold, fontSize:20, fontWeight:"700", marginBottom:10, fontFamily:vars.fontFancy}}>Aventura no Jardim 🏃‍♀️</div>
           
-          {/* Tela do Jogo */}
           <div style={{
-            width: GAME_WIDTH, height: GAME_HEIGHT, background:`url(https://i.imgur.com/G5F5S7H.png)`, // Cenário Jardim Real
+            width: GAME_WIDTH, height: GAME_HEIGHT, background:`url(https://i.imgur.com/G5F5S7H.png)`, 
             backgroundSize:'cover', backgroundPosition:'bottom', borderRadius:16, position:"relative",
             overflow:"hidden", border:`4px solid ${vars.lPurple}`, boxShadow:`0 0 20px rgba(0,0,0,0.8)`
           }}>
-            {/* Barbie Correndo (Simulação PNG) */}
             <div style={{
               position:"absolute", left: BARBIE_X, top: barbieY, width: 40, height: 60,
               backgroundImage:`url(https://i.imgur.com/vHq49XU.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat",
               zIndex: 10, transition: "top 0.1s linear", transform: gameOver ? "rotate(90deg)" : "none"
             }}/>
 
-            {/* Obstáculos */}
             {obstacles.map(obs => (
               <div key={obs.id} style={{
                 position:"absolute", left: obs.x, top: obs.y, width: obs.w, height: obs.h,
@@ -412,10 +399,8 @@
               }}/>
             ))}
 
-            {/* Chão */}
             <div style={{position:"absolute", bottom:0, left:0, width:"100%", height:20, background:"#4a2e00", zIndex:1}}/>
 
-            {/* Overlay */}
             {(!playing || gameOver) && (
               <div style={{
                 position:"absolute", inset:0, background:"rgba(0,0,0,0.7)", zIndex:20,
@@ -428,11 +413,9 @@
               </div>
             )}
             
-            {/* Score HUD */}
             {playing && <div style={{position:"absolute", top:10, right:15, color:vars.gold, fontWeight:"700", zIndex:15, textShadow:"0 2px 4px #000"}}>⭐ {score}</div>}
           </div>
 
-          {/* CONTROLES ORGANIZADOS NA PARTE INFERIOR */}
           <div style={{
             display:"flex", gap:30, marginTop:20, width:"100%", maxWidth:300, 
             justifyContent:"center", padding:15, background:"rgba(255,255,255,0.05)", borderRadius:50
@@ -446,7 +429,7 @@
             }}>⬆️</button>
             <button style={{width:60, height:60, borderRadius:"50%", background:"#555", color:"#fff", fontSize:24, opacity:0.5, cursor:"not-allowed"}}>➡️</button>
           </div>
-           <div style={{color:"rgba(255,255,255,0.5)", fontSize:11, marginTop:8}}>Dica: Use a tecla ESPAÇO ou o botão UP para pular.</div>
+           <div style={{color:"rgba(255,255,255,0.5)", fontSize:11, marginTop:8}}>Dica: Clique na Seta para pular.</div>
 
           {!playing && !gameOver && <button onClick={onClose} style={{marginTop:20, background:"transparent", color:vars.pPink}}>Voltar</button>}
         </div>
@@ -461,7 +444,6 @@
       const [char, setChar] = useState(null);
       const [level, setLevel] = useState(1);
       
-      // Closet State (Com Assets Reais)
       const [dress, setDress] = useState(DRESS_ASSETS[0]);
       const [hairC, setHairC] = useState(HAIR_COLORS[0].c);
       const [hairS, setHairS] = useState(HAIR_STYLES[0]);
@@ -474,7 +456,6 @@
       const [toast, setToast] = useState("");
       const [tab, setTab] = useState("closet");
       
-      // Memory Game State
       const [memCards, setMemCards] = useState([]);
       const [memFlipped, setMemFlipped] = useState([]);
       const [memMatched, setMemMatched] = useState([]);
@@ -484,7 +465,6 @@
       const audioRef = useRef(null);
       const scrollRef = useRef(null);
 
-      // Efeito para checar evolução de nível (300 estrelas)
       useEffect(() => {
         if (points >= 300 && level === 1) {
           setLevel(2);
@@ -505,7 +485,6 @@
 
       const selectChar = (c) => {
         setChar(c);
-        // Reset look padrão para a personagem
         setDress(DRESS_ASSETS[0]); setHairS(HAIR_STYLES[0]); setHairC(HAIR_COLORS[0].c);
         setShoes(SHOE_STYLES[0]); setAcc(false); setCrown(false);
         setScreen("castle");
@@ -527,9 +506,7 @@
         showToast("📸 Look salvo! +15 estrelinhas");
       };
 
-      // Memory Game Logic (Melhorado com Imagens)
       const startMemory = () => {
-        // Criar pares e embaralhar
         const items = shuffle([...MEMORY_ITEMS, ...MEMORY_ITEMS]).map((it, i) => ({...it, uniqueId: i}));
         setMemCards(items);
         setMemFlipped([]);
@@ -548,7 +525,6 @@
           setMemLock(true);
           const [firstIdx, secondIdx] = newFlipped;
           if (memCards[firstIdx].id === memCards[secondIdx].id) {
-            // Match!
             setMemMatched(m => [...m, memCards[firstIdx].id]);
             setPoints(p => p + 20);
             showToast("✨ Par encontrado! +20");
@@ -560,7 +536,6 @@
               setTimeout(()=>setScreen("castle"), 2000);
             }
           } else {
-            // No match
             setTimeout(() => {
               setMemFlipped([]);
               setMemLock(false);
@@ -571,20 +546,6 @@
 
 
       // --- LAYOUTS ---
-
-      const BackgroundCasteloReais = () => (
-        <div style={{
-          position:"fixed", inset:0, zIndex:0,
-          backgroundImage:`url(https://i.imgur.com/G5B5S7H.png)`, // Salão de Castelo Luxuoso CGI
-          backgroundSize:"cover", backgroundPosition:"center", filter:"blur(2px) brightness(0.7)"
-        }}>
-          {/* Animais ao redor (Simulando CGI) */}
-          <div style={{position:"absolute", bottom:"10%", left:"5%", width:120, height:120, backgroundImage:`url(https://i.imgur.com/X4b5bV5.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 4s infinite", opacity:0.8}} title="Unicórnio Mágico"/>
-          <div style={{position:"absolute", top:"20%", right:"10%", width:80, height:80, backgroundImage:`url(https://i.imgur.com/I5S5H0Z.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 3s infinite", opacity:0.7}} title="Fênix Dourada"/>
-          <div style={{position:"absolute", bottom:"5%", right:"20%", width:60, height:50, backgroundImage:`url(https://i.imgur.com/R8M4f4y.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", opacity:0.9}} title="Gatinho Real"/>
-        </div>
-      );
-
       const PanelStyle = {
         background: vars.panelBg, border: `1px solid rgba(255,179,217,0.2)`,
         borderRadius: 24, padding: 20, width: "100%", maxWidth: 420,
@@ -601,16 +562,12 @@
       return (
         <div style={{minHeight:"100vh", position:"relative"}}>
           
-          {/* Audio Element (Música de Castelo/Princesas) */}
           <audio ref={audioRef} loop preload="auto">
             <source src="https://cdn.pixabay.com/download/audio/2024/03/15/audio_134567ac8d.mp3" type="audio/mpeg"/> 
-            {/* Nota: Substituir por uma URL estável de música estilo realeza se esta falhar */}
           </audio>
 
-          {/* Fundo Estrelado Mágico */}
           <div style={{position:"fixed",inset:0,zIndex:1,pointerEvents:"none",backgroundImage:"url(https://www.transparenttextures.com/patterns/stardust.png)",opacity:0.3}}/>
 
-          {/* Botão Música & Pontos HUD */}
           <div style={{position:"fixed", top:15, right:15, zIndex:100, display:"flex", alignItems:"center", gap:15}}>
             <div style={{background:vars.panelBg, padding:"8px 15px", borderRadius:20, color:vars.gold, fontWeight:"700", border:`1px solid ${vars.gold}44`}}>
               ⭐ {points} <span style={{fontSize:10, color:vars.pPink}}>(Nível {level})</span>
@@ -648,7 +605,7 @@
           {screen === "select" && (
             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 20px", position:"relative", zIndex:2}}>
               <BackgroundCasteloReais />
-              <div style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:40, marginBottom:5, glow:true}}>Escolha sua Boneca</div>
+              <div className="glow" style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:40, marginBottom:5}}>Escolha sua Boneca</div>
               <p style={{color:vars.pPink, marginTop:0, marginBottom:30}}>Selecione uma modelo para brilhar</p>
               
               <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(110px, 1fr))", gap:15, width:"100%", maxWidth:400}}>
@@ -671,13 +628,11 @@
             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"70px 15px 30px", position:"relative", zIndex:2}}>
               <BackgroundCasteloReais />
               
-              {/* Área da Boneca */}
               <div style={{position:"relative", marginBottom:25, animation:"float 4s ease-in-out infinite"}}>
                 <RealDoll char={char} hairS={hairS} hairC={hairC} dress={dress} shoes={shoes} acc={acc} crown={crown} onClick={onDollClick} />
                 <div style={{position:"absolute", bottom:-15, left:"50%", transform:"translateX(-50%)", background:"rgba(0,0,0,0.5)", width:150, height:20, borderRadius:"50%", filter:"blur(5px)", zIndex:0}}/>
               </div>
 
-              {/* Info & Botões de Ação */}
               <div style={{textAlign:"center", marginBottom:20, zIndex:1}}>
                 <div style={{color:vars.gold, fontSize:22, fontWeight:"700", fontFamily:vars.fontFancy}}>{char.name}</div>
                 <div style={{color:"rgba(255,255,255,0.7)", fontSize:12, textTransform:"uppercase", letterSpacing:2, marginBottom:15}}>{char.job}</div>
@@ -686,9 +641,7 @@
                 </div>
               </div>
 
-              {/* PAINEL DE CONTROLE (ABAS) */}
               <div style={PanelStyle}>
-                {/* Menu de Abas */}
                 <div style={{display:"flex", alignItems:"center", gap:5, marginBottom:15}}>
                   <button onClick={()=>scrollTabs(-1)} style={{background:"none", color:vars.gold, fontSize:18}}>❮</button>
                   <div ref={scrollRef} className="hide-scroll" style={{display:"flex", gap:8, overflowX:"auto", scrollBehavior:"smooth", padding:"5px 0"}}>
@@ -703,7 +656,6 @@
                   <button onClick={()=>scrollTabs(1)} style={{background:"none", color:vars.gold, fontSize:18}}>❯</button>
                 </div>
 
-                {/* Conteúdo das Abas */}
                 <div style={{minHeight:200}}>
                   
                   {tab === "closet" && (
@@ -749,7 +701,6 @@
                       <SectionTitle t="Mini Jogos Mágicos" />
                       <div style={{display:"flex", flexDirection:"column", gap:12}}>
                         
-                        {/* Jogo da Memória (Sempre Liberado) */}
                         <div style={{background:"rgba(255,255,255,0.05)", padding:15, borderRadius:12, border:`1px solid rgba(255,179,217,0.2)`}}>
                           <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8}}>
                             <div style={{color:vars.gold, fontWeight:"600"}}>Memory Match Real 💎</div>
@@ -759,7 +710,6 @@
                           <Btn onClick={startMemory} primary icon="🧩">Jogar Memória</Btn>
                         </div>
 
-                        {/* Jogo de Corrida (Bloqueado < Nivel 2) */}
                         <div style={{background:"rgba(255,255,255,0.05)", padding:15, borderRadius:12, border:`1px solid ${level>=2?'rgba(255,179,217,0.2)':'#555'}`, opacity: level>=2?1:0.6}}>
                           <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8}}>
                             <div style={{color: level>=2?vars.gold:'#aaa', fontWeight:"600"}}>Aventura no Jardim 🏃‍♀️ {level<2 && "🔒"}</div>
@@ -788,8 +738,8 @@
                           const isLocked = g.level && level < g.level;
                           return (
                             <div key={g.id} style={{
-                              background: isLocked ? "rgba(255,255,255,0.02)" : "rgba(257,37,133,0.05)", 
-                              padding:"10px 15px", borderRadius:10, display:"flex", alignItems:"center", justify:"space-between",
+                              background: isLocked ? "rgba(255,255,255,0.02)" : "rgba(247,37,133,0.05)", 
+                              padding:"10px 15px", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"space-between",
                               border:`1px solid ${isLocked?'#444':'rgba(247,37,133,0.2)'}`, opacity: isLocked?0.6:1
                             }}>
                               <div style={{display:"flex", alignItems:"center", gap:10}}>
@@ -837,7 +787,7 @@
                   )}
 
                 </div>
-              </div> {/* Fim Painel */}
+              </div> 
 
               <button onClick={()=>setScreen("select")} style={{marginTop:30, background:"transparent", color:vars.pPink, border:`1px solid ${vars.dPink}`, padding:"10px 20px", borderRadius:20}}>Trocar Boneca</button>
             </div>
@@ -861,14 +811,12 @@
                       transformStyle:"preserve-3d", transition:"transform 0.5s",
                       transform: isFlipped || isMatched ? "rotateY(180deg)" : "rotateY(0deg)",
                     }}>
-                      {/* Frente (Escondida) */}
                       <div style={{
                         position:"absolute", inset:0, background:`linear-gradient(135deg, ${vars.lPurple}, #2a003a)`,
                         borderRadius:12, border:`2px solid ${vars.dPink}`, display:"flex", alignItems:"center", justifyContent:"center",
                         fontSize:30, color:vars.gold, backfaceVisibility:"hidden", zIndex:2
                       }}>💎</div>
                       
-                      {/* Verso (Imagem Real) */}
                       <div style={{
                         position:"absolute", inset:0, background:"#fff", borderRadius:12, 
                         border:`3px solid ${isMatched? vars.gold : vars.text}`,
@@ -902,7 +850,6 @@
               <RunnerGame onClose={()=>setScreen("castle")} addPoints={(p)=>setPoints(prev=>prev+p)} />
             </div>
           )}
-
 
         </div>
       );
