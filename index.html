@@ -7,7 +7,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -15,12 +15,13 @@
 
   <style>
     :root {
-      --p-pink: #ff85c2;
+      --p-pink: #ff9ecd;
       --d-pink: #f72585;
       --l-purple: #c77dff;
-      --gold: #ffd700;
-      --bg-dark: #100010;
-      --panel-bg: rgba(20, 0, 20, 0.85);
+      --gold: #ffdf00;
+      --bg-dark: #1a0b16;
+      --panel-bg: rgba(35, 15, 30, 0.85);
+      --glass-border: rgba(255, 182, 193, 0.3);
       --text: #ffffff;
       --font-main: 'Poppins', sans-serif;
       --font-fancy: 'Dancing Script', cursive;
@@ -33,57 +34,62 @@
       color: var(--text);
       overflow-x: hidden;
       min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
     }
 
     * { box-sizing: border-box; outline: none; }
 
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-    ::-webkit-scrollbar-thumb { background: var(--l-purple); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: var(--p-pink); border-radius: 3px; }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    @keyframes glow { 0%, 100% { text-shadow: 0 0 15px var(--gold); } 50% { text-shadow: 0 0 30px var(--p-pink), 0 0 10px var(--gold); } }
-    @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(247, 37, 133, 0); } 100% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0); } }
-    @keyframes twinkleStars { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes glow { 0%, 100% { text-shadow: 0 0 15px var(--p-pink); } 50% { text-shadow: 0 0 30px var(--l-purple), 0 0 15px var(--gold); } }
+    @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(247, 37, 133, 0); } 100% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0); } }
+    @keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(180deg); } }
     
     .stars-bg {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 0; pointer-events: none; background: #100010; overflow: hidden;
+      z-index: 0; pointer-events: none; 
+      background: radial-gradient(circle at top right, #301024 0%, #1a0b16 100%);
     }
-    .stars-bg::after {
-      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background-image: 
-        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
-        radial-gradient(3px 3px at 80px 70px, #ffd700, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 150px 160px, #ffffff, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 290px 40px, #ff85c2, rgba(0,0,0,0)),
-        radial-gradient(3px 3px at 330px 180px, #ffffff, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 460px 120px, #c77dff, rgba(0,0,0,0));
-      background-repeat: repeat; background-size: 300px 300px;
-      animation: twinkleStars 4s infinite ease-in-out;
+    
+    .glass-panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 15px rgba(255, 182, 193, 0.1);
+      border-radius: 24px;
     }
 
-    .page-enter { animation: fadeIn 0.5s ease-out forwards; z-index: 2; position: relative; }
-    .float { animation: float 3s ease-in-out infinite; }
-    .glow { animation: glow 2s ease-in-out infinite; }
-    button { cursor: pointer; border: none; font-family: var(--font-main); transition: all 0.2s; }
-    button:active { transform: scale(0.96); }
+    .page-enter { animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; z-index: 2; position: relative; }
+    .float { animation: float 4s ease-in-out infinite; }
+    .glow { animation: glow 3s ease-in-out infinite; }
+    button { cursor: pointer; border: none; font-family: var(--font-main); transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    button:active { transform: scale(0.92); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     .hide-scroll::-webkit-scrollbar { display: none; }
     
-    .visual-asset {
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
+    .visual-asset { background-size: contain; background-position: center; background-repeat: no-repeat; }
     
     .arcade-card {
-      background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;
+      background: rgba(255,255,255,0.03); padding: 18px; border-radius: 16px;
       display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; transition: all 0.2s; border: 1px solid transparent;
+      cursor: pointer; transition: all 0.3s; border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 10px;
     }
-    .arcade-card:hover { background: rgba(255,255,255,0.1); border-color: var(--p-pink); }
+    .arcade-card:hover { background: rgba(255,255,255,0.08); border-color: var(--p-pink); transform: translateX(5px); }
+
+    /* Estilos base para a boneca e SVG Overlay */
+    .doll-container { position: relative; width: 100%; max-width: 320px; aspect-ratio: 3/4; margin: 0 auto; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); transition: transform 0.3s ease; }
+    .doll-avatar { position: absolute; top: 0; left: 10%; width: 80%; height: 70%; z-index: 1; }
+    .doll-dress { position: absolute; top: 48%; left: 15%; width: 70%; height: 60%; z-index: 3; transition: all 0.3s; }
+    .doll-shoes { position: absolute; bottom: -12%; left: 35%; width: 30%; height: 25%; z-index: 2; }
+    .doll-makeup-lips { position: absolute; top: 52%; left: 45%; width: 10%; height: 5%; z-index: 2; border-radius: 50%; mix-blend-mode: multiply; opacity: 0.8; }
+    .doll-makeup-blush { position: absolute; top: 42%; left: 35%; width: 30%; height: 10%; z-index: 2; border-radius: 50%; mix-blend-mode: multiply; opacity: 0.5; filter: blur(4px); }
   </style>
 </head>
 <body>
@@ -93,405 +99,533 @@
     const { useState, useRef, useEffect, useCallback } = React;
 
     const vars = { 
-      pPink: '#ff85c2', dPink: '#f72585', lPurple: '#c77dff', 
-      gold: '#ffd700', text: '#ffffff',
+      pPink: '#ff9ecd', dPink: '#f72585', lPurple: '#c77dff', gold: '#ffdf00', text: '#ffffff',
       fontMain: "'Poppins', sans-serif", fontFancy: "'Dancing Script', cursive",
-      panelBg: "rgba(20, 0, 20, 0.85)"
     };
 
-    const BARBIE_QUOTES = [
-      "Você está incrível hoje!", "Vamos explorar o castelo mágico?",
-      "Eu amo o seu estilo!", "Você pode ser tudo o que quiser ser.",
-      "Adoro colecionar estrelinhas com você!", "Pronta para mais uma aventura?"
-    ];
+    // --- SISTEMA DE ÁUDIO ---
+    const AUDIO_URLS = {
+      plim: "https://actions.google.com/sounds/v1/cartoon/cartoon_wink_magic_sparkle.ogg",
+      magic: "https://actions.google.com/sounds/v1/magic/magic_chime.ogg",
+      camera: "https://actions.google.com/sounds/v1/tools/camera_shutter.ogg",
+      win: "https://actions.google.com/sounds/v1/cartoon/cartoon_success_fanfare.ogg",
+      pop: "https://actions.google.com/sounds/v1/cartoon/pop.ogg"
+    };
 
-    // Novo sistema de imagens à prova de falhas:
-    // 1. Personagens usando API gratuita DiceBear (estilo aventureiro/roblox)
-    const getAvatar = (seed) => `https://api.dicebear.com/9.x/adventurer/svg?seed=${seed}&backgroundColor=c77dff,ff85c2`;
-    
-    // 2. Roupas e acessórios gerados via Emojis SVGs (nunca quebram)
-    const getEmojiSvg = (emoji) => `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${emoji}</text></svg>`;
+    const playSound = (type) => {
+      try {
+        const audio = new Audio(AUDIO_URLS[type]);
+        audio.volume = 0.4;
+        audio.play().catch(() => {}); // Ignora erro se o navegador bloquear autoplay
+      } catch(e) {}
+    };
+
+    // --- ASSETS VISUAIS ---
+    // Avatares hiper-femininos e bonitos da DiceBear (Lorelei)
+    const getAvatar = (seed) => `https://api.dicebear.com/9.x/lorelei/svg?seed=${seed}&backgroundColor=transparent&hair=long,bob,curly,bun&accessoriesProbability=0`;
 
     const CHARACTERS = [
-      { id:"giovanna",  name:"Giovanna",  img: getAvatar("Giovanna") },
-      { id:"laura",     name:"Laura",     img: getAvatar("Laura") },
-      { id:"valentina", name:"Valentina", img: getAvatar("Valentina") },
-      { id:"lidiane",   name:"Lidiane",   img: getAvatar("Lidiane") },
-      { id:"valcely",   name:"Valcely",   img: getAvatar("Valcely") },
-      { id:"vitoria",   name:"Vitória",   img: getAvatar("Vitoria") },
-      { id:"ayla",      name:"Ayla",      img: getAvatar("Ayla") },
-      { id:"isa",       name:"Isa",       img: getAvatar("Isa") },
-      { id:"maria",     name:"Maria",     img: getAvatar("Maria") },
+      { id:"giovanna",  name:"Giovanna",  img: getAvatar("GiovannaPrincess") },
+      { id:"laura",     name:"Laura",     img: getAvatar("LauraMagical") },
+      { id:"valentina", name:"Valentina", img: getAvatar("ValentinaStar") },
+      { id:"lidiane",   name:"Lidiane",   img: getAvatar("LidianeQueen") },
+      { id:"valcely",   name:"Valcely",   img: getAvatar("ValcelyChic") },
+      { id:"vitoria",   name:"Vitória",   img: getAvatar("VitoriaBella") },
     ];
 
-    const HAIR_ASSETS = {
-      "Estilo 1": getEmojiSvg("🎀"), "Estilo 2": getEmojiSvg("🌸"),
-      "Estilo 3": getEmojiSvg("✨"), "Estilo 4": getEmojiSvg("🦄"),
-      "Estilo 5": getEmojiSvg("🦋"), "Estilo 6": getEmojiSvg("👑")
+    // Gerador de SVGs elegantes para Roupas (substitui emojis)
+    const createDressSvg = (topColor, skirtColor, style="ballgown") => {
+      let path = "";
+      if (style === "ballgown") {
+        path = `<path d="M35,10 C45,25 55,25 65,10 L75,40 C95,90 95,110 85,120 L15,120 C5,110 5,90 25,40 Z" fill="${skirtColor}"/><path d="M35,10 C45,25 55,25 65,10 L70,40 C50,45 50,45 30,40 Z" fill="${topColor}"/>`;
+      } else if (style === "casual") {
+        path = `<path d="M35,10 C45,20 55,20 65,10 L68,40 C50,42 50,42 32,40 Z" fill="${topColor}"/><path d="M32,40 L68,40 L70,110 L55,110 L50,60 L45,110 L30,110 Z" fill="${skirtColor}"/>`;
+      } else if (style === "mermaid") {
+        path = `<path d="M35,10 C45,20 55,20 65,10 L70,70 C80,90 90,110 85,120 C60,110 40,110 15,120 C10,110 20,90 30,70 Z" fill="${skirtColor}"/><path d="M35,10 C45,20 55,20 65,10 L68,50 C50,55 50,55 32,50 Z" fill="${topColor}"/>`;
+      }
+      return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">${path}</svg>`;
     };
-    const HAIR_STYLES = Object.keys(HAIR_ASSETS);
-    
-    const HAIR_COLORS = [
-      {c:"#f5c542",l:"Loiro"},{c:"#8B4513",l:"Castanho"},{c:"#1a1a1a",l:"Preto"},
-      {c:"#b22222",l:"Ruivo"},{c:"#f72585",l:"Rosa"},{c:"#c77dff",l:"Roxo"}
-    ];
 
-    const DRESS_ASSETS = [
-      getEmojiSvg("👗"), getEmojiSvg("🥻"), getEmojiSvg("👘"), 
-      getEmojiSvg("👚"), getEmojiSvg("🧥"), getEmojiSvg("🧚‍♀️")
-    ];
-
-    const SHOE_ASSETS = {
-      "Scarpin": getEmojiSvg("👠"), "Sapatilha": getEmojiSvg("🥿"),
-      "Bota": getEmojiSvg("👢"), "Sandália": getEmojiSvg("👡"),
-      "Tênis": getEmojiSvg("👟")
+    const createShoeSvg = (color, type="heels") => {
+      const path = type === "heels" 
+        ? `<path d="M20,60 C40,60 60,80 80,80 L85,90 L75,90 C60,85 40,70 20,70 Z M75,80 L80,110 L75,110 Z" fill="${color}"/>`
+        : `<path d="M20,70 C40,70 70,70 85,85 L80,95 C60,95 40,85 20,85 Z" fill="${color}"/>`;
+      return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">${path}</svg>`;
     };
-    const SHOE_STYLES = Object.keys(SHOE_ASSETS);
 
-    const MEMORY_ITEMS = [
-      { id: 1, img: getEmojiSvg("👑"), type: 'coroa' }, { id: 2, img: getEmojiSvg("👠"), type: 'sapato' },
-      { id: 3, img: getEmojiSvg("💍"), type: 'anel' }, { id: 4, img: getEmojiSvg("👜"), type: 'bolsa' },
-      { id: 5, img: getEmojiSvg("🐟"), type: 'peixe' }, { id: 6, img: getEmojiSvg("🐳"), type: 'baleia' },
-      { id: 7, img: getEmojiSvg("📿"), type: 'colar' }, { id: 8, img: getEmojiSvg("🐬"), type: 'golfinho'},
+    const DRESSES = [
+      { id: 'd1', img: createDressSvg('%23ff85c2', '%23ffb3d9', 'ballgown'), name: 'Baile Rosa' },
+      { id: 'd2', img: createDressSvg('%23c77dff', '%23e0aaff', 'ballgown'), name: 'Princesa Lilás' },
+      { id: 'd3', img: createDressSvg('%23ffffff', '%2372ddf7', 'casual'), name: 'Casual Chic' },
+      { id: 'd4', img: createDressSvg('%23ffd700', '%23ffea00', 'mermaid'), name: 'Sereia Ouro' },
+      { id: 'd5', img: createDressSvg('%2310002b', '%233c096c', 'ballgown'), name: 'Gala Noturno' },
+    ];
+
+    const SHOES = [
+      { id: 's1', img: createShoeSvg('%23f72585', 'heels'), name: 'Salto Rosa' },
+      { id: 's2', img: createShoeSvg('%23ffffff', 'flats'), name: 'Sapatilha' },
+      { id: 's3', img: createShoeSvg('%23ffd700', 'heels'), name: 'Salto Cristal' },
+      { id: 's4', img: createShoeSvg('%23000000', 'heels'), name: 'Salto Preto' },
     ];
 
     const ARCADE_GAMES = [
-      { id: 'run', title: 'Aventura no Jardim', cat: 'Ação', icon: '🏃‍♀️', unlocked: true, level: 2 },
-      { id: 'quiz', title: 'Mistérios do Mar ✨', cat: 'Quiz', icon: '🧜‍♀️', unlocked: true },
-      { id: 'puzzle', title: 'Quebra-Cabeça de Luxo', cat: 'Raciocínio', icon: '🧩', unlocked: true },
-      { id: 'makeup', title: 'Salão de Maquiagem', cat: 'Criatividade', icon: '💄', unlocked: true }
+      { id: 'makeup', title: 'Salão de Beleza', cat: 'Criatividade', icon: '💄', unlocked: true },
+      { id: 'puzzle', title: 'Quebra-Cabeça Mágico', cat: 'Raciocínio', icon: '🧩', unlocked: true },
+      { id: 'quiz', title: 'Mistérios do Mar', cat: 'Quiz', icon: '🧜‍♀️', unlocked: true },
+      { id: 'run', title: 'Passeio no Jardim', cat: 'Ação', icon: '🦋', unlocked: true, level: 2 }
     ];
 
     const shuffle = a => [...a].sort(()=>Math.random()-0.5);
-    const speak = (text) => {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'pt-BR';
-        utterance.pitch = 1.2;
-        utterance.rate = 1.0;
-        window.speechSynthesis.speak(utterance);
-      }
-    };
 
-    function RealDoll({ char, hairS, hairC, dress, shoes, acc, crown, size="large", onClick }) {
-      const scale = size === "large" ? 1 : 0.5;
+    // --- COMPONENTES UI ---
+    const Swatch = ({img, selected, onClick, label}) => (
+      <div style={{display:"flex", flexDirection:"column", alignItems:"center", gap:5}}>
+        <div onClick={() => { playSound('pop'); onClick(); }} style={{
+          width: 55, height: 55, borderRadius: 12, 
+          background: `rgba(255,255,255,0.08) url("${img}")`, backgroundSize: "70%", backgroundRepeat: "no-repeat", backgroundPosition: "center",
+          cursor: "pointer", border: `2px solid ${selected ? vars.gold : 'rgba(255,255,255,0.1)'}`,
+          transform: selected ? "scale(1.1) translateY(-3px)" : "scale(1)", transition: "all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
+          boxShadow: selected ? `0 10px 20px rgba(247,37,133,0.3)` : "none", flexShrink: 0
+        }}/>
+        {label && <span style={{fontSize: 10, color: selected ? vars.gold : '#aaa'}}>{label}</span>}
+      </div>
+    );
+
+    const Btn = ({active, onClick, children, icon, primary, disabled}) => (
+      <button disabled={disabled} onClick={() => { if(!disabled) { playSound('click'); onClick(); } }} style={{
+        background: active || primary ? `linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})` : "rgba(255,255,255,0.08)",
+        border: `1px solid ${active || primary ? vars.gold : 'rgba(255,255,255,0.1)'}`,
+        borderRadius: 14, padding: primary ? "14px 28px" : "12px 18px", color: vars.text,
+        fontSize: primary ? 15 : 13, fontWeight: "600", display: "flex", alignItems: "center", gap: 8, justifyContent: "center",
+        boxShadow: primary ? `0 8px 20px rgba(247,37,133,0.3)` : "none", 
+        animation: primary ? "pulseBtn 2s infinite" : "none"
+      }}>{icon && <span style={{fontSize: 18}}>{icon}</span>}{children}</button>
+    );
+
+    const SectionTitle = ({t}) => <div style={{color:vars.gold, fontSize:12, letterSpacing:2, fontWeight:"700", textTransform:"uppercase", marginBottom:12, marginTop:20, display:"flex", alignItems:"center", gap:8}}><span style={{height:1, flex:1, background:"linear-gradient(90deg, transparent, rgba(255,215,0,0.5))"}}></span>{t}<span style={{height:1, flex:1, background:"linear-gradient(270deg, transparent, rgba(255,215,0,0.5))"}}></span></div>;
+
+    // Componente da Boneca Atualizado
+    function RealDoll({ char, dress, shoes, makeup, crown, wand, onClick }) {
       return (
-        <div onClick={onClick} style={{
-          position:"relative", width:280*scale, height:400*scale, 
-          cursor: onClick ? "pointer" : "default", transition:"transform 0.3s ease",
-          filter: "drop-shadow(0 10px 15px rgba(0,0,0,0.5))"
-        }} className={onClick ? "doll-interactive float" : ""}>
+        <div onClick={() => { if(onClick){ playSound('plim'); onClick(); } }} className={`doll-container ${onClick ? "float" : ""}`} style={{cursor: onClick ? 'pointer' : 'default'}}>
+          {/* Corpo/Rosto */}
+          <div className="visual-asset doll-avatar" style={{backgroundImage:`url("${char.img}")`}}>
+            {/* Overlay de Maquiagem - Simulação baseada em posicionamento (Ajustado para o DiceBear Lorelei) */}
+            {makeup.lips && <div className="doll-makeup-lips" style={{backgroundColor: makeup.lips}} />}
+            {makeup.blush && <div className="doll-makeup-blush" style={{background: `radial-gradient(ellipse at center, ${makeup.blush} 0%, transparent 70%)`}} />}
+          </div>
           
-          {/* Avatar Base */}
-          <div style={{ position:"absolute", inset:0, backgroundImage:`url("${char.img}")`, zIndex: 1 }} className="visual-asset"/>
-
-          {/* Cabelo / Acessório de Cabeça */}
-          <div style={{
-            position:"absolute", top:"-10%", left:"60%", width:"40%", height:"40%",
-            backgroundImage:`url("${HAIR_ASSETS[hairS]}")`, filter: `drop-shadow(0 0 5px ${hairC})`, zIndex: 5
-          }} className="visual-asset"/>
-
-          {/* Vestido */}
-          <div style={{ position:"absolute", top:"60%", left:"10%", width:"80%", height:"50%", backgroundImage:`url("${dress}")`, zIndex: 3 }} className="visual-asset"/>
+          {/* Vestido e Sapatos (SVGs elegantes) */}
+          <div className="visual-asset doll-dress" style={{backgroundImage:`url("${dress}")`, filter: "drop-shadow(0 10px 10px rgba(0,0,0,0.4))"}} />
+          <div className="visual-asset doll-shoes" style={{backgroundImage:`url("${shoes}")`, filter: "drop-shadow(0 5px 5px rgba(0,0,0,0.5))"}} />
           
-          {/* Sapato */}
-          <div style={{ position:"absolute", bottom:"-20%", left:"30%", width:"40%", height:"30%", backgroundImage:`url("${SHOE_ASSETS[shoes]}")`, zIndex: 2 }} className="visual-asset"/>
-
-          {crown && <div style={{position:"absolute", top:"-20%", left:"30%", width:"40%", height:"40%", backgroundImage:`url("${getEmojiSvg('👑')}")`, zIndex: 6}} className="visual-asset"/>}
-          {acc && <div style={{position:"absolute", top:"40%", left:"60%", width:"30%", height:"30%", backgroundImage:`url("${getEmojiSvg('🪄')}")`, zIndex: 4}} className="visual-asset"/>}
+          {/* Acessórios extras usando Emojis bonitos para os detalhes */}
+          {crown && <div style={{position:"absolute", top:"-5%", left:"35%", width:"30%", height:"25%", fontSize: "clamp(40px, 15vw, 60px)", display:"flex", justifyContent:"center", alignItems:"center", zIndex: 6, filter:"drop-shadow(0 0 10px gold)"}}>👑</div>}
+          {wand && <div style={{position:"absolute", top:"40%", left:"65%", width:"30%", height:"30%", fontSize: "clamp(30px, 10vw, 45px)", display:"flex", justifyContent:"center", alignItems:"center", zIndex: 4, filter:"drop-shadow(0 0 10px pink)", animation:"sparkle 2s infinite"}} >🪄</div>}
         </div>
       );
     }
 
-    const Swatch = ({c, img, selected, onClick, type="color"}) => (
-      <div onClick={onClick} style={{
-        width:45, height:45, borderRadius: type==="color"?"50%":"8px", 
-        background: type==="color"?c:`rgba(255,255,255,0.1) url("${img}")`, backgroundSize:"contain", backgroundRepeat:"no-repeat", backgroundPosition:"center",
-        cursor:"pointer", border:`3px solid ${selected?vars.gold:'rgba(255,255,255,0.2)'}`,
-        transform:selected?"scale(1.1)":"scale(1)", transition:"all 0.2s",
-        boxShadow:selected?`0 0 15px ${vars.dPink}`:"none", flexShrink:0,
-      }}/>
-    );
+    // --- MINI JOGOS MELHORADOS ---
 
-    const Btn = ({active, onClick, children, icon, primary}) => (
-      <button onClick={onClick} style={{
-        background: active || primary ? `linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})` : "rgba(255,255,255,0.06)",
-        border: `1px solid ${active || primary ? vars.gold : 'rgba(255,179,217,0.3)'}`,
-        borderRadius: 12, padding: primary?"14px 24px":"10px 16px", color: vars.text,
-        fontSize: primary?15:13, fontWeight:"600", display:"flex", alignItems:"center", gap:8, justifyContent:"center",
-        boxShadow: primary? `0 5px 15px rgba(247,37,133,0.4)`:"none", animation: primary? "pulseBtn 2s infinite" : "none"
-      }}>{icon && <span>{icon}</span>}{children}</button>
-    );
-
-    const SectionTitle = ({t}) => <div style={{color:vars.gold, fontSize:11, letterSpacing:2, fontWeight:"700", textTransform:"uppercase", marginBottom:10, marginTop:18, borderBottom:`1px solid rgba(255,215,0,0.2)`, paddingBottom:4}}>{t}</div>;
-
-    function RunnerGame({onClose, addPoints}) {
-      const GAME_WIDTH = 380; const GAME_HEIGHT = 250; const LANE_Y = GAME_HEIGHT - 60; const BARBIE_X = 50;
-      const [playing, setPlaying] = useState(false); const [score, setScore] = useState(0);
-      const [barbieY, setBarbieY] = useState(LANE_Y); const [isJumping, setIsJumping] = useState(false);
-      const [obstacles, setObstacles] = useState([]); const [gameSpeed, setGameSpeed] = useState(4);
-      const [gameOver, setGameOver] = useState(false);
-      const barbieYRef = useRef(LANE_Y);
-
-      useEffect(() => { barbieYRef.current = barbieY; }, [barbieY]);
-
-      const jump = useCallback(() => {
-        if (!playing || isJumping || gameOver) return;
-        setIsJumping(true);
-        let jumpHeight = 0;
-        const upInterval = setInterval(() => {
-          if (jumpHeight >= 80) {
-            clearInterval(upInterval);
-            const downInterval = setInterval(() => {
-              if (jumpHeight <= 0) {
-                clearInterval(downInterval); setIsJumping(false); setBarbieY(LANE_Y);
-              } else { jumpHeight -= 5; setBarbieY(LANE_Y - jumpHeight); }
-            }, 20);
-          } else { jumpHeight += 8; setBarbieY(LANE_Y - jumpHeight); }
-        }, 20);
-      }, [playing, isJumping, gameOver]);
-
-      useEffect(() => {
-        if (!playing || gameOver) return;
-        const interval = setInterval(() => {
-            setObstacles(prev => {
-              const moved = prev.map(obs => ({...obs, x: obs.x - gameSpeed})).filter(obs => obs.x > -50);
-              moved.forEach(obs => {
-                if (obs.x > BARBIE_X && obs.x < BARBIE_X + 30) { 
-                  if (barbieYRef.current + 50 > obs.y) { 
-                    setGameOver(true); setPlaying(false); speak("Ops! Tente novamente.");
-                  }
-                }
-              });
-              return moved;
-            });
-            setScore(s => { const newScore = s + 1; if (newScore % 500 === 0) setGameSpeed(sp => sp + 1); return newScore; });
-        }, 1000/60); 
-
-        const spawnDelay = Math.max(600, 2000 - (gameSpeed * 100));
-        const spawnInterval = setInterval(() => {
-            const img = getEmojiSvg(Math.random() > 0.5 ? '🪨' : '🪵');
-            setObstacles(prev => [...prev, { id: Date.now(), x: GAME_WIDTH + 50, y: LANE_Y + 10, w: 40, h: 40, img: img }]);
-        }, spawnDelay);
-
-        return () => { clearInterval(interval); clearInterval(spawnInterval); };
-      }, [playing, gameOver, gameSpeed]);
-
-      const startGame = () => { setScore(0); setObstacles([]); setGameSpeed(4); setGameOver(false); setPlaying(true); setBarbieY(LANE_Y); speak("Vamos correr!"); };
-      const finishGame = () => { if (score > 10) { const pts = Math.floor(score / 100); addPoints(pts); speak(`Ganhou ${pts} estrelinhas!`); } onClose(); };
+    // 1. Salão de Beleza (Funcional)
+    function MakeupGame({ dollState, setDollState, onClose, addPoints }) {
+      const LIP_COLORS = ['transparent', '#ff0055', '#cc00ff', '#ff8800', '#6a040f'];
+      const BLUSH_COLORS = ['transparent', '#ff85c2', '#ff4d6d', '#ff99a8'];
+      
+      const handleFinish = () => {
+        addPoints(30); playSound('win'); onClose();
+      };
 
       return (
-        <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"fadeIn 0.5s ease"}}>
-          <div style={{color:vars.gold, fontSize:20, fontWeight:"700", marginBottom:10, fontFamily:vars.fontFancy}}>Aventura no Jardim 🏃‍♀️</div>
-          <div style={{ width: GAME_WIDTH, maxWidth: "100%", height: GAME_HEIGHT, background:`#2d5a27`, borderRadius:16, position:"relative", overflow:"hidden", border:`4px solid ${vars.lPurple}` }}>
-            <div style={{ position:"absolute", left: BARBIE_X, top: barbieY, width: 40, height: 60, backgroundImage:`url("${getEmojiSvg('👸')}")`, backgroundSize:"contain", backgroundRepeat:"no-repeat", zIndex: 10, transform: gameOver ? "rotate(90deg)" : "none" }}/>
-            {obstacles.map(obs => <div key={obs.id} style={{ position:"absolute", left: obs.x, top: obs.y, width: obs.w, height: obs.h, backgroundImage:`url("${obs.img}")`, backgroundSize:"contain", backgroundRepeat:"no-repeat", zIndex: 5 }}/>)}
-            <div style={{position:"absolute", bottom:0, left:0, width:"100%", height:20, background:"#4a2e00", zIndex:1}}/>
-            {(!playing || gameOver) && (
-              <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.7)", zIndex:20, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:15 }}>
-                {gameOver && <div style={{color:"#ff4d6d", fontSize:24, fontWeight:"700"}}>Fim de Jogo!</div>}
-                <div style={{color:vars.gold, fontSize:18, fontWeight:"600"}}>Pontos: {score}</div>
-                <Btn primary onClick={startGame}>{gameOver ? "Jogar Novamente" : "Começar"}</Btn>
-                {gameOver && <Btn onClick={finishGame}>Sair</Btn>}
+        <div className="page-enter glass-panel" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:25, width:"100%", maxWidth: 400}}>
+          <h2 style={{fontFamily: vars.fontFancy, color: vars.gold, margin: "0 0 20px 0", fontSize: 28}}>Salão de Beleza 💄</h2>
+          
+          {/* Preview Rosto */}
+          <div style={{width: 180, height: 180, position: "relative", marginBottom: 20, background: "rgba(255,255,255,0.05)", borderRadius: "50%", overflow:"hidden", border:`2px solid ${vars.pPink}`}}>
+            <div className="visual-asset" style={{position:"absolute", inset:"-20% 0 0 0", backgroundImage:`url("${dollState.char.img}")`, backgroundSize:"150%"}} />
+            <div style={{position:"absolute", top:"65%", left:"45%", width:"10%", height:"5%", backgroundColor: dollState.makeup.lips, mixBlendMode:"multiply", borderRadius:"50%"}} />
+            <div style={{position:"absolute", top:"55%", left:"25%", width:"50%", height:"15%", background: `radial-gradient(ellipse at center, ${dollState.makeup.blush} 0%, transparent 60%)`, mixBlendMode:"multiply", opacity:0.6}} />
+          </div>
+
+          <SectionTitle t="Cor do Batom" />
+          <div style={{display:"flex", gap: 10, marginBottom: 15}}>
+            {LIP_COLORS.map(c => (
+              <button key={`lip-${c}`} onClick={() => { playSound('pop'); setDollState(s => ({...s, makeup: {...s.makeup, lips: c}})) }} style={{width: 35, height: 35, borderRadius: "50%", background: c === 'transparent' ? '#333' : c, border: dollState.makeup.lips === c ? `3px solid white` : 'none', boxShadow: dollState.makeup.lips === c ? `0 0 10px ${c}` : 'none'}}>{c === 'transparent' ? '✖' : ''}</button>
+            ))}
+          </div>
+
+          <SectionTitle t="Blush" />
+          <div style={{display:"flex", gap: 10, marginBottom: 25}}>
+            {BLUSH_COLORS.map(c => (
+              <button key={`blush-${c}`} onClick={() => { playSound('pop'); setDollState(s => ({...s, makeup: {...s.makeup, blush: c}})) }} style={{width: 35, height: 35, borderRadius: "50%", background: c === 'transparent' ? '#333' : c, border: dollState.makeup.blush === c ? `3px solid white` : 'none'}}>{c === 'transparent' ? '✖' : ''}</button>
+            ))}
+          </div>
+
+          <div style={{display:"flex", gap:10, width:"100%"}}>
+            <Btn onClick={() => {playSound('click'); onClose()}} style={{flex:1}}>Cancelar</Btn>
+            <Btn primary onClick={handleFinish} style={{flex:2}}>Aplicar (+30⭐)</Btn>
+          </div>
+        </div>
+      );
+    }
+
+    // 2. Mistérios do Mar (Quiz Interativo)
+    function OceanQuiz({ onClose, addPoints }) {
+      const QUESTIONS = [
+        { q: "Qual a cor da cauda da sereia mágica?", options: ["Rosa", "Verde", "Dourada"], answer: "Dourada" },
+        { q: "Onde o tesouro está escondido?", options: ["No recife de corais", "Na praia", "Na caverna escura"], answer: "No recife de corais" },
+        { q: "Qual animal é o mensageiro dos mares?", options: ["O Tubarão", "O Golfinho", "O Caranguejo"], answer: "O Golfinho" }
+      ];
+      const [step, setStep] = useState(0); const [score, setScore] = useState(0); const [showResult, setShowResult] = useState(false);
+
+      const handleAnswer = (opt) => {
+        if(opt === QUESTIONS[step].answer) { playSound('magic'); setScore(s => s + 1); } else { playSound('pop'); }
+        if(step < QUESTIONS.length - 1) setStep(step + 1);
+        else setShowResult(true);
+      };
+
+      const finish = () => { if(score > 0) addPoints(score * 20); playSound('win'); onClose(); };
+
+      return (
+        <div className="page-enter glass-panel" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"30px 20px", width:"100%", maxWidth: 400, textAlign:"center", backgroundImage: "linear-gradient(to bottom, rgba(0,105,148,0.2), transparent)"}}>
+          <h2 style={{fontFamily: vars.fontFancy, color: "#72ddf7", margin: "0 0 20px 0", fontSize: 32}}>Mistérios do Mar 🧜‍♀️</h2>
+          
+          {!showResult ? (
+            <div style={{width:"100%"}}>
+              <p style={{fontSize: 14, color: vars.gold, marginBottom: 5}}>Pergunta {step + 1} de {QUESTIONS.length}</p>
+              <p style={{fontSize: 18, marginBottom: 25, fontWeight:"600"}}>{QUESTIONS[step].q}</p>
+              <div style={{display:"flex", flexDirection:"column", gap: 10}}>
+                {QUESTIONS[step].options.map(opt => (
+                  <button key={opt} onClick={()=>handleAnswer(opt)} style={{background:"rgba(255,255,255,0.1)", padding:15, borderRadius:12, color:"white", border:`1px solid #72ddf7`, fontSize:16, transition:"0.2s"}}>{opt}</button>
+                ))}
               </div>
-            )}
-            {playing && <div style={{position:"absolute", top:10, right:15, color:vars.gold, fontWeight:"700", zIndex:15}}>⭐ {score}</div>}
-          </div>
-          <div style={{ display:"flex", gap:30, marginTop:20, justifyContent:"center", padding:15, background:"rgba(255,255,255,0.05)", borderRadius:50 }}>
-            <button onClick={jump} style={{ width:80, height:80, borderRadius:"50%", background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})`, color:"#fff", fontSize:32, border:`3px solid ${vars.gold}` }}>⬆️</button>
-          </div>
-          {!playing && !gameOver && <button onClick={onClose} style={{marginTop:20, background:"transparent", color:vars.pPink}}>Voltar</button>}
+            </div>
+          ) : (
+            <div className="page-enter">
+              <div style={{fontSize: 60, marginBottom:10}}>{score === 3 ? "👑" : "🐚"}</div>
+              <h3 style={{color: vars.gold}}>Você acertou {score} de {QUESTIONS.length}!</h3>
+              <p style={{marginBottom: 25}}>Recompensa: {score * 20} estrelinhas ✨</p>
+              <Btn primary onClick={finish}>Receber e Voltar</Btn>
+            </div>
+          )}
         </div>
       );
     }
 
-    // Tela Genérica para Jogos do Arcade que ainda não foram desenvolvidos
-    function GenericGameScreen({ game, onClose }) {
-      return (
-        <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px", textAlign:"center"}}>
-           <div style={{fontSize: 80, marginBottom: 20}}>{game.icon}</div>
-           <h2 style={{color: vars.gold, fontFamily: vars.fontFancy, fontSize: 32}}>{game.title}</h2>
-           <p style={{color: vars.text, marginBottom: 30}}>Este jogo está em desenvolvimento! Volte em breve para jogar.</p>
-           <Btn primary onClick={onClose}>Voltar para o Castelo</Btn>
-        </div>
-      );
-    }
+    // 3. Quebra-Cabeça Mágico (Estilo Swapping)
+    function PuzzleGame({ onClose, addPoints }) {
+      const [tiles, setTiles] = useState([0,1,2,3,4,5,6,7,8]);
+      const [selected, setSelected] = useState(null);
+      const [won, setWon] = useState(false);
 
-    function App() {
-      const [screen, setScreen] = useState("home");
-      const [char, setChar] = useState(null);
-      const [level, setLevel] = useState(1);
-      const [activeGame, setActiveGame] = useState(null); // Para o Arcade
-      
-      const [dress, setDress] = useState(DRESS_ASSETS[0]); const [hairC, setHairC] = useState(HAIR_COLORS[0].c);
-      const [hairS, setHairS] = useState(HAIR_STYLES[0]); const [shoes, setShoes] = useState(SHOE_STYLES[0]);
-      const [acc, setAcc] = useState(false); const [crown, setCrown] = useState(false);
-      
-      const [gallery, setGallery] = useState([]); const [points, setPoints] = useState(0);
-      const [toast, setToast] = useState(""); const [tab, setTab] = useState("closet");
-      
-      const [memCards, setMemCards] = useState([]); const [memFlipped, setMemFlipped] = useState([]);
-      const [memMatched, setMemMatched] = useState([]); const [memLock, setMemLock] = useState(false);
-      
-      const [musicOn, setMusicOn] = useState(false); const audioRef = useRef(null); const scrollRef = useRef(null);
+      useEffect(() => { setTiles(shuffle([0,1,2,3,4,5,6,7,8])); }, []);
 
-      useEffect(() => {
-        if (points >= 300 && level === 1) { setLevel(2); speak("Nível 2!"); showToast("🏆 NÍVEL 2 ALCANÇADO!"); }
-      }, [points, level]);
-
-      const toggleMusic = () => {
-        if(!audioRef.current) return;
-        if(musicOn) { audioRef.current.pause(); setMusicOn(false); }
-        else { audioRef.current.play().catch(()=>console.log("Audio block")); setMusicOn(true); }
-      };
-
-      const showToast = (msg) => { setToast(msg); setTimeout(()=>setToast(""), 3000); };
-      const scrollTabs = (dir) => { if(scrollRef.current) scrollRef.current.scrollBy({ left: dir * 150, behavior: 'smooth' }); };
-
-      const selectChar = (c) => {
-        setChar(c); setDress(DRESS_ASSETS[0]); setHairS(HAIR_STYLES[0]); setHairC(HAIR_COLORS[0].c); setShoes(SHOE_STYLES[0]); setAcc(false); setCrown(false);
-        setScreen("castle"); setTab("closet"); speak(`Olá! Eu sou a ${c.name}.`);
-      };
-
-      const saveLook = () => {
-        setGallery(g => [{ id: Date.now(), char, dress, hairC, hairS, shoes, acc, crown }, ...g].slice(0, 10));
-        setPoints(p => p + 15); showToast("📸 Look salvo! +15 estrelinhas");
-      };
-
-      const startMemory = () => {
-        setMemCards(shuffle([...MEMORY_ITEMS, ...MEMORY_ITEMS]).map((it, i) => ({...it, uniqueId: i})));
-        setMemFlipped([]); setMemMatched([]); setMemLock(false); setScreen("memory");
-      };
-
-      const flipCard = (index) => {
-        if (memLock || memFlipped.includes(index) || memMatched.includes(memCards[index].id)) return;
-        const newFlipped = [...memFlipped, index]; setMemFlipped(newFlipped);
-        
-        if (newFlipped.length === 2) {
-          setMemLock(true);
-          const [firstIdx, secondIdx] = newFlipped;
-          if (memCards[firstIdx].id === memCards[secondIdx].id) {
-            setMemMatched(m => [...m, memCards[firstIdx].id]); setPoints(p => p + 20); showToast("✨ Par encontrado! +20");
-            setMemFlipped([]); setMemLock(false);
-            if (memMatched.length + 1 === MEMORY_ITEMS.length) setTimeout(()=>setScreen("castle"), 2000);
-          } else { setTimeout(() => { setMemFlipped([]); setMemLock(false); }, 1000); }
+      const checkWin = (newTiles) => {
+        if (newTiles.every((val, i) => val === i)) {
+          setWon(true); playSound('win');
         }
       };
 
-      const handleArcadeClick = (game) => {
-         if(game.level && level < game.level) {
-            showToast(`Desbloqueia no Nível ${game.level}`);
-            return;
-         }
-         setActiveGame(game);
-         setScreen(game.id === 'run' ? 'runner' : 'arcade_generic');
+      const handleTileClick = (index) => {
+        if(won) return;
+        playSound('pop');
+        if (selected === null) { setSelected(index); } 
+        else {
+          const newTiles = [...tiles];
+          [newTiles[index], newTiles[selected]] = [newTiles[selected], newTiles[index]];
+          setTiles(newTiles); setSelected(null);
+          checkWin(newTiles);
+        }
       };
 
-      const PanelStyle = { background: vars.panelBg, borderRadius: 24, padding: 20, width: "100%", maxWidth: 420, boxShadow: `0 15px 35px rgba(0,0,0,0.5)`, zIndex:1 };
-      const TABS = [{k:"closet",l:"Closet 👗"},{k:"hair",l:"Acessórios ✨"},{k:"sapatos",l:"Sapatos 👠"},{k:"games",l:"Jogos ⭐"},{k:"arcade",l:"Arcade 🕹️"},{k:"gallery",l:"Galeria 📸"}];
-
       return (
-        <div style={{minHeight:"100vh", position:"relative"}}>
-          <audio ref={audioRef} loop preload="auto"><source src="https://cdn.pixabay.com/download/audio/2024/03/15/audio_134567ac8d.mp3" type="audio/mpeg"/></audio>
-          <div className="stars-bg"/>
-
-          <div style={{position:"fixed", top:15, right:15, zIndex:100, display:"flex", alignItems:"center", gap:15}}>
-            <div style={{background:vars.panelBg, padding:"8px 15px", borderRadius:20, color:vars.gold, fontWeight:"700", border:`1px solid ${vars.gold}44`}}>
-              ⭐ {points} <span style={{fontSize:10, color:vars.pPink}}>(Nível {level})</span>
-            </div>
-            <button onClick={toggleMusic} style={{background:"rgba(247,37,133,0.3)", borderRadius:"50%", width:40, height:40, color:"white", border: "1px solid pink"}}>{musicOn ? "🎵" : "🔇"}</button>
+        <div className="page-enter glass-panel" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"30px 20px", width:"100%", maxWidth: 400}}>
+          <h2 style={{fontFamily: vars.fontFancy, color: vars.gold, margin: "0 0 20px 0", fontSize: 28}}>Quebra-Cabeça 🧩</h2>
+          <p style={{fontSize:13, marginBottom:20, color:vars.pPink, textAlign:"center"}}>Clique em duas peças para trocá-las de lugar e formar o coração de diamante!</p>
+          
+          <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:2, width: 240, height: 240, background:"rgba(255,255,255,0.1)", padding: 4, borderRadius: 12, position:"relative"}}>
+            {won && <div className="page-enter" style={{position:"absolute", inset:0, background:"rgba(247,37,133,0.8)", zIndex:10, borderRadius:10, display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center"}}>
+              <div style={{fontSize:40, animation:"float 2s infinite"}}>💎</div><div style={{color:"white", fontWeight:"bold", fontSize:20}}>Concluído!</div>
+            </div>}
+            
+            {tiles.map((val, i) => (
+              <div key={i} onClick={() => handleTileClick(i)} style={{
+                background: `#222`, position:"relative", cursor:"pointer", borderRadius:4, overflow:"hidden",
+                border: selected === i ? `3px solid ${vars.gold}` : 'none', transition:"transform 0.2s", transform: selected === i ? "scale(0.95)" : "none"
+              }}>
+                <div style={{
+                  position:"absolute", width:232, height:232, 
+                  background: `linear-gradient(135deg, ${vars.pPink}, ${vars.lPurple})`, 
+                  display:"flex", justifyContent:"center", alignItems:"center", fontSize:120, filter:"drop-shadow(0 0 10px white)",
+                  left: -(val%3)*77, top: -Math.floor(val/3)*77
+                }}>💎</div>
+              </div>
+            ))}
           </div>
 
-          {toast && <div style={{position:"fixed", top:70, left:"50%", transform:"translateX(-50%)", background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})`, color:"white", padding:"12px 25px", borderRadius:30, zIndex:1000, boxShadow:"0 4px 15px rgba(0,0,0,0.5)"}}>{toast}</div>}
+          <div style={{marginTop: 30, display:"flex", gap: 15}}>
+            {!won && <Btn onClick={()=>onClose()}>Sair</Btn>}
+            {won && <Btn primary onClick={()=>{addPoints(50); onClose();}}>Coletar 50⭐</Btn>}
+          </div>
+        </div>
+      );
+    }
 
+    // 4. Runner Game Melhorado (Aventura no Jardim)
+    function RunnerGame({onClose, addPoints}) {
+      const GAME_WIDTH = window.innerWidth > 400 ? 380 : window.innerWidth - 40; 
+      const GAME_HEIGHT = 220; const LANE_Y = GAME_HEIGHT - 70; const BARBIE_X = 40;
+      
+      const [playing, setPlaying] = useState(false); const [score, setScore] = useState(0);
+      const [barbieY, setBarbieY] = useState(LANE_Y); const [gameOver, setGameOver] = useState(false);
+      const [obstacles, setObstacles] = useState([]);
+      
+      const frameRef = useRef(null); const stateRef = useRef({ playing: false, gameSpeed: 4, y: LANE_Y, velocity: 0, isJumping: false, obstacles: [], score: 0 });
+
+      const jump = useCallback(() => {
+        if (!stateRef.current.playing || stateRef.current.isJumping) return;
+        playSound('pop');
+        stateRef.current.velocity = -12; // Força do pulo
+        stateRef.current.isJumping = true;
+      }, []);
+
+      const gameLoop = useCallback(() => {
+        if (!stateRef.current.playing) return;
+        const s = stateRef.current;
+        
+        // Física
+        s.velocity += 0.6; // Gravidade
+        s.y += s.velocity;
+        if (s.y >= LANE_Y) { s.y = LANE_Y; s.isJumping = false; s.velocity = 0; }
+        
+        // Obstáculos
+        s.obstacles = s.obstacles.map(obs => ({...obs, x: obs.x - s.gameSpeed})).filter(obs => obs.x > -50);
+        
+        // Colisão
+        s.obstacles.forEach(obs => {
+          if (obs.x > BARBIE_X - 20 && obs.x < BARBIE_X + 30 && s.y + 50 > obs.y) {
+            s.playing = false; setPlaying(false); setGameOver(true); playSound('pop');
+          }
+        });
+
+        // Pontos e Velocidade
+        s.score += 1;
+        if(s.score % 600 === 0) s.gameSpeed += 0.5;
+
+        // Atualiza UI em batch suave
+        setBarbieY(s.y); setObstacles([...s.obstacles]); setScore(Math.floor(s.score / 10));
+
+        if (s.playing) frameRef.current = requestAnimationFrame(gameLoop);
+      }, []);
+
+      useEffect(() => {
+        if(playing && !gameOver) {
+          stateRef.current.playing = true;
+          frameRef.current = requestAnimationFrame(gameLoop);
+          
+          const spawnInterval = setInterval(() => {
+            if(!stateRef.current.playing) return;
+            const isFlyer = Math.random() > 0.7;
+            const emoji = isFlyer ? '🦋' : '🐰';
+            stateRef.current.obstacles.push({ id: Date.now(), x: GAME_WIDTH + 50, y: isFlyer ? LANE_Y - 40 : LANE_Y + 10, emoji });
+          }, 1500);
+
+          return () => { cancelAnimationFrame(frameRef.current); clearInterval(spawnInterval); };
+        }
+      }, [playing, gameOver, gameLoop]);
+
+      const startGame = () => { 
+        stateRef.current = { playing: true, gameSpeed: 4, y: LANE_Y, velocity: 0, isJumping: false, obstacles: [], score: 0 };
+        setScore(0); setObstacles([]); setGameOver(false); setPlaying(true); setBarbieY(LANE_Y); playSound('magic');
+      };
+
+      const finishGame = () => { if (score > 10) { addPoints(score); playSound('win'); } onClose(); };
+
+      return (
+        <div className="page-enter glass-panel" style={{display:"flex",flexDirection:"column",alignItems:"center", padding:20, width:"100%", maxWidth:GAME_WIDTH+40}}>
+          <div style={{color:vars.gold, fontSize:24, fontWeight:"700", marginBottom:15, fontFamily:vars.fontFancy}}>Passeio no Jardim 🌸</div>
+          
+          <div onClick={jump} style={{ width: GAME_WIDTH, height: GAME_HEIGHT, background:`linear-gradient(to bottom, #87CEEB, #a2d149)`, borderRadius:16, position:"relative", overflow:"hidden", border:`3px solid ${vars.pPink}`, cursor:"pointer", boxShadow:"inset 0 0 20px rgba(0,0,0,0.2)" }}>
+            
+            {/* Personagem Correndo */}
+            <div style={{ position:"absolute", left: BARBIE_X, top: barbieY, width: 45, height: 60, fontSize:40, display:"flex", justifyContent:"center", zIndex: 10, transform: gameOver ? "rotate(90deg)" : "none", transition: "transform 0.2s" }}>🧚‍♀️</div>
+            
+            {/* Obstáculos Fofos */}
+            {obstacles.map(obs => <div key={obs.id} style={{ position:"absolute", left: obs.x, top: obs.y, fontSize:30, zIndex: 5, filter:"drop-shadow(0 5px 5px rgba(0,0,0,0.3))" }}>{obs.emoji}</div>)}
+            
+            <div style={{position:"absolute", bottom:0, left:0, width:"100%", height:25, background:"#7cb342", zIndex:1, borderTop:"4px solid #558b2f"}}/>
+            
+            {(!playing || gameOver) && (
+              <div style={{ position:"absolute", inset:0, background:"rgba(255,255,255,0.85)", backdropFilter:"blur(4px)", zIndex:20, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:15 }}>
+                {gameOver && <div style={{color:vars.dPink, fontSize:28, fontWeight:"800", fontFamily:vars.fontFancy}}>Oops!</div>}
+                <div style={{color:vars.dPink, fontSize:16, fontWeight:"600"}}>Estrelas coletadas: {score}</div>
+                <Btn primary onClick={startGame}>{gameOver ? "Tentar Novamente" : "Começar Passeio"}</Btn>
+              </div>
+            )}
+            {playing && <div style={{position:"absolute", top:10, right:15, color:"white", fontWeight:"800", fontSize:18, zIndex:15, textShadow:"0 2px 4px rgba(0,0,0,0.5)"}}>⭐ {score}</div>}
+          </div>
+          
+          <p style={{fontSize:12, marginTop:15, color:vars.pPink}}>Toque no cenário para pular!</p>
+          {!playing && !gameOver && <button onClick={onClose} style={{marginTop:10, background:"transparent", color:vars.text}}>Voltar</button>}
+          {gameOver && <button onClick={finishGame} style={{marginTop:15, background:"transparent", color:vars.text, textDecoration:"underline"}}>Coletar e Sair</button>}
+        </div>
+      );
+    }
+
+
+    // --- APP PRINCIPAL ---
+    function App() {
+      const [screen, setScreen] = useState("home");
+      const [level, setLevel] = useState(1);
+      const [points, setPoints] = useState(0);
+      const [toast, setToast] = useState(""); 
+      const [tab, setTab] = useState("closet");
+      
+      const [dollState, setDollState] = useState({
+        char: null,
+        dress: DRESSES[0].img,
+        shoes: SHOES[0].img,
+        makeup: { lips: 'transparent', blush: 'transparent' },
+        crown: false,
+        wand: false
+      });
+      
+      const [gallery, setGallery] = useState([]);
+      const scrollRef = useRef(null);
+
+      useEffect(() => {
+        const newLevel = Math.floor(points / 200) + 1;
+        if (newLevel > level) { 
+          setLevel(newLevel); playSound('win'); showToast(`🎉 NÍVEL ${newLevel} ALCANÇADO!`); 
+        }
+      }, [points, level]);
+
+      const showToast = (msg) => { setToast(msg); setTimeout(()=>setToast(""), 3500); };
+      const scrollTabs = (dir) => { if(scrollRef.current) scrollRef.current.scrollBy({ left: dir * 180, behavior: 'smooth' }); playSound('pop'); };
+
+      const handleGameClose = () => setScreen("castle");
+      const handleAddPoints = (pts) => setPoints(p => p + pts);
+
+      const selectChar = (c) => {
+        playSound('magic');
+        setDollState(s => ({ ...s, char: c, dress: DRESSES[0].img, shoes: SHOES[0].img, makeup: {lips:'transparent', blush:'transparent'}, crown:false, wand:false }));
+        setScreen("castle"); setTab("closet");
+      };
+
+      const saveLook = () => {
+        playSound('camera');
+        setGallery(g => [{ id: Date.now(), ...dollState }, ...g].slice(0, 6));
+        handleAddPoints(20); showToast("📸 Look fabuloso salvo! +20⭐");
+      };
+
+      const handleArcadeClick = (game) => {
+         playSound('click');
+         if(game.level && level < game.level) {
+            showToast(`🔒 Desbloqueia no Nível ${game.level}`); return;
+         }
+         setScreen(game.id);
+      };
+
+      const TABS = [
+        {k:"closet",l:"Vestidos 👗"},
+        {k:"sapatos",l:"Sapatos 👠"},
+        {k:"hair",l:"Acessórios ✨"},
+        {k:"arcade",l:"Mini Jogos 🎮"},
+        {k:"gallery",l:"Galeria 📸"}
+      ];
+
+      return (
+        <div style={{minHeight:"100vh", position:"relative", overflowX:"hidden", paddingBottom: 40}}>
+          <div className="stars-bg"/>
+
+          {/* Header Global */}
+          <div style={{position:"fixed", top:15, right:15, left:15, zIndex:100, display:"flex", justifyContent:"space-between", alignItems:"center", pointerEvents:"none"}}>
+            {screen !== "home" && <button style={{pointerEvents:"auto", background:"rgba(0,0,0,0.5)", color:"white", borderRadius:"50%", width:40, height:40, border:`1px solid ${vars.pPink}`, display:"flex", alignItems:"center", justifyContent:"center"}} onClick={()=>{playSound('click'); setScreen('home')}}>🏠</button>}
+            <div style={{pointerEvents:"auto", marginLeft:"auto", background:vars.panelBg, padding:"10px 20px", borderRadius:30, color:vars.gold, fontWeight:"700", border:`1px solid ${vars.glassBorder}`, backdropFilter:"blur(10px)", boxShadow:"0 5px 15px rgba(0,0,0,0.3)"}}>
+              ⭐ {points} <span style={{fontSize:11, color:vars.pPink, marginLeft:5, fontWeight:"500", letterSpacing:1}}>LVL {level}</span>
+            </div>
+          </div>
+
+          {toast && <div className="page-enter" style={{position:"fixed", top:80, left:"50%", transform:"translateX(-50%)", background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})`, color:"white", padding:"14px 28px", borderRadius:30, zIndex:1000, boxShadow:"0 10px 25px rgba(247,37,133,0.5)", fontWeight:"600", whiteSpace:"nowrap"}}>{toast}</div>}
+
+          {/* TELAS */}
           {screen === "home" && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:"100vh", padding:20, textAlign:"center", position:"relative"}}>
-              <div className="glow" style={{fontSize:60, marginBottom:10}}>🏰</div>
-              <h1 className="glow" style={{fontFamily:vars.fontFancy, fontSize:"clamp(40px, 10vw, 64px)", color:vars.gold, margin:0}}>Laura Valentina</h1>
-              <h2 style={{textTransform:"uppercase", letterSpacing:6, fontSize:16, color:vars.pPink, margin:"0 0 15px 0", fontWeight:"700"}}>Dream Castle</h2>
-              <button className="float" onClick={()=>setScreen("select")} style={{padding:"20px 40px", borderRadius:50, background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple}, ${vars.gold})`, color:"white", fontSize:18, fontWeight:"700", marginTop: 20, border:"2px solid white"}}>Entrar no Castelo Mágico</button>
+            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:"100vh", padding:20, textAlign:"center"}}>
+              <div className="glow float" style={{fontSize:"clamp(60px, 15vw, 90px)", marginBottom:10, filter:"drop-shadow(0 10px 10px rgba(0,0,0,0.5))"}}>🏰</div>
+              <h1 className="glow" style={{fontFamily:vars.fontFancy, fontSize:"clamp(45px, 12vw, 72px)", color:vars.gold, margin:0, textShadow:"0 5px 15px rgba(247, 37, 133, 0.5)"}}>Laura Valentina</h1>
+              <h2 style={{textTransform:"uppercase", letterSpacing:8, fontSize:14, color:vars.pPink, margin:"0 0 30px 0", fontWeight:"700", background:"rgba(0,0,0,0.4)", padding:"5px 15px", borderRadius:20}}>Dream Castle</h2>
+              <button className="float" onClick={()=>{playSound('magic'); setScreen("select");}} style={{padding:"18px 45px", borderRadius:50, background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple}, #ff477e)`, color:"white", fontSize:18, fontWeight:"700", border:"2px solid rgba(255,255,255,0.5)", boxShadow:"0 15px 30px rgba(247,37,133,0.4)"}}>Explorar o Castelo</button>
             </div>
           )}
 
           {screen === "select" && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 20px"}}>
-              <div className="glow" style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:40, marginBottom:5, textAlign: "center"}}>Escolha sua Princesa</div>
-              <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(110px, 1fr))", gap:15, width:"100%", maxWidth:400, marginTop: 20}}>
+            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"80px 20px 40px"}}>
+              <div className="glow" style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:38, marginBottom:30, textAlign: "center"}}>Escolha sua Princesa</div>
+              <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(130px, 1fr))", gap:20, width:"100%", maxWidth:500}}>
                 {CHARACTERS.map(c=>(
-                  <div key={c.id} onClick={()=>selectChar(c)} style={{ background:vars.panelBg, border:`1px solid rgba(255,179,217,0.3)`, borderRadius:16, padding:15, cursor:"pointer", textAlign:"center"}}>
-                    <div style={{width:"100%", height:120, backgroundImage:`url("${c.img}")`, backgroundSize:"contain", backgroundPosition:"center", backgroundRepeat:"no-repeat", marginBottom:10}}/>
-                    <div style={{color:vars.gold, fontWeight:"700", fontSize:14}}>{c.name}</div>
+                  <div key={c.id} onClick={()=>selectChar(c)} className="glass-panel arcade-card" style={{flexDirection:"column", padding:"20px 10px", margin:0}}>
+                    <div className="visual-asset float" style={{width:"100%", height:130, backgroundImage:`url("${c.img}")`, marginBottom:15, filter:"drop-shadow(0 5px 10px rgba(0,0,0,0.3))"}}/>
+                    <div style={{color:vars.text, fontWeight:"600", fontSize:16, letterSpacing:1}}>{c.name}</div>
                   </div>
                 ))}
               </div>
-              <button onClick={()=>setScreen("home")} style={{marginTop:30, background:"transparent", color:vars.pPink, border:`1px solid ${vars.dPink}`, padding:"10px 20px", borderRadius:20}}>Voltar</button>
             </div>
           )}
 
-          {screen === "castle" && char && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"70px 15px 30px"}}>
-              <RealDoll char={char} hairS={hairS} hairC={hairC} dress={dress} shoes={shoes} acc={acc} crown={crown} onClick={()=>showToast(BARBIE_QUOTES[0])} />
+          {screen === "castle" && dollState.char && (
+            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"90px 15px 30px"}}>
               
-              <div style={{...PanelStyle, marginTop: 40}}>
-                <div style={{display:"flex", alignItems:"center", gap:5, marginBottom:15}}>
-                  <button onClick={()=>scrollTabs(-1)} style={{background:"none", color:vars.gold}}>❮</button>
-                  <div ref={scrollRef} className="hide-scroll" style={{display:"flex", gap:8, overflowX:"auto"}}>
-                    {TABS.map(t => <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"8px 16px", borderRadius:20, background: tab===t.k ? vars.dPink : "rgba(255,255,255,0.05)", color: "white", flexShrink: 0 }}>{t.l}</button>)}
+              <RealDoll {...dollState} onClick={() => showToast("✨ Você está fabulosa! ✨")} />
+              
+              <div className="glass-panel" style={{marginTop: 40, width: "100%", maxWidth: 450, padding: 25}}>
+                {/* Abas */}
+                <div style={{display:"flex", alignItems:"center", gap:8, marginBottom:20, background:"rgba(0,0,0,0.2)", padding:6, borderRadius:30}}>
+                  <button onClick={()=>scrollTabs(-1)} style={{background:"none", color:vars.gold, fontSize:20, padding:"0 10px"}}>❮</button>
+                  <div ref={scrollRef} className="hide-scroll" style={{display:"flex", gap:10, overflowX:"auto", scrollSnapType:"x mandatory", padding:"5px 0"}}>
+                    {TABS.map(t => <button key={t.k} onClick={()=>{playSound('pop'); setTab(t.k);}} style={{ padding:"10px 20px", borderRadius:20, background: tab===t.k ? `linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})` : "transparent", color: tab===t.k ? "white" : vars.pPink, fontWeight: tab===t.k ? "600" : "400", flexShrink: 0, scrollSnapAlign:"start", transition:"0.3s" }}>{t.l}</button>)}
                   </div>
-                  <button onClick={()=>scrollTabs(1)} style={{background:"none", color:vars.gold}}>❯</button>
+                  <button onClick={()=>scrollTabs(1)} style={{background:"none", color:vars.gold, fontSize:20, padding:"0 10px"}}>❯</button>
                 </div>
 
-                <div style={{minHeight:200}}>
+                {/* Conteúdo das Abas */}
+                <div style={{minHeight:220, position:"relative"}}>
                   {tab === "closet" && (
                     <div className="page-enter">
-                      <SectionTitle t="Vestidos Reais" />
-                      <div style={{display:"flex", gap:10, overflowX:"auto"}} className="hide-scroll">
-                        {DRESS_ASSETS.map(img => <Swatch key={img} type="img" img={img} selected={dress===img} onClick={()=>setDress(img)} />)}
-                      </div>
-                    </div>
-                  )}
-
-                  {tab === "hair" && (
-                    <div className="page-enter">
-                      <SectionTitle t="Acessórios e Detalhes" />
-                      <div style={{display:"flex", gap:10, overflowX:"auto"}} className="hide-scroll">
-                        {HAIR_STYLES.map(style => <Swatch key={style} type="img" img={HAIR_ASSETS[style]} selected={hairS===style} onClick={()=>setHairS(style)} />)}
-                      </div>
-                      <SectionTitle t="Extras" />
-                      <div style={{display:"flex", gap:10}}>
-                        <Btn active={crown} onClick={()=>setCrown(!crown)} icon="👑">Coroa</Btn>
-                        <Btn active={acc} onClick={()=>setAcc(!acc)} icon="🪄">Varinha</Btn>
+                      <SectionTitle t="Alta Costura" />
+                      <div style={{display:"flex", gap:15, overflowX:"auto", paddingBottom:15}} className="hide-scroll">
+                        {DRESSES.map(d => <Swatch key={d.id} img={d.img} label={d.name} selected={dollState.dress===d.img} onClick={()=>setDollState(s=>({...s, dress: d.img}))} />)}
                       </div>
                     </div>
                   )}
 
                   {tab === "sapatos" && (
                     <div className="page-enter">
-                      <SectionTitle t="Sapatos" />
-                      <div style={{display:"flex", gap:10, overflowX:"auto"}} className="hide-scroll">
-                        {SHOE_STYLES.map(style => <Swatch key={style} type="img" img={SHOE_ASSETS[style]} selected={shoes===style} onClick={()=>setShoes(style)} />)}
+                      <SectionTitle t="Sapatos Elegantes" />
+                      <div style={{display:"flex", gap:15, overflowX:"auto", paddingBottom:15}} className="hide-scroll">
+                        {SHOES.map(s => <Swatch key={s.id} img={s.img} label={s.name} selected={dollState.shoes===s.img} onClick={()=>setDollState(st=>({...st, shoes: s.img}))} />)}
                       </div>
                     </div>
                   )}
 
-                  {tab === "games" && (
+                  {tab === "hair" && (
                     <div className="page-enter">
-                      <SectionTitle t="Mini Jogos Principais" />
-                      <div style={{display:"flex", flexDirection:"column", gap:12}}>
-                        <Btn onClick={startMemory} primary icon="🧩">Jogar Memória (+20⭐)</Btn>
+                      <SectionTitle t="Toque Mágico" />
+                      <div style={{display:"flex", gap:15, justifyContent:"center", marginTop: 20}}>
+                        <Btn active={dollState.crown} onClick={()=>setDollState(s=>({...s, crown: !s.crown}))} icon="👑">Coroa Real</Btn>
+                        <Btn active={dollState.wand} onClick={()=>setDollState(s=>({...s, wand: !s.wand}))} icon="🪄">Varinha de Condão</Btn>
                       </div>
                     </div>
                   )}
 
-                   {tab === "arcade" && (
+                  {tab === "arcade" && (
                     <div className="page-enter">
-                      <SectionTitle t="HUB de Jogos Arcade" />
-                      <div style={{display:"flex", flexDirection:"column", gap:8, maxHeight:200, overflowY:"auto"}}>
+                      <SectionTitle t="Aventuras & Diversão" />
+                      <div style={{display:"flex", flexDirection:"column", gap:5}}>
                         {ARCADE_GAMES.map(g => (
                            <div key={g.id} className="arcade-card" onClick={() => handleArcadeClick(g)}>
-                              <div><span style={{fontSize: 20, marginRight: 10}}>{g.icon}</span> {g.title}</div>
-                              {g.level && level < g.level ? <span style={{color: 'gray'}}>🔒 Lvl {g.level}</span> : <span style={{color: vars.gold}}>Jogar ❯</span>}
+                              <div style={{display:"flex", alignItems:"center", gap:12}}><span style={{fontSize: 26, filter:"drop-shadow(0 2px 5px rgba(0,0,0,0.3))"}}>{g.icon}</span> <span style={{fontWeight:"600", fontSize:15}}>{g.title}</span></div>
+                              {g.level && level < g.level ? <span style={{color: 'rgba(255,255,255,0.4)', fontSize:12, background:"rgba(0,0,0,0.3)", padding:"4px 8px", borderRadius:10}}>🔒 Nvl {g.level}</span> : <span style={{color: vars.gold, fontSize:12, fontWeight:"700"}}>Jogar ❯</span>}
                            </div>
                         ))}
                       </div>
@@ -499,47 +633,38 @@
                   )}
 
                   {tab === "gallery" && (
-                    <div className="page-enter">
-                      <SectionTitle t="Meus Looks" />
-                      <Btn onClick={saveLook} primary icon="📸">Salvar Look Atual</Btn>
-                      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:10}}>
-                        {gallery.map(lk => <div key={lk.id} style={{background:"rgba(255,255,255,0.1)", padding:10, borderRadius:8, textAlign:"center", fontSize:12}}>{lk.char.name} <br/><button style={{marginTop:5, padding:"5px 10px", borderRadius:5, background:vars.lPurple, color:"white"}} onClick={()=>setChar(lk.char)}>Usar Look</button></div>)}
-                      </div>
+                    <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
+                      <SectionTitle t="Portfólio de Moda" />
+                      <Btn onClick={saveLook} primary icon="📸" style={{marginBottom:20, width:"100%"}}>Fotografar Look Atual</Btn>
+                      
+                      {gallery.length === 0 ? <p style={{color:vars.pPink, fontSize:13, textAlign:"center", marginTop:20}}>Sua galeria está vazia. Salve looks para vê-los aqui!</p> : (
+                        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:15, width:"100%"}}>
+                          {gallery.map(lk => (
+                            <div key={lk.id} style={{background:"rgba(255,255,255,0.05)", padding:15, borderRadius:16, display:"flex", flexDirection:"column", alignItems:"center", border:`1px solid rgba(255,255,255,0.1)`}}>
+                              <div style={{width:60, height:80, position:"relative"}}>
+                                <div className="visual-asset" style={{position:"absolute", inset:0, backgroundImage:`url("${lk.char.img}")`}} />
+                                <div className="visual-asset" style={{position:"absolute", top:"48%", left:"15%", width:"70%", height:"60%", backgroundImage:`url("${lk.dress}")`}} />
+                              </div>
+                              <button style={{marginTop:10, padding:"6px 12px", borderRadius:20, background:vars.panelBg, color:vars.gold, border:`1px solid ${vars.gold}`, fontSize:11, fontWeight:"600"}} onClick={()=>{playSound('magic'); setDollState(lk);}}>Vestir Novamente</button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
               </div> 
-              <button onClick={()=>setScreen("select")} style={{marginTop:30, background:"transparent", color:vars.pPink}}>Trocar Boneca</button>
+              <button onClick={()=>{playSound('click'); setScreen("select");}} style={{marginTop:30, background:"transparent", color:vars.pPink, textDecoration:"underline", letterSpacing:1}}>Mudar de Princesa</button>
             </div>
           )}
 
-          {screen === "memory" && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px"}}>
-              <div style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:36, marginBottom:20}}>Memory Match</div>
-              <div style={{display:"grid", gridTemplateColumns:"repeat(4, 1fr)", gap:10, width:"100%", maxWidth:380}}>
-                {memCards.map((card, index) => {
-                  const isFlipped = memFlipped.includes(index) || memMatched.includes(card.id);
-                  return (
-                    <div key={card.uniqueId} onClick={()=>flipCard(index)} style={{ height:90, borderRadius:12, cursor:"pointer", position:"relative", transformStyle:"preserve-3d", transition:"transform 0.5s", transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)" }}>
-                      <div style={{ position:"absolute", inset:0, background:vars.lPurple, borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", backfaceVisibility:"hidden" }}>💎</div>
-                      <div style={{ position:"absolute", inset:0, background:`#222 url("${card.img}") center/contain no-repeat`, borderRadius:12, transform:"rotateY(180deg)", backfaceVisibility:"hidden" }}/>
-                    </div>
-                  );
-                })}
-              </div>
-              <div style={{display:"flex", gap:10, marginTop:30}}><Btn primary onClick={()=>setScreen("castle")}>Voltar ao Castelo</Btn></div>
-            </div>
-          )}
-
-          {screen === "runner" && (
-             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px"}}>
-                <RunnerGame onClose={()=>setScreen("castle")} addPoints={(p)=>setPoints(prev=>prev+p)} />
-             </div>
-          )}
-
-          {screen === "arcade_generic" && activeGame && (
-             <GenericGameScreen game={activeGame} onClose={() => setScreen("castle")} />
-          )}
+          {/* Roteamento de Mini-Jogos */}
+          <div style={{display:"flex", justifyContent:"center", padding: screen !== 'home' && screen !== 'select' && screen !== 'castle' ? "80px 15px" : 0}}>
+            {screen === "makeup" && <MakeupGame dollState={dollState} setDollState={setDollState} onClose={handleGameClose} addPoints={handleAddPoints} />}
+            {screen === "quiz" && <OceanQuiz onClose={handleGameClose} addPoints={handleAddPoints} />}
+            {screen === "puzzle" && <PuzzleGame onClose={handleGameClose} addPoints={handleAddPoints} />}
+            {screen === "run" && <RunnerGame onClose={handleGameClose} addPoints={handleAddPoints} />}
+          </div>
 
         </div>
       );
