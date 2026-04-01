@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laura Valentina - Dream Castle</title>
+
+<style>
+body {
+  margin:0;
+  font-family: Georgia, serif;
+  background: linear-gradient(#1a001a,#0a0010);
+  color:white;
+  text-align:center;
+}
+
+h1 {
+  color: gold;
+}
+
+button {
+  padding:10px;
+  margin:5px;
+  border:none;
+  border-radius:10px;
+  background: linear-gradient(135deg,#f72585,#c77dff);
+  color:white;
+  cursor:pointer;
+}
+
+.screen {
+  display:none;
+  padding:20px;
+}
+
+.active {
+  display:block;
+}
+
+.card {
+  display:inline-block;
+  width:80px;
+  height:100px;
+  background:#333;
+  margin:5px;
+  line-height:100px;
+  font-size:20px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.selected {
+  border:3px solid gold;
+}
+</style>
+</head>
+
+<body>
+
+<div id="home" class="screen active">
+  <h1>👑 Laura Valentina</h1>
+  <p>Dream Castle</p>
+  <button onclick="go('select')">Entrar no Castelo</button>
+</div>
+
+<div id="select" class="screen">
+  <h2>Escolha sua personagem</h2>
+  <div id="chars"></div>
+  <button onclick="go('home')">Voltar</button>
+</div>
+
+<div id="castle" class="screen">
+  <h2 id="charName"></h2>
+  <p id="charJob"></p>
+
+  <div id="doll" style="font-size:60px;">👸</div>
+
+  <h3>Escolher vestido</h3>
+  <div id="colors"></div>
+
+  <br>
+  <button onclick="saveLook()">Salvar Look (+10)</button>
+  <button onclick="go('memory')">Jogo da Memória</button>
+  <br><br>
+  <button onclick="go('home')">Sair</button>
+
+  <p>Pontos: <span id="points">0</span></p>
+</div>
+
+<div id="memory" class="screen">
+  <h2>Jogo da Memória</h2>
+  <div id="game"></div>
+  <br>
+  <button onclick="startMemory()">Reiniciar</button>
+  <button onclick="go('castle')">Voltar</button>
+</div>
+
+<script>
+let points = 0;
+let currentChar = null;
+
+const characters = [
+  {name:"Giovanna", job:"Princesa"},
+  {name:"Lidiane", job:"Astronauta"},
+  {name:"Valcely", job:"Engenheira"},
+  {name:"Laura", job:"Chef"},
+  {name:"Valentina", job:"Bombeira"}
+];
+
+const colors = ["pink","red","blue","purple","gold","green"];
+
+function go(screen){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(screen).classList.add("active");
+}
+
+function loadChars(){
+  const div = document.getElementById("chars");
+  div.innerHTML = "";
+  characters.forEach(c=>{
+    const btn = document.createElement("button");
+    btn.innerText = c.name + " - " + c.job;
+    btn.onclick = ()=>{
+      currentChar = c;
+      document.getElementById("charName").innerText = c.name;
+      document.getElementById("charJob").innerText = c.job;
+      go("castle");
+    };
+    div.appendChild(btn);
+  });
+}
+
+function loadColors(){
+  const div = document.getElementById("colors");
+  colors.forEach(c=>{
+    const btn = document.createElement("button");
+    btn.style.background = c;
+    btn.onclick = ()=>{
+      document.getElementById("doll").style.color = c;
+    };
+    div.appendChild(btn);
+  });
+}
+
+function saveLook(){
+  points += 10;
+  document.getElementById("points").innerText = points;
+  alert("Look salvo!");
+}
+
+let cards = [];
+let flipped = [];
+
+function startMemory(){
+  const values = ["A","B","C","D","A","B","C","D"];
+  cards = values.sort(()=>Math.random()-0.5);
+  flipped = [];
+  drawGame();
+}
+
+function drawGame(){
+  const div = document.getElementById("game");
+  div.innerHTML = "";
+  cards.forEach((v,i)=>{
+    const c = document.createElement("div");
+    c.className="card";
+    c.innerText = "?";
+    c.onclick = ()=>{
+      if(flipped.length<2){
+        c.innerText = v;
+        flipped.push({index:i,value:v,el:c});
+        if(flipped.length===2){
+          setTimeout(()=>{
+            if(flipped[0].value !== flipped[1].value){
+              flipped[0].el.innerText="?";
+              flipped[1].el.innerText="?";
+            } else {
+              points += 15;
+              document.getElementById("points").innerText = points;
+            }
+            flipped=[];
+          },700);
+        }
+      }
+    };
+    div.appendChild(c);
+  });
+}
+
+loadChars();
+loadColors();
+startMemory();
+</script>
+
+</body>
+</html>
