@@ -6,190 +6,209 @@
 <title>Laura Valentina - Dream Castle</title>
 
 <style>
-body {
-  margin:0;
-  font-family: Georgia, serif;
-  background: linear-gradient(#1a001a,#0a0010);
-  color:white;
-  text-align:center;
+body{
+margin:0;
+font-family:Georgia,serif;
+background:#100010;
+color:white;
+text-align:center;
 }
 
-h1 {
-  color: gold;
+.screen{display:none;padding:20px;}
+.active{display:block;}
+
+button{
+padding:10px 15px;
+margin:5px;
+border:none;
+border-radius:15px;
+background:linear-gradient(135deg,#f72585,#c77dff);
+color:white;
+cursor:pointer;
 }
 
-button {
-  padding:10px;
-  margin:5px;
-  border:none;
-  border-radius:10px;
-  background: linear-gradient(135deg,#f72585,#c77dff);
-  color:white;
-  cursor:pointer;
+.card{
+background:#1a0018;
+padding:10px;
+margin:10px;
+border-radius:12px;
+cursor:pointer;
 }
 
-.screen {
-  display:none;
-  padding:20px;
+.doll{
+width:120px;
+height:180px;
+margin:10px auto;
+border-radius:20px;
+background:#f5c5a3;
+position:relative;
 }
 
-.active {
-  display:block;
-}
-
-.card {
-  display:inline-block;
-  width:80px;
-  height:100px;
-  background:#333;
-  margin:5px;
-  line-height:100px;
-  font-size:20px;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.selected {
-  border:3px solid gold;
-}
+.hair{position:absolute;top:0;width:100%;height:50px;background:#8B4513;border-radius:20px;}
+.dress{position:absolute;bottom:0;width:100%;height:80px;background:#f72585;border-radius:0 0 20px 20px;}
 </style>
 </head>
 
 <body>
 
+<!-- HOME -->
 <div id="home" class="screen active">
-  <h1>👑 Laura Valentina</h1>
-  <p>Dream Castle</p>
-  <button onclick="go('select')">Entrar no Castelo</button>
+<h1>👑 Laura Valentina</h1>
+<p>Dream Castle</p>
+<button onclick="go('select')">Entrar</button>
 </div>
 
+<!-- PERSONAGENS -->
 <div id="select" class="screen">
-  <h2>Escolha sua personagem</h2>
-  <div id="chars"></div>
-  <button onclick="go('home')">Voltar</button>
+<h2>Escolha sua personagem</h2>
+
+<div class="card" onclick="start('Giovanna')">Giovanna - Princesa</div>
+<div class="card" onclick="start('Lidiane')">Lidiane - Astronauta</div>
+<div class="card" onclick="start('Valcely')">Valcely - Engenheira</div>
+
+<button onclick="go('home')">Voltar</button>
 </div>
 
-<div id="castle" class="screen">
-  <h2 id="charName"></h2>
-  <p id="charJob"></p>
+<!-- JOGO -->
+<div id="game" class="screen">
+<h2 id="name"></h2>
+<p>Pontos: <span id="pts">0</span></p>
 
-  <div id="doll" style="font-size:60px;">👸</div>
-
-  <h3>Escolher vestido</h3>
-  <div id="colors"></div>
-
-  <br>
-  <button onclick="saveLook()">Salvar Look (+10)</button>
-  <button onclick="go('memory')">Jogo da Memória</button>
-  <br><br>
-  <button onclick="go('home')">Sair</button>
-
-  <p>Pontos: <span id="points">0</span></p>
+<div class="doll">
+<div id="hair" class="hair"></div>
+<div id="dress" class="dress"></div>
 </div>
 
+<h3>Vestidos</h3>
+<button onclick="setDress('#f72585')">Rosa</button>
+<button onclick="setDress('#3a86ff')">Azul</button>
+<button onclick="setDress('#ffd700')">Dourado</button>
+
+<h3>Cabelo</h3>
+<button onclick="setHair('#8B4513')">Castanho</button>
+<button onclick="setHair('#1a1a1a')">Preto</button>
+<button onclick="setHair('#f5c542')">Loiro</button>
+
+<h3>Maquiagem</h3>
+<button onclick="addPoints(5)">Batom 💄</button>
+
+<br><br>
+
+<button onclick="go('mission')">Missão</button>
+<button onclick="go('memory')">Jogo Memória</button>
+
+<br><br>
+<button onclick="go('home')">Sair</button>
+</div>
+
+<!-- MISSÃO -->
+<div id="mission" class="screen">
+<h2>Missão</h2>
+<p>Qual é o melhor material para construção?</p>
+
+<button onclick="answer(0)">Madeira</button>
+<button onclick="answer(1)">Aço</button>
+<button onclick="answer(2)">Areia</button>
+
+<p id="res"></p>
+
+<button onclick="go('game')">Voltar</button>
+</div>
+
+<!-- MEMÓRIA -->
 <div id="memory" class="screen">
-  <h2>Jogo da Memória</h2>
-  <div id="game"></div>
-  <br>
-  <button onclick="startMemory()">Reiniciar</button>
-  <button onclick="go('castle')">Voltar</button>
+<h2>Jogo da Memória</h2>
+<div id="grid"></div>
+
+<button onclick="startMemory()">Reiniciar</button>
+<button onclick="go('game')">Voltar</button>
 </div>
 
 <script>
-let points = 0;
-let currentChar = null;
 
-const characters = [
-  {name:"Giovanna", job:"Princesa"},
-  {name:"Lidiane", job:"Astronauta"},
-  {name:"Valcely", job:"Engenheira"},
-  {name:"Laura", job:"Chef"},
-  {name:"Valentina", job:"Bombeira"}
-];
+let pts=0;
+let first=null;
 
-const colors = ["pink","red","blue","purple","gold","green"];
-
-function go(screen){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(screen).classList.add("active");
+function go(id){
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 }
 
-function loadChars(){
-  const div = document.getElementById("chars");
-  div.innerHTML = "";
-  characters.forEach(c=>{
-    const btn = document.createElement("button");
-    btn.innerText = c.name + " - " + c.job;
-    btn.onclick = ()=>{
-      currentChar = c;
-      document.getElementById("charName").innerText = c.name;
-      document.getElementById("charJob").innerText = c.job;
-      go("castle");
-    };
-    div.appendChild(btn);
-  });
+function start(name){
+document.getElementById('name').innerText=name;
+go('game');
 }
 
-function loadColors(){
-  const div = document.getElementById("colors");
-  colors.forEach(c=>{
-    const btn = document.createElement("button");
-    btn.style.background = c;
-    btn.onclick = ()=>{
-      document.getElementById("doll").style.color = c;
-    };
-    div.appendChild(btn);
-  });
+function addPoints(v=10){
+pts+=v;
+document.getElementById('pts').innerText=pts;
 }
 
-function saveLook(){
-  points += 10;
-  document.getElementById("points").innerText = points;
-  alert("Look salvo!");
+function setDress(c){
+document.getElementById('dress').style.background=c;
+addPoints();
 }
 
-let cards = [];
-let flipped = [];
+function setHair(c){
+document.getElementById('hair').style.background=c;
+addPoints();
+}
+
+function answer(i){
+if(i===1){
+document.getElementById('res').innerText="Correto!";
+addPoints(20);
+}else{
+document.getElementById('res').innerText="Errado!";
+}
+}
 
 function startMemory(){
-  const values = ["A","B","C","D","A","B","C","D"];
-  cards = values.sort(()=>Math.random()-0.5);
-  flipped = [];
-  drawGame();
+let colors=["red","blue","green","red","blue","green"];
+colors.sort(()=>Math.random()-0.5);
+
+let grid=document.getElementById('grid');
+grid.innerHTML="";
+first=null;
+
+colors.forEach(c=>{
+let d=document.createElement('div');
+d.style.width="60px";
+d.style.height="60px";
+d.style.display="inline-block";
+d.style.margin="5px";
+d.style.background="#333";
+d.style.borderRadius="10px";
+
+d.onclick=()=>{
+if(d.dataset.open) return;
+
+d.style.background=c;
+d.dataset.open=true;
+
+if(!first){
+first=d;
+}else{
+if(first.style.background===d.style.background){
+addPoints(15);
+}else{
+setTimeout(()=>{
+first.style.background="#333";
+d.style.background="#333";
+first.dataset.open=false;
+d.dataset.open=false;
+},500);
+}
+first=null;
+}
+};
+
+grid.appendChild(d);
+});
 }
 
-function drawGame(){
-  const div = document.getElementById("game");
-  div.innerHTML = "";
-  cards.forEach((v,i)=>{
-    const c = document.createElement("div");
-    c.className="card";
-    c.innerText = "?";
-    c.onclick = ()=>{
-      if(flipped.length<2){
-        c.innerText = v;
-        flipped.push({index:i,value:v,el:c});
-        if(flipped.length===2){
-          setTimeout(()=>{
-            if(flipped[0].value !== flipped[1].value){
-              flipped[0].el.innerText="?";
-              flipped[1].el.innerText="?";
-            } else {
-              points += 15;
-              document.getElementById("points").innerText = points;
-            }
-            flipped=[];
-          },700);
-        }
-      }
-    };
-    div.appendChild(c);
-  });
-}
-
-loadChars();
-loadColors();
 startMemory();
+
 </script>
 
 </body>
