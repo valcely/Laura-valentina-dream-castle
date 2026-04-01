@@ -1,0 +1,83 @@
+:root {
+  --p-pink: #ffb6c1;
+  --d-pink: #e0218a;
+  --l-purple: #c77dff;
+  --gold: #f3c623;
+  --rose-gold: #b76e79;
+  --bg-dark: #1a0b1c;
+  --panel-bg: rgba(30, 15, 30, 0.75);
+  --text: #ffffff;
+  --font-main: 'Montserrat', sans-serif;
+  --font-fancy: 'Dancing Script', cursive;
+}
+
+body, html {
+  margin: 0; padding: 0;
+  background-color: var(--bg-dark);
+  font-family: var(--font-main);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+* { box-sizing: border-box; outline: none; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+::-webkit-scrollbar-thumb { background: var(--rose-gold); border-radius: 3px; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes glow { 0%, 100% { text-shadow: 0 0 15px var(--rose-gold); } 50% { text-shadow: 0 0 30px var(--d-pink), 0 0 10px var(--gold); } }
+@keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(224, 33, 138, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(224, 33, 138, 0); } 100% { box-shadow: 0 0 0 0 rgba(224, 33, 138, 0); } }
+@keyframes sparkle { 0% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1.2) rotate(45deg); } 100% { opacity: 0; transform: scale(0) rotate(90deg); } }
+
+.stars-bg {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 0; pointer-events: none;
+  background: linear-gradient(135deg, #1a0b1c 0%, #2d142c 100%);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-radius: 24px;
+}
+
+.page-enter { animation: fadeIn 0.6s forwards; }
+.float { animation: float 4s infinite; }
+.glow { animation: glow 3s infinite; }
+
+button { cursor: pointer; border: none; }
+button:active { transform: scale(0.92); }
+button:hover { filter: brightness(1.1); }
+
+.hide-scroll { scrollbar-width: none; }
+.hide-scroll::-webkit-scrollbar { display: none; }
+
+.visual-asset {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.arcade-card {
+  background: rgba(255,255,255,0.05);
+  padding: 18px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.sparkle {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: radial-gradient(circle, #fff, var(--gold));
+  animation: sparkle 1s forwards;
+}
