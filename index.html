@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="referrer" content="no-referrer">
+  
   <title>Laura Valentina ✨ Dream Castle Adventure</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,7 +35,7 @@
       font-family: var(--font-main);
       color: var(--text);
       overflow-x: hidden;
-      height: 100%;
+      min-height: 100vh;
     }
 
     * { box-sizing: border-box; outline: none; }
@@ -47,6 +50,7 @@
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     @keyframes glow { 0%, 100% { text-shadow: 0 0 15px var(--gold); } 50% { text-shadow: 0 0 30px var(--p-pink), 0 0 10px var(--gold); } }
     @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(247, 37, 133, 0); } 100% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0); } }
+    @keyframes twinkle { 0% { opacity: 0.3; } 50% { opacity: 0.8; } 100% { opacity: 0.3; } }
 
     .page-enter { animation: fadeIn 0.5s ease-out forwards; }
     .float { animation: float 3s ease-in-out infinite; }
@@ -58,12 +62,28 @@
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     .hide-scroll::-webkit-scrollbar { display: none; }
 
-    /* Estilos base para assets visuais (simulando 3D/Real) */
+    /* Estilos base para assets visuais */
     .visual-asset {
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       border-radius: 10px;
+    }
+
+    /* NOVO: Fundo de Estrelas Puro CSS */
+    .stars-bg {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1; pointer-events: none;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 40px 70px, #ffd700, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 90px 40px, #ff85c2, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 160px 120px, #c77dff, rgba(0,0,0,0));
+      background-repeat: repeat;
+      background-size: 200px 200px;
+      animation: twinkle 4s infinite ease-in-out;
     }
   </style>
 </head>
@@ -75,23 +95,16 @@
 
     // --- DADOS E CONFIGURAÇÕES ---
     const vars = { 
-      pPink: '#ff85c2', 
-      dPink: '#f72585', 
-      lPurple: '#c77dff', 
-      gold: '#ffd700', 
-      text: '#ffffff',
-      fontMain: "'Poppins', sans-serif",
-      fontFancy: "'Dancing Script', cursive",
+      pPink: '#ff85c2', dPink: '#f72585', lPurple: '#c77dff', 
+      gold: '#ffd700', text: '#ffffff',
+      fontMain: "'Poppins', sans-serif", fontFancy: "'Dancing Script', cursive",
       panelBg: "rgba(20, 0, 20, 0.85)"
     };
 
     const BARBIE_QUOTES = [
-      "Você está incrível hoje!",
-      "Vamos explorar o castelo mágico?",
-      "Eu amo o seu estilo!",
-      "Você pode ser tudo o que quiser ser.",
-      "Que tal um novo penteado?",
-      "Adoro colecionar estrelinhas com você!",
+      "Você está incrível hoje!", "Vamos explorar o castelo mágico?",
+      "Eu amo o seu estilo!", "Você pode ser tudo o que quiser ser.",
+      "Que tal um novo penteado?", "Adoro colecionar estrelinhas com você!",
       "Pronta para mais uma aventura?"
     ];
 
@@ -108,12 +121,9 @@
     ];
 
     const HAIR_ASSETS = {
-      Liso:     "https://i.imgur.com/O6S7y28.png",
-      Ondulado: "https://i.imgur.com/V7YqG5E.png",
-      Cacheado: "https://i.imgur.com/w4oN3p5.png",
-      Afro:     "https://i.imgur.com/H1zM93Z.png",
-      Curto:    "https://i.imgur.com/vWb5Gj8.png",
-      Chiquinha:"https://i.imgur.com/f9m4R4M.png"
+      Liso: "https://i.imgur.com/O6S7y28.png", Ondulado: "https://i.imgur.com/V7YqG5E.png",
+      Cacheado: "https://i.imgur.com/w4oN3p5.png", Afro: "https://i.imgur.com/H1zM93Z.png",
+      Curto: "https://i.imgur.com/vWb5Gj8.png", Chiquinha: "https://i.imgur.com/f9m4R4M.png"
     };
     const HAIR_STYLES = Object.keys(HAIR_ASSETS);
     const HAIR_COLORS = [
@@ -128,64 +138,31 @@
     ];
 
     const SHOE_ASSETS = {
-      "Scarpin Cristal": "https://i.imgur.com/M4w4K6F.png",
-      "Sapatilha Ouro": "https://i.imgur.com/X1M5S7H.png",
-      "Bota Fashion":   "https://i.imgur.com/E3V6G4K.png",
-      "Sandália Verão": "https://i.imgur.com/V3F5L7M.png",
-      "Tênis Casual":   "https://i.imgur.com/T4Y6N7H.png"
+      "Scarpin Cristal": "https://i.imgur.com/M4w4K6F.png", "Sapatilha Ouro": "https://i.imgur.com/X1M5S7H.png",
+      "Bota Fashion": "https://i.imgur.com/E3V6G4K.png", "Sandália Verão": "https://i.imgur.com/V3F5L7M.png",
+      "Tênis Casual": "https://i.imgur.com/T4Y6N7H.png"
     };
     const SHOE_STYLES = Object.keys(SHOE_ASSETS);
 
     const MEMORY_ITEMS = [
-      { id: 1, img: "https://i.imgur.com/f7jD0wX.png", type: 'coroa' },
-      { id: 2, img: "https://i.imgur.com/7H6N4Fw.png", type: 'sapato' },
-      { id: 3, img: "https://i.imgur.com/E4G4C9W.png", type: 'anel' },
-      { id: 4, img: "https://i.imgur.com/C3M8B3D.png", type: 'bolsa' },
-      { id: 5, img: "https://i.imgur.com/L1M4K2E.png", type: 'peixe' },
-      { id: 6, img: "https://i.imgur.com/M5G7S7A.png", type: 'baleia' },
-      { id: 7, img: "https://i.imgur.com/R1T3V2C.png", type: 'colar' },
-      { id: 8, img: "https://i.imgur.com/W2S4A3B.png", type: 'golfinho'},
+      { id: 1, img: "https://i.imgur.com/f7jD0wX.png", type: 'coroa' }, { id: 2, img: "https://i.imgur.com/7H6N4Fw.png", type: 'sapato' },
+      { id: 3, img: "https://i.imgur.com/E4G4C9W.png", type: 'anel' }, { id: 4, img: "https://i.imgur.com/C3M8B3D.png", type: 'bolsa' },
+      { id: 5, img: "https://i.imgur.com/L1M4K2E.png", type: 'peixe' }, { id: 6, img: "https://i.imgur.com/M5G7S7A.png", type: 'baleia' },
+      { id: 7, img: "https://i.imgur.com/R1T3V2C.png", type: 'colar' }, { id: 8, img: "https://i.imgur.com/W2S4A3B.png", type: 'golfinho'},
     ];
 
     const ARCADE_GAMES = [
-      { id: 'run',    title: 'Aventura no Jardim', cat: 'Ação', icon: '🏃‍♀️', unlocked: false, level: 2 },
+      { id: 'run', title: 'Aventura no Jardim', cat: 'Ação', icon: '🏃‍♀️', unlocked: false, level: 2 },
       { id: 'quiz_m', title: 'Mistérios do Mar ✨', cat: 'Quiz', icon: '🧜‍♀️' },
       { id: 'quiz_u', title: 'Explorando o Universo 🚀', cat: 'Quiz', icon: '🌌' },
       { id: 'quiz_b', title: 'Histórias da Criação 📖', cat: 'Quiz (Bíblico)', icon: '🙏' },
-      { id: 'climb',  title: 'Escalada Real', cat: 'Habilidade', icon: '🧗‍♀️' },
+      { id: 'climb', title: 'Escalada Real', cat: 'Habilidade', icon: '🧗‍♀️' },
       { id: 'puzzle', title: 'Quebra-Cabeça de Luxo', cat: 'Raciocínio', icon: '🧩' },
       { id: 'match3', title: 'Joias Mágicas Connect', cat: 'Raciocínio', icon: '💎' },
-      { id: 'skate',  title: 'Barbie Skate Park', cat: 'Esportes', icon: '🛹' },
-      { id: 'bake',   title: 'Fábrica de Cupcakes', cat: 'Simulação', icon: '🧁' },
-      { id: 'design', title: 'Estilista de Moda', cat: 'Criatividade', icon: '👗' },
-      { id: 'math',   title: 'Desafio Matemático', cat: 'Educativo', icon: '🧮' },
-      { id: 'words',  title: 'Caça-Palavras Encantado', cat: 'Educativo', icon: '🔠' },
-      { id: 'music',  title: 'Piano das Princesas', cat: 'Música', icon: '🎹' },
-      { id: 'hidden', title: 'Objetos Escondidos no Quarto', cat: 'Raciocínio', icon: '🔍' },
-      { id: 'jump',   title: 'Pule nas Nuvens', cat: 'Habilidade', icon: '☁️' },
-      { id: 'color',  title: 'Livro de Colorir Digital', cat: 'Criatividade', icon: '🖌️' },
-      { id: 'karate', title: 'Dojô da Coragem', cat: 'Esportes', icon: '🥋' },
-      { id: 'doctor', title: 'Clínica de Pets Ayla', cat: 'Simulação', icon: '🐶' },
-      { id: 'logic',  title: 'Labirinto do Castelo', cat: 'Raciocínio', icon: '🧭' },
-      { id: 'bible2', title: 'Heróis da Bíblia Quiz', cat: 'Quiz (Bíblico)', icon: '🛡️' },
-      { id: 'space',  title: 'Defesa Espacial Lidiane', cat: 'Ação', icon: '👾' },
-      { id: 'farm',   title: 'Minha Fazenda Feliz', cat: 'Simulação', icon: '🚜' },
-      { id: 'art',    title: 'Galeria de Arte Aurora', cat: 'Criatividade', icon: '🖼️' },
-      { id: 'react',  title: 'Teste de Reflexo Rápido', cat: 'Habilidade', icon: '⚡' },
-      { id: 'code',   title: 'Lógica de Programação Facil', cat: 'Educativo', icon: '💻' },
-      { id: 'chess',  title: 'Xadrez Iniciante', cat: 'Raciocínio', icon: '♟️' },
-      { id: 'tennis', title: 'Torneio de Tênis Real', cat: 'Esportes', icon: '🎾' },
-      { id: 'makeup', title: 'Salão de Maquiagem Mágica', cat: 'Criatividade', icon: '💄' },
-      { id: 'trivia', title: 'Cultura Geral Kids', cat: 'Quiz', icon: '💡' },
-      { id: 'bible3', title: 'Arca de Noé Match', cat: 'Raciocínio (Bíblico)', icon: '⛵' },
-      { id: 'dance',  title: 'Ritmo Pop Star Maria', cat: 'Música', icon: '💃' },
-      { id: 'cycle',  title: 'Corrida de Bicicleta Park', cat: 'Esportes', icon: '🚴‍♀️' },
+      { id: 'makeup', title: 'Salão de Maquiagem Mágica', cat: 'Criatividade', icon: '💄' }
     ];
 
-
-    // --- UTILS ---
     const shuffle = a => [...a].sort(()=>Math.random()-0.5);
-
     const speak = (text) => {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
@@ -197,13 +174,10 @@
       }
     };
 
-
-    // --- COMPONENTES VISUAIS REAIS ---
     const visualAssetStyle = { backgroundSize:"contain", backgroundPosition:"center", backgroundRepeat:"no-repeat" };
 
-    function RealDoll({ char, hairS, hairC, dress, shoes, acc, crown, blk, size="large", onClick }) {
+    function RealDoll({ char, hairS, hairC, dress, shoes, acc, crown, size="large", onClick }) {
       const scale = size === "large" ? 1 : 0.5;
-      
       return (
         <div onClick={onClick} style={{
           position:"relative", width:280*scale, height:500*scale, 
@@ -215,9 +189,7 @@
 
           <div style={{
             position:"absolute", top:"-5%", left:"15%", width:"70%", height:"40%",
-            backgroundImage:`url(${HAIR_ASSETS[hairS]})`,
-            filter: `drop-shadow(0 0 2px ${hairC}aa)`, 
-            zIndex: 5, ...visualAssetStyle
+            backgroundImage:`url(${HAIR_ASSETS[hairS]})`, filter: `drop-shadow(0 0 2px ${hairC}aa)`, zIndex: 5, ...visualAssetStyle
           }}/>
 
           <div style={{ position:"absolute", top:"20%", left:"5%", width:"90%", height:"70%", backgroundImage:`url(${dress})`, zIndex: 3, ...visualAssetStyle }}/>
@@ -225,12 +197,10 @@
 
           {crown && <div style={{position:"absolute", top:"-8%", left:"35%", width:"30%", height:"15%", backgroundImage:`url(https://i.imgur.com/W29F1Yf.png)`, zIndex: 6, ...visualAssetStyle}}/>}
           {acc && <div style={{position:"absolute", top:"18%", left:"30%", width:"40%", height:"10%", backgroundImage:`url(https://i.imgur.com/8Q6N4R4.png)`, zIndex: 4, ...visualAssetStyle}}/>}
-
         </div>
       );
     }
 
-    // UI Elements
     const Swatch = ({c, img, selected, onClick, type="color"}) => (
       <div onClick={onClick} style={{
         width:45, height:45, borderRadius: type==="color"?"50%":"8px", 
@@ -247,8 +217,7 @@
         border: `1px solid ${active || primary ? vars.gold : 'rgba(255,179,217,0.3)'}`,
         borderRadius: 12, padding: primary?"14px 24px":"10px 16px", color: vars.text,
         fontSize: primary?15:13, fontWeight:"600", display:"flex", alignItems:"center", gap:8, justifyContent:"center",
-        letterSpacing: 0.5, boxShadow: primary? `0 5px 15px rgba(247,37,133,0.4)`:"none",
-        animation: primary? "pulseBtn 2s infinite" : "none"
+        boxShadow: primary? `0 5px 15px rgba(247,37,133,0.4)`:"none", animation: primary? "pulseBtn 2s infinite" : "none"
       }}>{icon && <span>{icon}</span>}{children}</button>
     );
 
@@ -260,30 +229,19 @@
         backgroundImage:`url(https://i.imgur.com/G5B5S7H.png)`, 
         backgroundSize:"cover", backgroundPosition:"center", filter:"blur(2px) brightness(0.7)"
       }}>
-        <div style={{position:"absolute", bottom:"10%", left:"5%", width:120, height:120, backgroundImage:`url(https://i.imgur.com/X4b5bV5.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 4s infinite", opacity:0.8}} title="Unicórnio Mágico"/>
-        <div style={{position:"absolute", top:"20%", right:"10%", width:80, height:80, backgroundImage:`url(https://i.imgur.com/I5S5H0Z.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 3s infinite", opacity:0.7}} title="Fênix Dourada"/>
-        <div style={{position:"absolute", bottom:"5%", right:"20%", width:60, height:50, backgroundImage:`url(https://i.imgur.com/R8M4f4y.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", opacity:0.9}} title="Gatinho Real"/>
+        <div style={{position:"absolute", bottom:"10%", left:"5%", width:120, height:120, backgroundImage:`url(https://i.imgur.com/X4b5bV5.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 4s infinite", opacity:0.8}} />
+        <div style={{position:"absolute", top:"20%", right:"10%", width:80, height:80, backgroundImage:`url(https://i.imgur.com/I5S5H0Z.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 3s infinite", opacity:0.7}} />
       </div>
     );
 
-    // --- JOGO DE CORRIDA (RUNNER) ---
     function RunnerGame({onClose, addPoints}) {
-      const GAME_WIDTH = 380;
-      const GAME_HEIGHT = 250;
-      const LANE_Y = GAME_HEIGHT - 60;
-      const BARBIE_X = 50;
-      
-      const [playing, setPlaying] = useState(false);
-      const [score, setScore] = useState(0);
-      const [barbieY, setBarbieY] = useState(LANE_Y);
-      const [isJumping, setIsJumping] = useState(false);
-      const [obstacles, setObstacles] = useState([]);
-      const [gameSpeed, setGameSpeed] = useState(4);
+      const GAME_WIDTH = 380; const GAME_HEIGHT = 250; const LANE_Y = GAME_HEIGHT - 60; const BARBIE_X = 50;
+      const [playing, setPlaying] = useState(false); const [score, setScore] = useState(0);
+      const [barbieY, setBarbieY] = useState(LANE_Y); const [isJumping, setIsJumping] = useState(false);
+      const [obstacles, setObstacles] = useState([]); const [gameSpeed, setGameSpeed] = useState(4);
       const [gameOver, setGameOver] = useState(false);
-      
       const barbieYRef = useRef(LANE_Y);
 
-      // Sincroniza o ref com o estado para usar dentro do loop sem recriá-lo
       useEffect(() => { barbieYRef.current = barbieY; }, [barbieY]);
 
       const jump = useCallback(() => {
@@ -295,310 +253,152 @@
             clearInterval(upInterval);
             const downInterval = setInterval(() => {
               if (jumpHeight <= 0) {
-                clearInterval(downInterval);
-                setIsJumping(false);
-                setBarbieY(LANE_Y);
-              } else {
-                jumpHeight -= 5;
-                setBarbieY(LANE_Y - jumpHeight);
-              }
+                clearInterval(downInterval); setIsJumping(false); setBarbieY(LANE_Y);
+              } else { jumpHeight -= 5; setBarbieY(LANE_Y - jumpHeight); }
             }, 20);
-          } else {
-            jumpHeight += 8;
-            setBarbieY(LANE_Y - jumpHeight);
-          }
+          } else { jumpHeight += 8; setBarbieY(LANE_Y - jumpHeight); }
         }, 20);
       }, [playing, isJumping, gameOver]);
 
-      // Game Loop Consertado (Sem reiniciar a cada frame)
       useEffect(() => {
         if (!playing || gameOver) return;
-
         const interval = setInterval(() => {
             setObstacles(prev => {
               const moved = prev.map(obs => ({...obs, x: obs.x - gameSpeed})).filter(obs => obs.x > -50);
-              
               moved.forEach(obs => {
                 if (obs.x > BARBIE_X && obs.x < BARBIE_X + 30) { 
-                  const bBottom = barbieYRef.current + 50;
-                  if (bBottom > obs.y) { 
-                    setGameOver(true);
-                    setPlaying(false);
-                    speak("Ops! Tente novamente.");
+                  if (barbieYRef.current + 50 > obs.y) { 
+                    setGameOver(true); setPlaying(false); speak("Ops! Tente novamente.");
                   }
                 }
               });
               return moved;
             });
-
-            setScore(s => {
-              const newScore = s + 1;
-              if (newScore % 500 === 0) setGameSpeed(sp => sp + 1);
-              return newScore;
-            });
+            setScore(s => { const newScore = s + 1; if (newScore % 500 === 0) setGameSpeed(sp => sp + 1); return newScore; });
         }, 1000/60); 
 
-        // Gerador de obstáculos seguro (com tempo mínimo de 600ms para não travar)
         const spawnDelay = Math.max(600, 2000 - (gameSpeed * 100));
         const spawnInterval = setInterval(() => {
             const type = Math.random() > 0.5 ? 'pedra' : 'tronco';
             const img = type === 'pedra' ? "https://i.imgur.com/K1Y5S7H.png" : "https://i.imgur.com/E4G4C9W.png";
-            setObstacles(prev => [...prev, {
-              id: Date.now(),
-              x: GAME_WIDTH + 50,
-              y: LANE_Y + 10,
-              w: 40, h: 40, img: img
-            }]);
+            setObstacles(prev => [...prev, { id: Date.now(), x: GAME_WIDTH + 50, y: LANE_Y + 10, w: 40, h: 40, img: img }]);
         }, spawnDelay);
 
-        return () => {
-          clearInterval(interval);
-          clearInterval(spawnInterval);
-        };
+        return () => { clearInterval(interval); clearInterval(spawnInterval); };
       }, [playing, gameOver, gameSpeed]);
 
-      const startGame = () => {
-        setScore(0);
-        setObstacles([]);
-        setGameSpeed(4);
-        setGameOver(false);
-        setPlaying(true);
-        setBarbieY(LANE_Y);
-        speak("Vamos correr!");
-      };
-
-      const finishGame = () => {
-        if (score > 10) {
-          const pts = Math.floor(score / 100);
-          addPoints(pts);
-          speak(`Parabéns! Você ganhou ${pts} estrelinhas.`);
-        }
-        onClose();
-      };
+      const startGame = () => { setScore(0); setObstacles([]); setGameSpeed(4); setGameOver(false); setPlaying(true); setBarbieY(LANE_Y); speak("Vamos correr!"); };
+      const finishGame = () => { if (score > 10) { const pts = Math.floor(score / 100); addPoints(pts); speak(`Ganhou ${pts} estrelinhas!`); } onClose(); };
 
       return (
         <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"fadeIn 0.5s ease"}}>
           <div style={{color:vars.gold, fontSize:20, fontWeight:"700", marginBottom:10, fontFamily:vars.fontFancy}}>Aventura no Jardim 🏃‍♀️</div>
-          
-          <div style={{
-            width: GAME_WIDTH, height: GAME_HEIGHT, background:`url(https://i.imgur.com/G5F5S7H.png)`, 
-            backgroundSize:'cover', backgroundPosition:'bottom', borderRadius:16, position:"relative",
-            overflow:"hidden", border:`4px solid ${vars.lPurple}`, boxShadow:`0 0 20px rgba(0,0,0,0.8)`
-          }}>
-            <div style={{
-              position:"absolute", left: BARBIE_X, top: barbieY, width: 40, height: 60,
-              backgroundImage:`url(https://i.imgur.com/vHq49XU.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat",
-              zIndex: 10, transition: "top 0.1s linear", transform: gameOver ? "rotate(90deg)" : "none"
-            }}/>
-
-            {obstacles.map(obs => (
-              <div key={obs.id} style={{
-                position:"absolute", left: obs.x, top: obs.y, width: obs.w, height: obs.h,
-                backgroundImage:`url(${obs.img})`, backgroundSize:"contain", backgroundRepeat:"no-repeat",
-                zIndex: 5
-              }}/>
-            ))}
-
+          <div style={{ width: GAME_WIDTH, height: GAME_HEIGHT, background:`url(https://i.imgur.com/G5F5S7H.png) bottom/cover`, borderRadius:16, position:"relative", overflow:"hidden", border:`4px solid ${vars.lPurple}` }}>
+            <div style={{ position:"absolute", left: BARBIE_X, top: barbieY, width: 40, height: 60, backgroundImage:`url(https://i.imgur.com/vHq49XU.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", zIndex: 10, transform: gameOver ? "rotate(90deg)" : "none" }}/>
+            {obstacles.map(obs => <div key={obs.id} style={{ position:"absolute", left: obs.x, top: obs.y, width: obs.w, height: obs.h, backgroundImage:`url(${obs.img})`, backgroundSize:"contain", backgroundRepeat:"no-repeat", zIndex: 5 }}/>)}
             <div style={{position:"absolute", bottom:0, left:0, width:"100%", height:20, background:"#4a2e00", zIndex:1}}/>
-
             {(!playing || gameOver) && (
-              <div style={{
-                position:"absolute", inset:0, background:"rgba(0,0,0,0.7)", zIndex:20,
-                display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:15
-              }}>
+              <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.7)", zIndex:20, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:15 }}>
                 {gameOver && <div style={{color:"#ff4d6d", fontSize:24, fontWeight:"700"}}>Fim de Jogo!</div>}
                 <div style={{color:vars.gold, fontSize:18, fontWeight:"600"}}>Pontos: {score}</div>
-                <Btn primary onClick={startGame}>{gameOver ? "Jogar Novamente" : "Começar Corrida"}</Btn>
+                <Btn primary onClick={startGame}>{gameOver ? "Jogar Novamente" : "Começar"}</Btn>
                 {gameOver && <Btn onClick={finishGame}>Sair</Btn>}
               </div>
             )}
-            
-            {playing && <div style={{position:"absolute", top:10, right:15, color:vars.gold, fontWeight:"700", zIndex:15, textShadow:"0 2px 4px #000"}}>⭐ {score}</div>}
+            {playing && <div style={{position:"absolute", top:10, right:15, color:vars.gold, fontWeight:"700", zIndex:15}}>⭐ {score}</div>}
           </div>
-
-          <div style={{
-            display:"flex", gap:30, marginTop:20, width:"100%", maxWidth:300, 
-            justifyContent:"center", padding:15, background:"rgba(255,255,255,0.05)", borderRadius:50
-          }}>
-            <button style={{width:60, height:60, borderRadius:"50%", background:"#555", color:"#fff", fontSize:24, opacity:0.5, cursor:"not-allowed"}}>⬅️</button>
-            <button onClick={jump} style={{
-              width:80, height:80, borderRadius:"50%", 
-              background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})`, 
-              color:"#fff", fontSize:32, boxShadow:`0 5px 15px rgba(247,37,133,0.5)`,
-              border:`3px solid ${vars.gold}`
-            }}>⬆️</button>
-            <button style={{width:60, height:60, borderRadius:"50%", background:"#555", color:"#fff", fontSize:24, opacity:0.5, cursor:"not-allowed"}}>➡️</button>
+          <div style={{ display:"flex", gap:30, marginTop:20, justifyContent:"center", padding:15, background:"rgba(255,255,255,0.05)", borderRadius:50 }}>
+            <button onClick={jump} style={{ width:80, height:80, borderRadius:"50%", background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})`, color:"#fff", fontSize:32, border:`3px solid ${vars.gold}` }}>⬆️</button>
           </div>
-           <div style={{color:"rgba(255,255,255,0.5)", fontSize:11, marginTop:8}}>Dica: Clique na Seta para pular.</div>
-
           {!playing && !gameOver && <button onClick={onClose} style={{marginTop:20, background:"transparent", color:vars.pPink}}>Voltar</button>}
         </div>
       );
     }
 
-
-
-    // --- MAIN APP COMPONENT ---
     function App() {
       const [screen, setScreen] = useState("home");
       const [char, setChar] = useState(null);
       const [level, setLevel] = useState(1);
       
-      const [dress, setDress] = useState(DRESS_ASSETS[0]);
-      const [hairC, setHairC] = useState(HAIR_COLORS[0].c);
-      const [hairS, setHairS] = useState(HAIR_STYLES[0]);
-      const [shoes, setShoes] = useState(SHOE_STYLES[0]);
-      const [acc, setAcc] = useState(false);
-      const [crown, setCrown] = useState(false);
+      const [dress, setDress] = useState(DRESS_ASSETS[0]); const [hairC, setHairC] = useState(HAIR_COLORS[0].c);
+      const [hairS, setHairS] = useState(HAIR_STYLES[0]); const [shoes, setShoes] = useState(SHOE_STYLES[0]);
+      const [acc, setAcc] = useState(false); const [crown, setCrown] = useState(false);
       
-      const [gallery, setGallery] = useState([]);
-      const [points, setPoints] = useState(0);
-      const [toast, setToast] = useState("");
-      const [tab, setTab] = useState("closet");
+      const [gallery, setGallery] = useState([]); const [points, setPoints] = useState(0);
+      const [toast, setToast] = useState(""); const [tab, setTab] = useState("closet");
       
-      const [memCards, setMemCards] = useState([]);
-      const [memFlipped, setMemFlipped] = useState([]);
-      const [memMatched, setMemMatched] = useState([]);
-      const [memLock, setMemLock] = useState(false);
+      const [memCards, setMemCards] = useState([]); const [memFlipped, setMemFlipped] = useState([]);
+      const [memMatched, setMemMatched] = useState([]); const [memLock, setMemLock] = useState(false);
       
-      const [musicOn, setMusicOn] = useState(false);
-      const audioRef = useRef(null);
-      const scrollRef = useRef(null);
+      const [musicOn, setMusicOn] = useState(false); const audioRef = useRef(null); const scrollRef = useRef(null);
 
       useEffect(() => {
-        if (points >= 300 && level === 1) {
-          setLevel(2);
-          speak("Parabéns! Você evoluiu para o Nível 2 e desbloqueou o jogo de corrida!");
-          showToast("🏆 NÍVEL 2 ALCANÇADO! Novo jogo liberado.");
-        }
+        if (points >= 300 && level === 1) { setLevel(2); speak("Nível 2!"); showToast("🏆 NÍVEL 2 ALCANÇADO!"); }
       }, [points, level]);
 
       const toggleMusic = () => {
         if(!audioRef.current) return;
         if(musicOn) { audioRef.current.pause(); setMusicOn(false); }
-        else { audioRef.current.play().catch(e=>console.log("Audio block")); setMusicOn(true); }
+        else { audioRef.current.play().catch(()=>console.log("Audio block")); setMusicOn(true); }
       };
 
       const showToast = (msg) => { setToast(msg); setTimeout(()=>setToast(""), 3000); };
-      
       const scrollTabs = (dir) => { if(scrollRef.current) scrollRef.current.scrollBy({ left: dir * 150, behavior: 'smooth' }); };
 
       const selectChar = (c) => {
-        setChar(c);
-        setDress(DRESS_ASSETS[0]); setHairS(HAIR_STYLES[0]); setHairC(HAIR_COLORS[0].c);
-        setShoes(SHOE_STYLES[0]); setAcc(false); setCrown(false);
-        setScreen("castle");
-        setTab("closet");
-        speak(`Olá! Eu sou a ${c.name}. Vamos nos arrumar no meu castelo?`);
-      };
-
-      const onDollClick = () => {
-        const quote = BARBIE_QUOTES[Math.floor(Math.random() * BARBIE_QUOTES.length)];
-        speak(quote);
-        showToast(`💋 Barbie diz: "${quote}"`);
+        setChar(c); setDress(DRESS_ASSETS[0]); setHairS(HAIR_STYLES[0]); setHairC(HAIR_COLORS[0].c); setShoes(SHOE_STYLES[0]); setAcc(false); setCrown(false);
+        setScreen("castle"); setTab("closet"); speak(`Olá! Eu sou a ${c.name}.`);
       };
 
       const saveLook = () => {
-        const newLook = { id: Date.now(), char, dress, hairC, hairS, shoes, acc, crown };
-        setGallery(g => [newLook, ...g].slice(0, 10));
-        setPoints(p => p + 15);
-        speak("Que look maravilhoso! Salvei na galeria.");
-        showToast("📸 Look salvo! +15 estrelinhas");
+        setGallery(g => [{ id: Date.now(), char, dress, hairC, hairS, shoes, acc, crown }, ...g].slice(0, 10));
+        setPoints(p => p + 15); showToast("📸 Look salvo! +15 estrelinhas");
       };
 
       const startMemory = () => {
-        const items = shuffle([...MEMORY_ITEMS, ...MEMORY_ITEMS]).map((it, i) => ({...it, uniqueId: i}));
-        setMemCards(items);
-        setMemFlipped([]);
-        setMemMatched([]);
-        setMemLock(false);
-        setScreen("memory");
-        speak("Encontre os pares dos itens mágicos!");
+        setMemCards(shuffle([...MEMORY_ITEMS, ...MEMORY_ITEMS]).map((it, i) => ({...it, uniqueId: i})));
+        setMemFlipped([]); setMemMatched([]); setMemLock(false); setScreen("memory");
       };
 
       const flipCard = (index) => {
         if (memLock || memFlipped.includes(index) || memMatched.includes(memCards[index].id)) return;
-        const newFlipped = [...memFlipped, index];
-        setMemFlipped(newFlipped);
+        const newFlipped = [...memFlipped, index]; setMemFlipped(newFlipped);
         
         if (newFlipped.length === 2) {
           setMemLock(true);
           const [firstIdx, secondIdx] = newFlipped;
           if (memCards[firstIdx].id === memCards[secondIdx].id) {
-            setMemMatched(m => [...m, memCards[firstIdx].id]);
-            setPoints(p => p + 20);
-            showToast("✨ Par encontrado! +20");
-            setMemFlipped([]);
-            setMemLock(false);
-            
-            if (memMatched.length + 1 === MEMORY_ITEMS.length) {
-              speak("Incrível! Você tem uma memória de princesa.");
-              setTimeout(()=>setScreen("castle"), 2000);
-            }
-          } else {
-            setTimeout(() => {
-              setMemFlipped([]);
-              setMemLock(false);
-            }, 1000);
-          }
+            setMemMatched(m => [...m, memCards[firstIdx].id]); setPoints(p => p + 20); showToast("✨ Par encontrado! +20");
+            setMemFlipped([]); setMemLock(false);
+            if (memMatched.length + 1 === MEMORY_ITEMS.length) setTimeout(()=>setScreen("castle"), 2000);
+          } else { setTimeout(() => { setMemFlipped([]); setMemLock(false); }, 1000); }
         }
       };
 
-
-      // --- LAYOUTS ---
-      const PanelStyle = {
-        background: vars.panelBg, border: `1px solid rgba(255,179,217,0.2)`,
-        borderRadius: 24, padding: 20, width: "100%", maxWidth: 420,
-        boxShadow: `0 15px 35px rgba(0,0,0,0.5)`, backdropFilter: "blur(10px)",
-        position:"relative", zIndex:1
-      };
-
-      const TABS = [
-        {k:"closet",l:"Closet 👗"},{k:"hair",l:"Salão ✂️"},{k:"sapatos",l:"Sapatos 👠"},
-        {k:"games",l:"Jogos ⭐"},{k:"arcade",l:"Arcade 9+ 🕹️"},{k:"gallery",l:"Galeria 📸"}
-      ];
-
+      const PanelStyle = { background: vars.panelBg, borderRadius: 24, padding: 20, width: "100%", maxWidth: 420, boxShadow: `0 15px 35px rgba(0,0,0,0.5)`, zIndex:1 };
+      const TABS = [{k:"closet",l:"Closet 👗"},{k:"hair",l:"Salão ✂️"},{k:"sapatos",l:"Sapatos 👠"},{k:"games",l:"Jogos ⭐"},{k:"arcade",l:"Arcade 🕹️"},{k:"gallery",l:"Galeria 📸"}];
 
       return (
         <div style={{minHeight:"100vh", position:"relative"}}>
-          
-          <audio ref={audioRef} loop preload="auto">
-            <source src="https://cdn.pixabay.com/download/audio/2024/03/15/audio_134567ac8d.mp3" type="audio/mpeg"/> 
-          </audio>
-
-          <div style={{position:"fixed",inset:0,zIndex:1,pointerEvents:"none",backgroundImage:"url(https://www.transparenttextures.com/patterns/stardust.png)",opacity:0.3}}/>
+          <audio ref={audioRef} loop preload="auto"><source src="https://cdn.pixabay.com/download/audio/2024/03/15/audio_134567ac8d.mp3" type="audio/mpeg"/></audio>
+          <div className="stars-bg"/>
 
           <div style={{position:"fixed", top:15, right:15, zIndex:100, display:"flex", alignItems:"center", gap:15}}>
             <div style={{background:vars.panelBg, padding:"8px 15px", borderRadius:20, color:vars.gold, fontWeight:"700", border:`1px solid ${vars.gold}44`}}>
               ⭐ {points} <span style={{fontSize:10, color:vars.pPink}}>(Nível {level})</span>
             </div>
-            <button onClick={toggleMusic} style={{background:"rgba(247,37,133,0.3)", border:`1px solid ${vars.dPink}`, borderRadius:"50%", width:40, height:40, color:"white", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center"}}>
-              {musicOn ? "🎵" : "🔇"}
-            </button>
+            <button onClick={toggleMusic} style={{background:"rgba(247,37,133,0.3)", borderRadius:"50%", width:40, height:40, color:"white"}}>{musicOn ? "🎵" : "🔇"}</button>
           </div>
 
-          {toast && (
-            <div style={{position:"fixed", top:70, left:"50%", transform:"translateX(-50%)", background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})`, color:"white", padding:"12px 25px", borderRadius:30, fontSize:14, fontWeight:"600", zIndex:1000, boxShadow:`0 5px 15px rgba(0,0,0,0.3)`, animation:"fadeInDown 0.3s ease, fadeOutUp 0.3s ease 2.7s"}}>
-              {toast}
-            </div>
-          )}
-
-
-          {/* --- TELAS --- */}
+          {toast && <div style={{position:"fixed", top:70, left:"50%", transform:"translateX(-50%)", background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})`, color:"white", padding:"12px 25px", borderRadius:30, zIndex:1000}}>{toast}</div>}
 
           {screen === "home" && (
             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:"100vh", padding:20, textAlign:"center", position:"relative", zIndex:2}}>
               <div style={{position:"absolute", inset:0, backgroundImage:`url(https://i.imgur.com/G5B5S7H.png)`, backgroundSize:"cover", filter:"blur(3px) brightness(0.5)", zIndex:-1}}/>
-              
               <div className="glow" style={{fontSize:60, marginBottom:10}}>🏰</div>
-              <h1 className="glow" style={{fontFamily:vars.fontFancy, fontSize:"clamp(40px, 10vw, 64px)", color:vars.gold, margin:0, textShadow:`0 0 20px ${vars.pPink}`}}>Laura Valentina</h1>
+              <h1 className="glow" style={{fontFamily:vars.fontFancy, fontSize:"clamp(40px, 10vw, 64px)", color:vars.gold, margin:0}}>Laura Valentina</h1>
               <h2 style={{textTransform:"uppercase", letterSpacing:6, fontSize:16, color:vars.pPink, margin:"0 0 15px 0", fontWeight:"700"}}>Dream Castle</h2>
-              <p style={{fontStyle:"italic", color:"rgba(255,255,255,0.7)", maxWidth:300, marginBottom:40, fontSize:14}}>Vista suas bonecas favoritas, jogue jogos mágicos e explore o castelo real!</p>
-              
-              <button className="float" onClick={()=>setScreen("select")} style={{padding:"20px 40px", borderRadius:50, background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple}, ${vars.gold})`, color:"white", fontSize:18, fontWeight:"700", letterSpacing:1, boxShadow:`0 10px 30px rgba(247,37,133,0.6)`, textTransform:"uppercase"}}>
-                Entrar no Castelo Mágico
-              </button>
-              <div style={{marginTop:20, fontSize:12, color:"rgba(255,255,255,0.5)"}}>9 PERSONAGENS MODELO 3D - PONTOS: {points}</div>
+              <button className="float" onClick={()=>setScreen("select")} style={{padding:"20px 40px", borderRadius:50, background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple}, ${vars.gold})`, color:"white", fontSize:18, fontWeight:"700", marginTop: 20}}>Entrar no Castelo Mágico</button>
             </div>
           )}
 
@@ -606,17 +406,11 @@
             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 20px", position:"relative", zIndex:2}}>
               <BackgroundCasteloReais />
               <div className="glow" style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:40, marginBottom:5}}>Escolha sua Boneca</div>
-              <p style={{color:vars.pPink, marginTop:0, marginBottom:30}}>Selecione uma modelo para brilhar</p>
-              
-              <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(110px, 1fr))", gap:15, width:"100%", maxWidth:400}}>
+              <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(110px, 1fr))", gap:15, width:"100%", maxWidth:400, marginTop: 20}}>
                 {CHARACTERS.map(c=>(
-                  <div key={c.id} onClick={()=>selectChar(c)} style={{
-                    background:vars.panelBg, border:`1px solid rgba(255,179,217,0.3)`, borderRadius:16, padding:15, cursor:"pointer",
-                    textAlign:"center", transition:"all 0.3s ease", position:"relative", overflow:"hidden"
-                  }} className="char-card" onMouseEnter={e=>{e.currentTarget.style.borderColor=vars.gold; e.currentTarget.style.transform="translateY(-5px)"}} onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(255,179,217,0.3)'; e.currentTarget.style.transform="translateY(0)"}}>
+                  <div key={c.id} onClick={()=>selectChar(c)} style={{ background:vars.panelBg, border:`1px solid rgba(255,179,217,0.3)`, borderRadius:16, padding:15, cursor:"pointer", textAlign:"center"}}>
                     <div style={{width:"100%", height:120, backgroundImage:`url(${c.img})`, backgroundSize:"contain", backgroundPosition:"center", backgroundRepeat:"no-repeat", marginBottom:10}}/>
                     <div style={{color:vars.gold, fontWeight:"700", fontSize:14}}>{c.name}</div>
-                    <div style={{color:"rgba(255,255,255,0.6)", fontSize:10, marginTop:2}}>{c.job}</div>
                   </div>
                 ))}
               </div>
@@ -627,230 +421,109 @@
           {screen === "castle" && char && (
             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"70px 15px 30px", position:"relative", zIndex:2}}>
               <BackgroundCasteloReais />
+              <RealDoll char={char} hairS={hairS} hairC={hairC} dress={dress} shoes={shoes} acc={acc} crown={crown} onClick={()=>showToast(BARBIE_QUOTES[0])} />
               
-              <div style={{position:"relative", marginBottom:25, animation:"float 4s ease-in-out infinite"}}>
-                <RealDoll char={char} hairS={hairS} hairC={hairC} dress={dress} shoes={shoes} acc={acc} crown={crown} onClick={onDollClick} />
-                <div style={{position:"absolute", bottom:-15, left:"50%", transform:"translateX(-50%)", background:"rgba(0,0,0,0.5)", width:150, height:20, borderRadius:"50%", filter:"blur(5px)", zIndex:0}}/>
-              </div>
-
-              <div style={{textAlign:"center", marginBottom:20, zIndex:1}}>
-                <div style={{color:vars.gold, fontSize:22, fontWeight:"700", fontFamily:vars.fontFancy}}>{char.name}</div>
-                <div style={{color:"rgba(255,255,255,0.7)", fontSize:12, textTransform:"uppercase", letterSpacing:2, marginBottom:15}}>{char.job}</div>
-                <div style={{display:"flex", gap:10, justifyContent:"center"}}>
-                  <Btn primary onClick={saveLook} icon="📸">Salvar Look</Btn>
-                </div>
-              </div>
-
               <div style={PanelStyle}>
                 <div style={{display:"flex", alignItems:"center", gap:5, marginBottom:15}}>
-                  <button onClick={()=>scrollTabs(-1)} style={{background:"none", color:vars.gold, fontSize:18}}>❮</button>
-                  <div ref={scrollRef} className="hide-scroll" style={{display:"flex", gap:8, overflowX:"auto", scrollBehavior:"smooth", padding:"5px 0"}}>
-                    {TABS.map(t => (
-                      <button key={t.k} onClick={()=>setTab(t.k)} style={{
-                        flexShrink:0, padding:"8px 16px", borderRadius:20, fontSize:12, fontWeight:"600", whiteSpace:"nowrap",
-                        background: tab===t.k ? `linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})` : "rgba(255,255,255,0.05)",
-                        color: tab===t.k ? "white" : vars.pPink, border: `1px solid ${tab===t.k?vars.gold:'transparent'}`
-                      }}>{t.l}</button>
-                    ))}
+                  <button onClick={()=>scrollTabs(-1)} style={{background:"none", color:vars.gold}}>❮</button>
+                  <div ref={scrollRef} className="hide-scroll" style={{display:"flex", gap:8, overflowX:"auto"}}>
+                    {TABS.map(t => <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"8px 16px", borderRadius:20, background: tab===t.k ? vars.dPink : "rgba(255,255,255,0.05)", color: "white" }}>{t.l}</button>)}
                   </div>
-                  <button onClick={()=>scrollTabs(1)} style={{background:"none", color:vars.gold, fontSize:18}}>❯</button>
+                  <button onClick={()=>scrollTabs(1)} style={{background:"none", color:vars.gold}}>❯</button>
                 </div>
 
                 <div style={{minHeight:200}}>
-                  
                   {tab === "closet" && (
                     <div className="page-enter">
-                      <SectionTitle t="Vestidos Reais (CGI)" />
-                      <div style={{display:"flex", gap:10, overflowX:"auto", paddingBottom:10}} className="hide-scroll">
+                      <SectionTitle t="Vestidos Reais" />
+                      <div style={{display:"flex", gap:10, overflowX:"auto"}} className="hide-scroll">
                         {DRESS_ASSETS.map(img => <Swatch key={img} type="img" img={img} selected={dress===img} onClick={()=>setDress(img)} />)}
                       </div>
                       <SectionTitle t="Acessórios Brilhantes" />
-                      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10}}>
-                        <Btn active={crown} onClick={()=>setCrown(!crown)} icon="👑">Coroa Real</Btn>
-                        <Btn active={acc} onClick={()=>setAcc(!acc)} icon="📿">Colar Diamante</Btn>
-                      </div>
+                      <div style={{display:"flex", gap:10}}><Btn active={crown} onClick={()=>setCrown(!crown)} icon="👑">Coroa</Btn></div>
                     </div>
                   )}
 
                   {tab === "hair" && (
                     <div className="page-enter">
                       <SectionTitle t="Penteados Dinâmicos" />
-                      <div style={{display:"flex", gap:10, overflowX:"auto", paddingBottom:10}} className="hide-scroll">
+                      <div style={{display:"flex", gap:10, overflowX:"auto"}} className="hide-scroll">
                         {HAIR_STYLES.map(style => <Swatch key={style} type="img" img={HAIR_ASSETS[style]} selected={hairS===style} onClick={()=>setHairS(style)} />)}
                       </div>
-                       <div style={{color:"rgba(255,255,255,0.6)", fontSize:11, textAlign:"center", marginTop:4}}>Estilo atual: {hairS}</div>
                       <SectionTitle t="Cor do Cabelo" />
                       <div style={{display:"flex", gap:10, flexWrap:"wrap"}}>
-                        {HAIR_COLORS.map(color => <Swatch key={color.c} type="color" c={color.c} selected={hairC===color.c} onClick={()=>setHairC(color.c)} title={color.l} />)}
+                        {HAIR_COLORS.map(color => <Swatch key={color.c} type="color" c={color.c} selected={hairC===color.c} onClick={()=>setHairC(color.c)} />)}
                       </div>
                     </div>
                   )}
 
                   {tab === "sapatos" && (
                     <div className="page-enter">
-                      <SectionTitle t="Coleção de Sapatos Reais" />
-                      <div style={{display:"flex", gap:10, overflowX:"auto", paddingBottom:10}} className="hide-scroll">
+                      <SectionTitle t="Sapatos" />
+                      <div style={{display:"flex", gap:10, overflowX:"auto"}} className="hide-scroll">
                         {SHOE_STYLES.map(style => <Swatch key={style} type="img" img={SHOE_ASSETS[style]} selected={shoes===style} onClick={()=>setShoes(style)} />)}
                       </div>
-                      <div style={{color:"rgba(255,255,255,0.6)", fontSize:12, textAlign:"center", marginTop:5, fontWeight:"600"}}>{shoes}</div>
                     </div>
                   )}
 
                   {tab === "games" && (
                     <div className="page-enter">
-                      <SectionTitle t="Mini Jogos Mágicos" />
+                      <SectionTitle t="Mini Jogos" />
                       <div style={{display:"flex", flexDirection:"column", gap:12}}>
-                        
-                        <div style={{background:"rgba(255,255,255,0.05)", padding:15, borderRadius:12, border:`1px solid rgba(255,179,217,0.2)`}}>
-                          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8}}>
-                            <div style={{color:vars.gold, fontWeight:"600"}}>Memory Match Real 💎</div>
-                            <div style={{color:vars.pPink, fontSize:11}}>+20 estrelas/par</div>
-                          </div>
-                          <p style={{color:"rgba(255,255,255,0.7)", fontSize:12, margin:"0 0 10px 0"}}>Encontre pares de coroas, sapatos e animais marinhos reais.</p>
-                          <Btn onClick={startMemory} primary icon="🧩">Jogar Memória</Btn>
-                        </div>
-
-                        <div style={{background:"rgba(255,255,255,0.05)", padding:15, borderRadius:12, border:`1px solid ${level>=2?'rgba(255,179,217,0.2)':'#555'}`, opacity: level>=2?1:0.6}}>
-                          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8}}>
-                            <div style={{color: level>=2?vars.gold:'#aaa', fontWeight:"600"}}>Aventura no Jardim 🏃‍♀️ {level<2 && "🔒"}</div>
-                            <div style={{color:level>=2?vars.pPink:'#888', fontSize:11}}>Corrida & Obstáculos</div>
-                          </div>
-                          {level < 2 ? (
-                            <p style={{color:"#ff4d6d", fontSize:12, margin:0, fontWeight:"600"}}>🔒 Desbloqueia no Nível 2 (300 Estrelas). Você tem {points}.</p>
-                          ) : (
-                            <>
-                              <p style={{color:"rgba(255,255,255,0.7)", fontSize:12, margin:"0 0 10px 0"}}>Corra pelo jardim, pule obstáculos e colete pontos.</p>
-                              <Btn onClick={()=>setScreen("runner")} primary icon="🏁">Jogar Corrida</Btn>
-                            </>
-                          )}
-                        </div>
-
+                        <Btn onClick={startMemory} primary icon="🧩">Jogar Memória</Btn>
+                        <Btn onClick={()=>level>=2 ? setScreen("runner") : showToast("Desbloqueia no Nível 2")} primary={level>=2} icon="🏃‍♀️">Corrida {level<2 && "🔒"}</Btn>
                       </div>
                     </div>
                   )}
 
                    {tab === "arcade" && (
                     <div className="page-enter">
-                      <SectionTitle t="HUB de Jogos Arcade 9+ (Mais de 30!)" />
-                      <p style={{color:"rgba(255,255,255,0.6)", fontSize:11, marginTop:-5, marginBottom:15}}>Conteúdo profissional para mentes curiosas.</p>
-                      <div style={{display:"flex", flexDirection:"column", gap:8, maxHeight:250, overflowY:"auto", paddingRight:5}}>
-                        {ARCADE_GAMES.map(g => {
-                          const isLocked = g.level && level < g.level;
-                          return (
-                            <div key={g.id} style={{
-                              background: isLocked ? "rgba(255,255,255,0.02)" : "rgba(247,37,133,0.05)", 
-                              padding:"10px 15px", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"space-between",
-                              border:`1px solid ${isLocked?'#444':'rgba(247,37,133,0.2)'}`, opacity: isLocked?0.6:1
-                            }}>
-                              <div style={{display:"flex", alignItems:"center", gap:10}}>
-                                <span style={{fontSize:20}}>{g.icon}</span>
-                                <div>
-                                  <div style={{color:isLocked?'#aaa':vars.text, fontSize:13, fontWeight:"600"}}>{g.title} {isLocked && "🔒"}</div>
-                                  <div style={{color:vars.pPink, fontSize:10, textTransform:"uppercase"}}>{g.cat}</div>
-                                </div>
-                              </div>
-                              <button style={{marginLeft:"auto", background:isLocked?'#555':vars.dPink, color:"white", fontSize:11, padding:"5px 10px", borderRadius:6, cursor:isLocked?'not-allowed':'pointer'}}>
-                                {isLocked ? `Nv ${g.level}` : 'JOGAR'}
-                              </button>
-                            </div>
-                          )
-                        })}
+                      <SectionTitle t="HUB de Jogos Arcade" />
+                      <div style={{display:"flex", flexDirection:"column", gap:8, maxHeight:200, overflowY:"auto"}}>
+                        {ARCADE_GAMES.map(g => <div key={g.id} style={{background:"rgba(255,255,255,0.05)", padding:10, borderRadius:8, display:"flex", justifyContent:"space-between"}}>{g.icon} {g.title}</div>)}
                       </div>
-                       <div style={{color:"rgba(255,255,255,0.4)", fontSize:10, textAlign:"center", marginTop:10}}>Nota: Botões 'JOGAR' simulam o carregamento no HUB profissional.</div>
                     </div>
                   )}
 
                   {tab === "gallery" && (
                     <div className="page-enter">
-                      <SectionTitle t={`Meus Looks Salvos (${gallery.length}/10)`} />
-                      {gallery.length === 0 ? (
-                        <div style={{textAlign:"center", color:"rgba(255,255,255,0.5)", padding:"30px 0", fontStyle:"italic", fontSize:13}}>Nenhum look salvo ainda. Crie um visual incrível e clique em "Salvar Look"!</div>
-                      ) : (
-                        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10}}>
-                          {gallery.map(lk => (
-                            <div key={lk.id} style={{background:"rgba(255,255,255,0.03)", border:`1px solid rgba(255,179,217,0.2)`, borderRadius:12, padding:10, textAlign:"center"}}>
-                              <div style={{display:"flex", justifyContent:"center", transform:"scale(0.4)", height:160, marginBottom:-70, marginTop:-80}}>
-                                <RealDoll char={lk.char} hairS={lk.hairS} hairC={lk.hairC} dress={lk.dress} shoes={lk.shoes} acc={lk.acc} crown={lk.crown} size="small" />
-                              </div>
-                              <div style={{color:vars.gold, fontSize:12, fontWeight:"600"}}>{lk.char.name}</div>
-                              <button onClick={()=>{
-                                setChar(lk.char); setDress(lk.dress); setHairS(lk.hairS); setHairC(lk.hairC);
-                                setShoes(lk.shoes); setAcc(lk.acc); setCrown(lk.crown); setTab("closet");
-                                speak("Look restaurado! Ficou lindo.");
-                                showToast("✨ Look carregado!");
-                              }} style={{background:vars.dPink, color:"white", fontSize:10, padding:"4px 8px", borderRadius:4, marginTop:5}}>Carregar</button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                      <SectionTitle t="Meus Looks" />
+                      <Btn onClick={saveLook} primary icon="📸">Salvar Look Atual</Btn>
+                      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:10}}>
+                        {gallery.map(lk => <div key={lk.id} style={{background:"rgba(255,255,255,0.1)", padding:10, borderRadius:8, textAlign:"center"}}>{lk.char.name} <button onClick={()=>setChar(lk.char)}>Usar</button></div>)}
+                      </div>
                     </div>
                   )}
-
                 </div>
               </div> 
-
-              <button onClick={()=>setScreen("select")} style={{marginTop:30, background:"transparent", color:vars.pPink, border:`1px solid ${vars.dPink}`, padding:"10px 20px", borderRadius:20}}>Trocar Boneca</button>
+              <button onClick={()=>setScreen("select")} style={{marginTop:30, background:"transparent", color:vars.pPink}}>Trocar Boneca</button>
             </div>
           )}
 
-
-          {/* --- TELA JOGO DA MEMÓRIA --- */}
           {screen === "memory" && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px", position:"relative", zIndex:2}}>
+            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px", zIndex:2}}>
               <BackgroundCasteloReais />
-              <div style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:36, marginBottom:5}}>Memory Match Real</div>
-              <p style={{color:vars.pPink, margin:"0 0 20px 0"}}>Pares: {memMatched.length} / {MEMORY_ITEMS.length} ⭐ Pontos: {points}</p>
-              
+              <div style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:36, marginBottom:20}}>Memory Match</div>
               <div style={{display:"grid", gridTemplateColumns:"repeat(4, 1fr)", gap:10, width:"100%", maxWidth:380}}>
                 {memCards.map((card, index) => {
-                  const isFlipped = memFlipped.includes(index);
-                  const isMatched = memMatched.includes(card.id);
+                  const isFlipped = memFlipped.includes(index) || memMatched.includes(card.id);
                   return (
-                    <div key={card.uniqueId} onClick={()=>flipCard(index)} style={{
-                      height:90, borderRadius:12, cursor:"pointer", position:"relative",
-                      transformStyle:"preserve-3d", transition:"transform 0.5s",
-                      transform: isFlipped || isMatched ? "rotateY(180deg)" : "rotateY(0deg)",
-                    }}>
-                      <div style={{
-                        position:"absolute", inset:0, background:`linear-gradient(135deg, ${vars.lPurple}, #2a003a)`,
-                        borderRadius:12, border:`2px solid ${vars.dPink}`, display:"flex", alignItems:"center", justifyContent:"center",
-                        fontSize:30, color:vars.gold, backfaceVisibility:"hidden", zIndex:2
-                      }}>💎</div>
-                      
-                      <div style={{
-                        position:"absolute", inset:0, background:"#fff", borderRadius:12, 
-                        border:`3px solid ${isMatched? vars.gold : vars.text}`,
-                        backgroundImage:`url(${card.img})`, backgroundSize:"contain", backgroundPosition:"center", backgroundRepeat:"no-repeat",
-                        transform:"rotateY(180deg)", backfaceVisibility:"hidden", zIndex:1,
-                        boxShadow: isMatched ? `0 0 15px ${vars.gold}` : "none"
-                      }}/>
+                    <div key={card.uniqueId} onClick={()=>flipCard(index)} style={{ height:90, borderRadius:12, cursor:"pointer", position:"relative", transformStyle:"preserve-3d", transition:"transform 0.5s", transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)" }}>
+                      <div style={{ position:"absolute", inset:0, background:vars.lPurple, borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", backfaceVisibility:"hidden" }}>💎</div>
+                      <div style={{ position:"absolute", inset:0, background:`#fff url(${card.img}) center/contain no-repeat`, borderRadius:12, transform:"rotateY(180deg)", backfaceVisibility:"hidden" }}/>
                     </div>
                   );
                 })}
               </div>
-
-              {memMatched.length === MEMORY_ITEMS.length && (
-                <div style={{marginTop:25, textAlign:"center", animation:"pulseBtn 2s infinite"}}>
-                  <div style={{color:vars.gold, fontSize:20, fontWeight:"700"}}>🎉 PARABÉNS! 🎉</div>
-                  <div style={{color:"white"}}>Você completou o desafio!</div>
-                </div>
-              )}
-
-              <div style={{display:"flex", gap:10, marginTop:30}}>
-                <Btn onClick={startMemory}>Reiniciar</Btn>
-                <Btn primary onClick={()=>setScreen("castle")}>Voltar ao Castelo</Btn>
-              </div>
+              <div style={{display:"flex", gap:10, marginTop:30}}><Btn onClick={()=>setScreen("castle")}>Sair</Btn></div>
             </div>
           )}
 
-          {/* --- TELA JOGO DE CORRIDA --- */}
           {screen === "runner" && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px", position:"relative", zIndex:2}}>
-              <BackgroundCasteloReais />
-              <RunnerGame onClose={()=>setScreen("castle")} addPoints={(p)=>setPoints(prev=>prev+p)} />
-            </div>
+             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px", position:"relative", zIndex:2}}>
+                <RunnerGame onClose={()=>setScreen("castle")} addPoints={(p)=>setPoints(prev=>prev+p)} />
+             </div>
           )}
-
         </div>
       );
     }
