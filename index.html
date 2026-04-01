@@ -40,19 +40,42 @@
 
     * { box-sizing: border-box; outline: none; }
 
-    /* Scrollbar Customizada */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
     ::-webkit-scrollbar-thumb { background: var(--l-purple); border-radius: 3px; }
 
-    /* Animações */
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     @keyframes glow { 0%, 100% { text-shadow: 0 0 15px var(--gold); } 50% { text-shadow: 0 0 30px var(--p-pink), 0 0 10px var(--gold); } }
     @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(247, 37, 133, 0); } 100% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0); } }
-    @keyframes twinkle { 0% { opacity: 0.3; } 50% { opacity: 0.8; } 100% { opacity: 0.3; } }
+    
+    /* Novo Fundo de Estrelas Puro CSS Otimizado */
+    @keyframes twinkleStars { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+    
+    .stars-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 0; pointer-events: none;
+      background: #100010;
+      overflow: hidden;
+    }
+    .stars-bg::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 80px 70px, #ffd700, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 150px 160px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 290px 40px, #ff85c2, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 330px 180px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 460px 120px, #c77dff, rgba(0,0,0,0));
+      background-repeat: repeat;
+      background-size: 300px 300px;
+      animation: twinkleStars 4s infinite ease-in-out;
+    }
 
-    .page-enter { animation: fadeIn 0.5s ease-out forwards; }
+    .page-enter { animation: fadeIn 0.5s ease-out forwards; z-index: 2; position: relative; }
     .float { animation: float 3s ease-in-out infinite; }
     .glow { animation: glow 2s ease-in-out infinite; }
 
@@ -62,28 +85,11 @@
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     .hide-scroll::-webkit-scrollbar { display: none; }
 
-    /* Estilos base para assets visuais */
     .visual-asset {
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       border-radius: 10px;
-    }
-
-    /* NOVO: Fundo de Estrelas Puro CSS */
-    .stars-bg {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 1; pointer-events: none;
-      background-image: 
-        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 40px 70px, #ffd700, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 90px 40px, #ff85c2, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 160px 120px, #c77dff, rgba(0,0,0,0));
-      background-repeat: repeat;
-      background-size: 200px 200px;
-      animation: twinkle 4s infinite ease-in-out;
     }
   </style>
 </head>
@@ -93,7 +99,6 @@
   <script type="text/babel">
     const { useState, useRef, useEffect, useCallback } = React;
 
-    // --- DADOS E CONFIGURAÇÕES ---
     const vars = { 
       pPink: '#ff85c2', dPink: '#f72585', lPurple: '#c77dff', 
       gold: '#ffd700', text: '#ffffff',
@@ -108,22 +113,25 @@
       "Pronta para mais uma aventura?"
     ];
 
+    // Função auxiliar para burlar temporariamente o bloqueio do Imgur
+    const getImg = (url) => `https://wsrv.nl/?url=${encodeURIComponent(url)}`;
+
     const CHARACTERS = [
-      { id:"giovanna",  name:"Giovanna",  job:"Princesa Real",      img:"https://i.imgur.com/vHq49XU.png" },
-      { id:"laura",     name:"Laura",     job:"Master Chef",       img:"https://i.imgur.com/v3W5KxL.png" },
-      { id:"valentina", name:"Valentina", job:"Bombeira Corajosa", img:"https://i.imgur.com/G4nS23x.png" },
-      { id:"lidiane",   name:"Lidiane",   job:"Astronauta",        img:"https://i.imgur.com/uT7Wj1v.png" },
-      { id:"valcely",   name:"Valcely",   job:"Engenheira Civil",  img:"https://i.imgur.com/M6LgA7R.png" },
-      { id:"vitoria",   name:"Vitória",   job:"Presidente",        img:"https://i.imgur.com/R8M4f4y.png" },
-      { id:"ayla",      name:"Ayla",      job:"Veterinária",       img:"https://i.imgur.com/X4b5bV5.png" },
-      { id:"isa",       name:"Isa",       job:"Pediatra",          img:"https://i.imgur.com/I5S5H0Z.png" },
-      { id:"maria",     name:"Maria",     job:"Pop Star",          img:"https://i.imgur.com/w9N0m4K.png" },
+      { id:"giovanna",  name:"Giovanna",  img: getImg("https://i.imgur.com/vHq49XU.png") },
+      { id:"laura",     name:"Laura",     img: getImg("https://i.imgur.com/v3W5KxL.png") },
+      { id:"valentina", name:"Valentina", img: getImg("https://i.imgur.com/G4nS23x.png") },
+      { id:"lidiane",   name:"Lidiane",   img: getImg("https://i.imgur.com/uT7Wj1v.png") },
+      { id:"valcely",   name:"Valcely",   img: getImg("https://i.imgur.com/M6LgA7R.png") },
+      { id:"vitoria",   name:"Vitória",   img: getImg("https://i.imgur.com/R8M4f4y.png") },
+      { id:"ayla",      name:"Ayla",      img: getImg("https://i.imgur.com/X4b5bV5.png") },
+      { id:"isa",       name:"Isa",       img: getImg("https://i.imgur.com/I5S5H0Z.png") },
+      { id:"maria",     name:"Maria",     img: getImg("https://i.imgur.com/w9N0m4K.png") },
     ];
 
     const HAIR_ASSETS = {
-      Liso: "https://i.imgur.com/O6S7y28.png", Ondulado: "https://i.imgur.com/V7YqG5E.png",
-      Cacheado: "https://i.imgur.com/w4oN3p5.png", Afro: "https://i.imgur.com/H1zM93Z.png",
-      Curto: "https://i.imgur.com/vWb5Gj8.png", Chiquinha: "https://i.imgur.com/f9m4R4M.png"
+      Liso: getImg("https://i.imgur.com/O6S7y28.png"), Ondulado: getImg("https://i.imgur.com/V7YqG5E.png"),
+      Cacheado: getImg("https://i.imgur.com/w4oN3p5.png"), Afro: getImg("https://i.imgur.com/H1zM93Z.png"),
+      Curto: getImg("https://i.imgur.com/vWb5Gj8.png"), Chiquinha: getImg("https://i.imgur.com/f9m4R4M.png")
     };
     const HAIR_STYLES = Object.keys(HAIR_ASSETS);
     const HAIR_COLORS = [
@@ -132,34 +140,34 @@
     ];
 
     const DRESS_ASSETS = [
-      "https://i.imgur.com/S6M5SgE.png", "https://i.imgur.com/A6j5E8G.png",
-      "https://i.imgur.com/U8E6f3P.png", "https://i.imgur.com/C4B3n2L.png",
-      "https://i.imgur.com/R3S1X2M.png", "https://i.imgur.com/G5K2L1V.png",
+      getImg("https://i.imgur.com/S6M5SgE.png"), getImg("https://i.imgur.com/A6j5E8G.png"),
+      getImg("https://i.imgur.com/U8E6f3P.png"), getImg("https://i.imgur.com/C4B3n2L.png"),
+      getImg("https://i.imgur.com/R3S1X2M.png"), getImg("https://i.imgur.com/G5K2L1V.png"),
     ];
 
     const SHOE_ASSETS = {
-      "Scarpin Cristal": "https://i.imgur.com/M4w4K6F.png", "Sapatilha Ouro": "https://i.imgur.com/X1M5S7H.png",
-      "Bota Fashion": "https://i.imgur.com/E3V6G4K.png", "Sandália Verão": "https://i.imgur.com/V3F5L7M.png",
-      "Tênis Casual": "https://i.imgur.com/T4Y6N7H.png"
+      "Scarpin Cristal": getImg("https://i.imgur.com/M4w4K6F.png"), "Sapatilha Ouro": getImg("https://i.imgur.com/X1M5S7H.png"),
+      "Bota Fashion": getImg("https://i.imgur.com/E3V6G4K.png"), "Sandália Verão": getImg("https://i.imgur.com/V3F5L7M.png"),
+      "Tênis Casual": getImg("https://i.imgur.com/T4Y6N7H.png")
     };
     const SHOE_STYLES = Object.keys(SHOE_ASSETS);
 
     const MEMORY_ITEMS = [
-      { id: 1, img: "https://i.imgur.com/f7jD0wX.png", type: 'coroa' }, { id: 2, img: "https://i.imgur.com/7H6N4Fw.png", type: 'sapato' },
-      { id: 3, img: "https://i.imgur.com/E4G4C9W.png", type: 'anel' }, { id: 4, img: "https://i.imgur.com/C3M8B3D.png", type: 'bolsa' },
-      { id: 5, img: "https://i.imgur.com/L1M4K2E.png", type: 'peixe' }, { id: 6, img: "https://i.imgur.com/M5G7S7A.png", type: 'baleia' },
-      { id: 7, img: "https://i.imgur.com/R1T3V2C.png", type: 'colar' }, { id: 8, img: "https://i.imgur.com/W2S4A3B.png", type: 'golfinho'},
+      { id: 1, img: getImg("https://i.imgur.com/f7jD0wX.png"), type: 'coroa' }, { id: 2, img: getImg("https://i.imgur.com/7H6N4Fw.png"), type: 'sapato' },
+      { id: 3, img: getImg("https://i.imgur.com/E4G4C9W.png"), type: 'anel' }, { id: 4, img: getImg("https://i.imgur.com/C3M8B3D.png"), type: 'bolsa' },
+      { id: 5, img: getImg("https://i.imgur.com/L1M4K2E.png"), type: 'peixe' }, { id: 6, img: getImg("https://i.imgur.com/M5G7S7A.png"), type: 'baleia' },
+      { id: 7, img: getImg("https://i.imgur.com/R1T3V2C.png"), type: 'colar' }, { id: 8, img: getImg("https://i.imgur.com/W2S4A3B.png"), type: 'golfinho'},
     ];
 
     const ARCADE_GAMES = [
       { id: 'run', title: 'Aventura no Jardim', cat: 'Ação', icon: '🏃‍♀️', unlocked: false, level: 2 },
       { id: 'quiz_m', title: 'Mistérios do Mar ✨', cat: 'Quiz', icon: '🧜‍♀️' },
       { id: 'quiz_u', title: 'Explorando o Universo 🚀', cat: 'Quiz', icon: '🌌' },
-      { id: 'quiz_b', title: 'Histórias da Criação 📖', cat: 'Quiz (Bíblico)', icon: '🙏' },
+      { id: 'quiz_b', title: 'Histórias da Criação 📖', cat: 'Quiz', icon: '🙏' },
       { id: 'climb', title: 'Escalada Real', cat: 'Habilidade', icon: '🧗‍♀️' },
       { id: 'puzzle', title: 'Quebra-Cabeça de Luxo', cat: 'Raciocínio', icon: '🧩' },
       { id: 'match3', title: 'Joias Mágicas Connect', cat: 'Raciocínio', icon: '💎' },
-      { id: 'makeup', title: 'Salão de Maquiagem Mágica', cat: 'Criatividade', icon: '💄' }
+      { id: 'makeup', title: 'Salão de Maquiagem', cat: 'Criatividade', icon: '💄' }
     ];
 
     const shuffle = a => [...a].sort(()=>Math.random()-0.5);
@@ -185,18 +193,18 @@
           filter: "drop-shadow(0 10px 15px rgba(0,0,0,0.5))"
         }} className={onClick ? "doll-interactive" : ""}>
           
-          <div style={{ position:"absolute", inset:0, backgroundImage:`url(${char.img})`, zIndex: 1, ...visualAssetStyle }}/>
+          <div style={{ position:"absolute", inset:0, backgroundImage:`url("${char.img}")`, zIndex: 1, ...visualAssetStyle }}/>
 
           <div style={{
             position:"absolute", top:"-5%", left:"15%", width:"70%", height:"40%",
-            backgroundImage:`url(${HAIR_ASSETS[hairS]})`, filter: `drop-shadow(0 0 2px ${hairC}aa)`, zIndex: 5, ...visualAssetStyle
+            backgroundImage:`url("${HAIR_ASSETS[hairS]}")`, filter: `drop-shadow(0 0 2px ${hairC}aa)`, zIndex: 5, ...visualAssetStyle
           }}/>
 
-          <div style={{ position:"absolute", top:"20%", left:"5%", width:"90%", height:"70%", backgroundImage:`url(${dress})`, zIndex: 3, ...visualAssetStyle }}/>
-          <div style={{ position:"absolute", bottom:"-2%", left:"20%", width:"60%", height:"15%", backgroundImage:`url(${SHOE_ASSETS[shoes]})`, zIndex: 2, ...visualAssetStyle }}/>
+          <div style={{ position:"absolute", top:"20%", left:"5%", width:"90%", height:"70%", backgroundImage:`url("${dress}")`, zIndex: 3, ...visualAssetStyle }}/>
+          <div style={{ position:"absolute", bottom:"-2%", left:"20%", width:"60%", height:"15%", backgroundImage:`url("${SHOE_ASSETS[shoes]}")`, zIndex: 2, ...visualAssetStyle }}/>
 
-          {crown && <div style={{position:"absolute", top:"-8%", left:"35%", width:"30%", height:"15%", backgroundImage:`url(https://i.imgur.com/W29F1Yf.png)`, zIndex: 6, ...visualAssetStyle}}/>}
-          {acc && <div style={{position:"absolute", top:"18%", left:"30%", width:"40%", height:"10%", backgroundImage:`url(https://i.imgur.com/8Q6N4R4.png)`, zIndex: 4, ...visualAssetStyle}}/>}
+          {crown && <div style={{position:"absolute", top:"-8%", left:"35%", width:"30%", height:"15%", backgroundImage:`url("${getImg('https://i.imgur.com/W29F1Yf.png')}")`, zIndex: 6, ...visualAssetStyle}}/>}
+          {acc && <div style={{position:"absolute", top:"18%", left:"30%", width:"40%", height:"10%", backgroundImage:`url("${getImg('https://i.imgur.com/8Q6N4R4.png')}")`, zIndex: 4, ...visualAssetStyle}}/>}
         </div>
       );
     }
@@ -204,7 +212,7 @@
     const Swatch = ({c, img, selected, onClick, type="color"}) => (
       <div onClick={onClick} style={{
         width:45, height:45, borderRadius: type==="color"?"50%":"8px", 
-        background: type==="color"?c:`url(${img})`, backgroundSize:"cover", backgroundPosition:"center",
+        background: type==="color"?c:`url("${img}")`, backgroundSize:"cover", backgroundPosition:"center",
         cursor:"pointer", border:`3px solid ${selected?vars.gold:'rgba(255,255,255,0.2)'}`,
         transform:selected?"scale(1.1)":"scale(1)", transition:"all 0.2s",
         boxShadow:selected?`0 0 15px ${vars.dPink}`:"none", flexShrink:0,
@@ -225,12 +233,12 @@
 
     const BackgroundCasteloReais = () => (
       <div style={{
-        position:"fixed", inset:0, zIndex:0,
-        backgroundImage:`url(https://i.imgur.com/G5B5S7H.png)`, 
-        backgroundSize:"cover", backgroundPosition:"center", filter:"blur(2px) brightness(0.7)"
+        position:"absolute", inset:0, zIndex:-1,
+        backgroundImage:`url("${getImg('https://i.imgur.com/G5B5S7H.png')}")`, 
+        backgroundSize:"cover", backgroundPosition:"center", filter:"blur(2px) brightness(0.4)"
       }}>
-        <div style={{position:"absolute", bottom:"10%", left:"5%", width:120, height:120, backgroundImage:`url(https://i.imgur.com/X4b5bV5.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 4s infinite", opacity:0.8}} />
-        <div style={{position:"absolute", top:"20%", right:"10%", width:80, height:80, backgroundImage:`url(https://i.imgur.com/I5S5H0Z.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 3s infinite", opacity:0.7}} />
+        <div style={{position:"absolute", bottom:"10%", left:"5%", width:120, height:120, backgroundImage:`url("${getImg('https://i.imgur.com/X4b5bV5.png')}")`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 4s infinite", opacity:0.8}} />
+        <div style={{position:"absolute", top:"20%", right:"10%", width:80, height:80, backgroundImage:`url("${getImg('https://i.imgur.com/I5S5H0Z.png')}")`, backgroundSize:"contain", backgroundRepeat:"no-repeat", animation:"float 3s infinite", opacity:0.7}} />
       </div>
     );
 
@@ -280,7 +288,7 @@
         const spawnDelay = Math.max(600, 2000 - (gameSpeed * 100));
         const spawnInterval = setInterval(() => {
             const type = Math.random() > 0.5 ? 'pedra' : 'tronco';
-            const img = type === 'pedra' ? "https://i.imgur.com/K1Y5S7H.png" : "https://i.imgur.com/E4G4C9W.png";
+            const img = type === 'pedra' ? getImg("https://i.imgur.com/K1Y5S7H.png") : getImg("https://i.imgur.com/E4G4C9W.png");
             setObstacles(prev => [...prev, { id: Date.now(), x: GAME_WIDTH + 50, y: LANE_Y + 10, w: 40, h: 40, img: img }]);
         }, spawnDelay);
 
@@ -293,9 +301,9 @@
       return (
         <div style={{display:"flex",flexDirection:"column",alignItems:"center",animation:"fadeIn 0.5s ease"}}>
           <div style={{color:vars.gold, fontSize:20, fontWeight:"700", marginBottom:10, fontFamily:vars.fontFancy}}>Aventura no Jardim 🏃‍♀️</div>
-          <div style={{ width: GAME_WIDTH, height: GAME_HEIGHT, background:`url(https://i.imgur.com/G5F5S7H.png) bottom/cover`, borderRadius:16, position:"relative", overflow:"hidden", border:`4px solid ${vars.lPurple}` }}>
-            <div style={{ position:"absolute", left: BARBIE_X, top: barbieY, width: 40, height: 60, backgroundImage:`url(https://i.imgur.com/vHq49XU.png)`, backgroundSize:"contain", backgroundRepeat:"no-repeat", zIndex: 10, transform: gameOver ? "rotate(90deg)" : "none" }}/>
-            {obstacles.map(obs => <div key={obs.id} style={{ position:"absolute", left: obs.x, top: obs.y, width: obs.w, height: obs.h, backgroundImage:`url(${obs.img})`, backgroundSize:"contain", backgroundRepeat:"no-repeat", zIndex: 5 }}/>)}
+          <div style={{ width: GAME_WIDTH, maxWidth: "100%", height: GAME_HEIGHT, background:`url("${getImg('https://i.imgur.com/G5F5S7H.png')}") bottom/cover`, borderRadius:16, position:"relative", overflow:"hidden", border:`4px solid ${vars.lPurple}` }}>
+            <div style={{ position:"absolute", left: BARBIE_X, top: barbieY, width: 40, height: 60, backgroundImage:`url("${getImg('https://i.imgur.com/vHq49XU.png')}")`, backgroundSize:"contain", backgroundRepeat:"no-repeat", zIndex: 10, transform: gameOver ? "rotate(90deg)" : "none" }}/>
+            {obstacles.map(obs => <div key={obs.id} style={{ position:"absolute", left: obs.x, top: obs.y, width: obs.w, height: obs.h, backgroundImage:`url("${obs.img}")`, backgroundSize:"contain", backgroundRepeat:"no-repeat", zIndex: 5 }}/>)}
             <div style={{position:"absolute", bottom:0, left:0, width:"100%", height:20, background:"#4a2e00", zIndex:1}}/>
             {(!playing || gameOver) && (
               <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.7)", zIndex:20, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:15 }}>
@@ -393,8 +401,8 @@
           {toast && <div style={{position:"fixed", top:70, left:"50%", transform:"translateX(-50%)", background:`linear-gradient(135deg, ${vars.dPink}, ${vars.lPurple})`, color:"white", padding:"12px 25px", borderRadius:30, zIndex:1000}}>{toast}</div>}
 
           {screen === "home" && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:"100vh", padding:20, textAlign:"center", position:"relative", zIndex:2}}>
-              <div style={{position:"absolute", inset:0, backgroundImage:`url(https://i.imgur.com/G5B5S7H.png)`, backgroundSize:"cover", filter:"blur(3px) brightness(0.5)", zIndex:-1}}/>
+            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:"100vh", padding:20, textAlign:"center", position:"relative"}}>
+              <div style={{position:"absolute", inset:0, backgroundImage:`url("${getImg('https://i.imgur.com/G5B5S7H.png')}")`, backgroundSize:"cover", filter:"blur(3px) brightness(0.4)", zIndex:-1}}/>
               <div className="glow" style={{fontSize:60, marginBottom:10}}>🏰</div>
               <h1 className="glow" style={{fontFamily:vars.fontFancy, fontSize:"clamp(40px, 10vw, 64px)", color:vars.gold, margin:0}}>Laura Valentina</h1>
               <h2 style={{textTransform:"uppercase", letterSpacing:6, fontSize:16, color:vars.pPink, margin:"0 0 15px 0", fontWeight:"700"}}>Dream Castle</h2>
@@ -403,13 +411,13 @@
           )}
 
           {screen === "select" && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 20px", position:"relative", zIndex:2}}>
+            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 20px"}}>
               <BackgroundCasteloReais />
-              <div className="glow" style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:40, marginBottom:5}}>Escolha sua Boneca</div>
+              <div className="glow" style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:40, marginBottom:5, textAlign: "center"}}>Escolha sua Boneca</div>
               <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(110px, 1fr))", gap:15, width:"100%", maxWidth:400, marginTop: 20}}>
                 {CHARACTERS.map(c=>(
                   <div key={c.id} onClick={()=>selectChar(c)} style={{ background:vars.panelBg, border:`1px solid rgba(255,179,217,0.3)`, borderRadius:16, padding:15, cursor:"pointer", textAlign:"center"}}>
-                    <div style={{width:"100%", height:120, backgroundImage:`url(${c.img})`, backgroundSize:"contain", backgroundPosition:"center", backgroundRepeat:"no-repeat", marginBottom:10}}/>
+                    <div style={{width:"100%", height:120, backgroundImage:`url("${c.img}")`, backgroundSize:"contain", backgroundPosition:"center", backgroundRepeat:"no-repeat", marginBottom:10}}/>
                     <div style={{color:vars.gold, fontWeight:"700", fontSize:14}}>{c.name}</div>
                   </div>
                 ))}
@@ -419,7 +427,7 @@
           )}
 
           {screen === "castle" && char && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"70px 15px 30px", position:"relative", zIndex:2}}>
+            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"70px 15px 30px"}}>
               <BackgroundCasteloReais />
               <RealDoll char={char} hairS={hairS} hairC={hairC} dress={dress} shoes={shoes} acc={acc} crown={crown} onClick={()=>showToast(BARBIE_QUOTES[0])} />
               
@@ -427,7 +435,7 @@
                 <div style={{display:"flex", alignItems:"center", gap:5, marginBottom:15}}>
                   <button onClick={()=>scrollTabs(-1)} style={{background:"none", color:vars.gold}}>❮</button>
                   <div ref={scrollRef} className="hide-scroll" style={{display:"flex", gap:8, overflowX:"auto"}}>
-                    {TABS.map(t => <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"8px 16px", borderRadius:20, background: tab===t.k ? vars.dPink : "rgba(255,255,255,0.05)", color: "white" }}>{t.l}</button>)}
+                    {TABS.map(t => <button key={t.k} onClick={()=>setTab(t.k)} style={{ padding:"8px 16px", borderRadius:20, background: tab===t.k ? vars.dPink : "rgba(255,255,255,0.05)", color: "white", flexShrink: 0 }}>{t.l}</button>)}
                   </div>
                   <button onClick={()=>scrollTabs(1)} style={{background:"none", color:vars.gold}}>❯</button>
                 </div>
@@ -501,7 +509,7 @@
           )}
 
           {screen === "memory" && (
-            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px", zIndex:2}}>
+            <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px"}}>
               <BackgroundCasteloReais />
               <div style={{fontFamily:vars.fontFancy, color:vars.gold, fontSize:36, marginBottom:20}}>Memory Match</div>
               <div style={{display:"grid", gridTemplateColumns:"repeat(4, 1fr)", gap:10, width:"100%", maxWidth:380}}>
@@ -510,7 +518,7 @@
                   return (
                     <div key={card.uniqueId} onClick={()=>flipCard(index)} style={{ height:90, borderRadius:12, cursor:"pointer", position:"relative", transformStyle:"preserve-3d", transition:"transform 0.5s", transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)" }}>
                       <div style={{ position:"absolute", inset:0, background:vars.lPurple, borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", backfaceVisibility:"hidden" }}>💎</div>
-                      <div style={{ position:"absolute", inset:0, background:`#fff url(${card.img}) center/contain no-repeat`, borderRadius:12, transform:"rotateY(180deg)", backfaceVisibility:"hidden" }}/>
+                      <div style={{ position:"absolute", inset:0, background:`#fff url("${card.img}") center/contain no-repeat`, borderRadius:12, transform:"rotateY(180deg)", backfaceVisibility:"hidden" }}/>
                     </div>
                   );
                 })}
@@ -520,7 +528,7 @@
           )}
 
           {screen === "runner" && (
-             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px", position:"relative", zIndex:2}}>
+             <div className="page-enter" style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"60px 15px"}}>
                 <RunnerGame onClose={()=>setScreen("castle")} addPoints={(p)=>setPoints(prev=>prev+p)} />
              </div>
           )}
