@@ -1,31 +1,174 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laura Valentina ✨ Dream Castle Adventure</title>
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- React -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-
-  <!-- Babel (necessário pro JSX funcionar) -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laura Valentina ✨ Dream Castle</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <!-- ROOT DO REACT -->
-  <div id="root"></div>
 
-  <!-- SCRIPT DO JOGO -->
-  <script type="text/babel" src="script.js"></script>
+<div id="stars-bg"></div>
+
+<!-- HOME -->
+
+<div class="screen active" id="home">
+  <div class="home-doll-placeholder" id="home-doll">👑</div>
+  <div class="home-logo">Laura Valentina</div>
+  <div class="home-sub">✨ DREAM CASTLE ✨</div>
+  <button class="enter-btn" onclick="go('select');sfx('magic')">ENTRAR NO CASTELO</button>
+</div>
+
+<!-- SELECT -->
+
+<div class="screen" id="select">
+  <button class="back-btn" onclick="go('home')">← Voltar</button>
+  <div class="select-title">Escolha sua Boneca 🎀</div>
+  <div class="chars-grid" id="chars-grid"></div>
+</div>
+
+<!-- CASTLE HUB -->
+
+<div class="screen" id="castle">
+  <button class="back-btn" onclick="go('select')">← Trocar</button>
+  <div class="castle-header" id="castle-header"></div>
+  <div class="castle-bg">
+    <div class="castle-glow"></div>
+    <div class="castle-emoji">🏰</div>
+  </div>
+  <div class="menu-grid">
+    <div class="menu-tile" onclick="go('vestir');sfx('click')">
+      <div class="tile-icon">👗</div>
+      <div class="tile-label">Vestir</div>
+      <div class="tile-sub">Monte o look</div>
+    </div>
+    <div class="menu-tile" onclick="go('passarela');sfx('click')">
+      <div class="tile-icon">💃</div>
+      <div class="tile-label">Passarela</div>
+      <div class="tile-sub">Mostre estilo</div>
+    </div>
+    <div class="menu-tile" onclick="go('aventura');sfx('click');startStory()">
+      <div class="tile-icon">🌟</div>
+      <div class="tile-label">Aventura</div>
+      <div class="tile-sub">Escolha o caminho</div>
+    </div>
+    <div class="menu-tile" onclick="go('salao');sfx('click')">
+      <div class="tile-icon">💄</div>
+      <div class="tile-label">Salão</div>
+      <div class="tile-sub">Beleza total</div>
+    </div>
+    <div class="menu-tile" onclick="go('quiz');sfx('click');startQuiz()">
+      <div class="tile-icon">🧠</div>
+      <div class="tile-label">Quiz</div>
+      <div class="tile-sub">Teste seu estilo</div>
+    </div>
+    <div class="menu-tile" onclick="go('decore');sfx('click')">
+      <div class="tile-icon">🏠</div>
+      <div class="tile-label">Decorar</div>
+      <div class="tile-sub">Seu quarto</div>
+    </div>
+  </div>
+</div>
+
+<!-- VESTIR -->
+
+<div class="screen" id="vestir">
+  <button class="back-btn" onclick="go('castle')">← Voltar</button>
+  <div class="section-title">👗 Vestir a Boneca</div>
+  <div class="doll-stage">
+    <div class="doll-placeholder" id="vestir-doll">👗</div>
+  </div>
+  <div class="outfits-panel">
+    <div class="section-label">Escolha o Look</div>
+    <div class="outfit-row" id="outfit-row"></div>
+  </div>
+</div>
+
+<!-- PASSARELA -->
+
+<div class="screen" id="passarela">
+  <button class="back-btn" onclick="go('castle')">← Voltar</button>
+  <div class="section-title">💃 Passarela</div>
+  <div class="runway-stage" id="runway-stage">
+    <div class="runway-lights" id="runway-lights"></div>
+    <div class="runway-floor"></div>
+    <div class="runway-model" id="runway-model" style="left:10px">
+      <div class="runway-model-placeholder" id="runway-doll">🧍‍♀️</div>
+    </div>
+  </div>
+  <div class="score-bar">
+    <span style="color:rgba(255,255,255,0.7);font-size:.9rem;">⭐ Pontuação</span>
+    <span class="score-num" id="runway-score">0</span>
+  </div>
+  <div class="action-row">
+    <button class="action-btn" onclick="runwayDo('walk')">👑 Caminhar</button>
+    <button class="action-btn" onclick="runwayDo('pose')">💅 Posar</button>
+    <button class="action-btn" onclick="runwayDo('spin')">🌀 Girar</button>
+    <button class="action-btn" onclick="runwayDo('wave')">💖 Acenar</button>
+    <button class="action-btn" onclick="runwayDo('kiss')">💋 Beijo</button>
+  </div>
+</div>
+
+<!-- AVENTURA -->
+
+<div class="screen" id="aventura">
+  <button class="back-btn" onclick="go('castle')">← Voltar</button>
+  <div class="section-title">🌟 Aventura</div>
+  <div class="story-card">
+    <div class="story-scene-placeholder" id="story-scene">🏰</div>
+    <div class="story-body">
+      <div class="story-text" id="story-text"></div>
+      <div class="choice-list" id="story-choices"></div>
+      <div class="hearts" id="story-hearts">❤️❤️❤️</div>
+    </div>
+  </div>
+</div>
+
+<!-- SALÃO -->
+
+<div class="screen" id="salao">
+  <button class="back-btn" onclick="go('castle')">← Voltar</button>
+  <div class="section-title">💄 Salão de Beleza</div>
+  <div class="beauty-doll-placeholder" id="salao-doll">💋</div>
+  <div class="beauty-grid" id="beauty-grid"></div>
+</div>
+
+<!-- QUIZ -->
+
+<div class="screen" id="quiz">
+  <button class="back-btn" onclick="go('castle')">← Voltar</button>
+  <div class="section-title">🧠 Quiz de Estilo</div>
+  <div class="quiz-card">
+    <div class="quiz-score" id="quiz-score">0 pts</div>
+    <div class="quiz-q" id="quiz-q"></div>
+    <div class="quiz-opts" id="quiz-opts"></div>
+  </div>
+</div>
+
+<!-- DECORAR -->
+
+<div class="screen" id="decore">
+  <button class="back-btn" onclick="go('castle')">← Voltar</button>
+  <div class="section-title">🏠 Decorar Quarto</div>
+  <div class="room-wrap">
+    <div class="room-bg" id="room-bg"
+      style="background:linear-gradient(180deg,#FFB3C6 0%,#FFC8DD 60%,#F8A5C2 100%);">
+    </div>
+    <div class="room-item-el" style="left:50px;top:50px;" id="ri0">🛏️</div>
+    <div class="room-item-el" style="left:150px;top:70px;" id="ri1">🪞</div>
+    <div class="room-item-el" style="left:20px;top:130px;" id="ri2">💐</div>
+  </div>
+  <div class="deco-panel-wrap">
+    <div class="section-label">Adicionar</div>
+    <div class="deco-items-row" id="deco-items-row"></div>
+    <div class="section-label" style="margin-top:12px;">Cor do Quarto</div>
+    <div class="bg-swatches" id="bg-swatches"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
