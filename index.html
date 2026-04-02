@@ -1,18 +1,15 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Laura Valentina ✨ Dream Castle</title>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laura Valentina ✨ Dream Castle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="stars-bg"></div>
-
-<!-- HOME -->
 
 <div class="screen active" id="home">
   <div class="home-doll-placeholder" id="home-doll">👑</div>
@@ -21,15 +18,11 @@
   <button class="enter-btn" onclick="go('select');sfx('magic')">ENTRAR NO CASTELO</button>
 </div>
 
-<!-- SELECT -->
-
 <div class="screen" id="select">
   <button class="back-btn" onclick="go('home')">← Voltar</button>
   <div class="select-title">Escolha sua Boneca 🎀</div>
   <div class="chars-grid" id="chars-grid"></div>
 </div>
-
-<!-- CASTLE HUB -->
 
 <div class="screen" id="castle">
   <button class="back-btn" onclick="go('select')">← Trocar</button>
@@ -72,8 +65,6 @@
   </div>
 </div>
 
-<!-- VESTIR -->
-
 <div class="screen" id="vestir">
   <button class="back-btn" onclick="go('castle')">← Voltar</button>
   <div class="section-title">👗 Vestir a Boneca</div>
@@ -85,8 +76,6 @@
     <div class="outfit-row" id="outfit-row"></div>
   </div>
 </div>
-
-<!-- PASSARELA -->
 
 <div class="screen" id="passarela">
   <button class="back-btn" onclick="go('castle')">← Voltar</button>
@@ -111,8 +100,6 @@
   </div>
 </div>
 
-<!-- AVENTURA -->
-
 <div class="screen" id="aventura">
   <button class="back-btn" onclick="go('castle')">← Voltar</button>
   <div class="section-title">🌟 Aventura</div>
@@ -126,16 +113,12 @@
   </div>
 </div>
 
-<!-- SALÃO -->
-
 <div class="screen" id="salao">
   <button class="back-btn" onclick="go('castle')">← Voltar</button>
   <div class="section-title">💄 Salão de Beleza</div>
   <div class="beauty-doll-placeholder" id="salao-doll">💋</div>
   <div class="beauty-grid" id="beauty-grid"></div>
 </div>
-
-<!-- QUIZ -->
 
 <div class="screen" id="quiz">
   <button class="back-btn" onclick="go('castle')">← Voltar</button>
@@ -146,8 +129,6 @@
     <div class="quiz-opts" id="quiz-opts"></div>
   </div>
 </div>
-
-<!-- DECORAR -->
 
 <div class="screen" id="decore">
   <button class="back-btn" onclick="go('castle')">← Voltar</button>
@@ -169,6 +150,5 @@
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
