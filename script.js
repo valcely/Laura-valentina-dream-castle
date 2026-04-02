@@ -19,11 +19,11 @@ const CHARACTERS = [
 //  OUTFITS (looks para o jogo de vestir)
 // =============================================
 const OUTFITS = [
-{ img:‘images/IMG_6056.jpeg’, label:‘Rosa Floral’,  emoji:‘👗’ },
+{ img:‘images/IMG_6030.jpeg’, label:‘Rosa Floral’,  emoji:‘👗’ },
 { img:‘images/IMG_6025.jpeg’, label:‘Brilhosa’,     emoji:‘✨’ },
-{ img:‘images/IMG_6035.jpeg’, label:‘All Pink’,     emoji:‘💗’ },
-{ img:‘images/IMG_6022.jpeg’, label:‘Tutu Rosa’,    emoji:‘🌸’ },
-{ img:‘images/IMG_6023.jpeg’, label:‘Mini Rosa’,    emoji:‘💜’ },
+{ img:‘images/IMG_6033.jpeg’, label:‘All Pink’,     emoji:‘💗’ },
+{ img:‘images/IMG_6034.jpeg’, label:‘Tutu Rosa’,    emoji:‘🌸’ },
+{ img:‘images/IMG_6032.jpeg’, label:‘Mini Rosa’,    emoji:‘💜’ },
 { img:‘images/IMG_6064.jpeg’, label:‘Roxo’,         emoji:‘🎀’ },
 { img:‘images/IMG_6060.jpeg’, label:‘Renda’,        emoji:‘🩵’ },
 { img:‘images/IMG_6034.jpeg’, label:‘Blazer’,       emoji:‘⚫’ },
