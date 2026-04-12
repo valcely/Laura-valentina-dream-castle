@@ -1,209 +1,295 @@
 <!DOCTYPE html>
 
-<html lang="pt-BR">
+<html lang="pt-BR" id="html-root">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Laura Valentina - Dream Castle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- HUD -->
+<canvas id="bg-particles" aria-hidden="true"></canvas>
 
-<div id="hud" class="hud hidden">
+<div id="global-hud" class="global-hud hidden">
   <div class="hud-left">
-    <span id="hud-char">👸 Laura</span>
+    <span id="hud-date">01/01/2026</span>
+    <span id="hud-time">00:00</span>
   </div>
   <div class="hud-center">
-    <span id="hud-time">00:00</span>
-    <span id="hud-session">⏱ 0s</span>
+    <span id="hud-char-name">Princesa</span>
   </div>
   <div class="hud-right">
-    <span id="hud-date">01/01</span>
+    <span id="hud-session-lbl">Sessao: </span><span id="hud-session">0s</span>
   </div>
 </div>
 
-<!-- SCREENS -->
+<div id="lang-switcher" class="lang-switcher">
+  <button class="lang-btn active" data-lang="pt" onclick="setLang('pt')">PT</button>
+  <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
+</div>
+
+<div id="toast-msg" class="toast-msg hidden"></div>
 
 <!-- HOME -->
 
 <div class="screen active" id="screen-home">
-  <canvas id="bg-canvas"></canvas>
-  <div class="home-content">
-    <div class="castle-logo">
-      <div class="logo-tower">🏰</div>
-      <h1 class="logo-title">Laura Valentina</h1>
-      <p class="logo-sub">✨ DREAM CASTLE ✨</p>
-    </div>
-    <div class="home-chars">
-      <div class="home-char" style="--c:#ff6eb4">
-        <div class="roblox-doll" data-hair="#ff2d7a" data-outfit="#ff6eb4" data-job="ARQ"></div>
-        <span>Laura</span>
-      </div>
-      <div class="home-char" style="--c:#b76eff">
-        <div class="roblox-doll" data-hair="#7b00ff" data-outfit="#b76eff" data-job="CIE"></div>
-        <span>Valentina</span>
-      </div>
-      <div class="home-char" style="--c:#ff4fb8">
-        <div class="roblox-doll" data-hair="#c200a0" data-outfit="#ff4fb8" data-job="MED"></div>
-        <span>Giovanna</span>
-      </div>
-    </div>
-    <button class="btn-primary btn-pulse" onclick="goScreen('screen-select')">
-      🏰 ENTRAR NO CASTELO
-    </button>
+  <div class="home-wrapper">
+    <img src="https://cdn-icons-png.flaticon.com/512/3820/3820331.png" alt="Castelo" class="home-castle-img floating">
+    <h1 class="home-title">Laura Valentina</h1>
+    <p class="home-sub" id="txt-home-sub">Dream Castle</p>
+    <div class="home-chars-row" id="home-chars-row"></div>
+    <button class="btn-primary btn-glow" onclick="goScreen('screen-select')" id="txt-btn-enter">Entrar no Castelo</button>
+    <button class="btn-secondary" onclick="toggleMusic()" id="music-btn">Musica: ON</button>
   </div>
 </div>
 
-<!-- SELECT CHARACTER -->
+<!-- SELECT -->
 
 <div class="screen" id="screen-select">
-  <div class="screen-header">
-    <button class="btn-back" onclick="goScreen('screen-home')">← Voltar</button>
-    <h2>Escolha sua Princesa 👑</h2>
+  <div class="screen-inner">
+    <button class="btn-back" onclick="goScreen('screen-home')">&#8592; Voltar</button>
+    <h2 class="section-title" id="txt-select-title">Escolha sua Princesa</h2>
+    <div class="chars-grid" id="chars-grid"></div>
   </div>
-  <div class="chars-grid" id="chars-grid"></div>
 </div>
 
-<!-- MAIN MENU (Castle Hub) -->
+<!-- MENU -->
 
 <div class="screen" id="screen-menu">
-  <div class="screen-header">
-    <button class="btn-back" onclick="goScreen('screen-select')">← Trocar</button>
-    <div id="menu-char-display"></div>
-  </div>
-  <div class="menu-tiles">
-    <div class="menu-tile tile-explore" onclick="goScreen('screen-explore')">
-      <span class="tile-emoji">🏰</span>
-      <span class="tile-title">EXPLORAR</span>
-      <span class="tile-desc">Explore o castelo</span>
-      <span class="tile-badge">NOVO</span>
-    </div>
-    <div class="menu-tile tile-custom" onclick="goScreen('screen-custom')">
-      <span class="tile-emoji">👗</span>
-      <span class="tile-title">AVATAR</span>
-      <span class="tile-desc">Customize seu look</span>
-    </div>
-    <div class="menu-tile tile-memory" onclick="startMemory()">
-      <span class="tile-emoji">🧩</span>
-      <span class="tile-title">MEMÓRIA</span>
-      <span class="tile-desc">Jogo dos pares</span>
-    </div>
-    <div class="menu-tile tile-runner" onclick="goScreen('screen-runner');startRunner()">
-      <span class="tile-emoji">🌟</span>
-      <span class="tile-title">CORRIDA</span>
-      <span class="tile-desc">Desvie obstáculos</span>
+  <div class="screen-inner">
+    <button class="btn-back" onclick="goScreen('screen-select')">&#8592; Voltar</button>
+    <div class="menu-char-header" id="menu-char-header"></div>
+    <div class="menu-grid">
+      <div class="menu-card card-explore" onclick="goScreen('screen-explore');playClick()">
+        <img src="https://cdn-icons-png.flaticon.com/512/3820/3820331.png" alt="Castelo">
+        <span id="txt-menu-explore">Explorar</span>
+        <small id="txt-menu-explore-sub">Castelo 3D</small>
+      </div>
+      <div class="menu-card card-custom" onclick="goScreen('screen-custom');playClick()">
+        <img src="https://cdn-icons-png.flaticon.com/512/3649/3649658.png" alt="Avatar">
+        <span id="txt-menu-custom">Avatar</span>
+        <small id="txt-menu-custom-sub">Personalizar</small>
+      </div>
+      <div class="menu-card card-race" onclick="goScreen('screen-race');playClick()">
+        <img src="https://cdn-icons-png.flaticon.com/512/3875/3875172.png" alt="Corrida">
+        <span id="txt-menu-race">Corrida</span>
+        <small id="txt-menu-race-sub">Obstaculos</small>
+      </div>
+      <div class="menu-card card-memory" onclick="goScreen('screen-memory');playClick()">
+        <img src="https://cdn-icons-png.flaticon.com/512/1087/1087815.png" alt="Memoria">
+        <span id="txt-menu-memory">Memoria</span>
+        <small id="txt-menu-memory-sub">Pares</small>
+      </div>
+      <div class="menu-card card-snake" onclick="goScreen('screen-snake');playClick()">
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Cobrinha">
+        <span id="txt-menu-snake">Cobrinha</span>
+        <small id="txt-menu-snake-sub">Arcade</small>
+      </div>
+      <div class="menu-card card-quiz" onclick="goScreen('screen-quiz');playClick()">
+        <img src="https://cdn-icons-png.flaticon.com/512/2436/2436874.png" alt="Quiz">
+        <span id="txt-menu-quiz">Quiz</span>
+        <small id="txt-menu-quiz-sub">Educativo</small>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- EXPLORE (Castle RPG) -->
-
-<div class="screen" id="screen-explore">
-  <div id="explore-hud">
-    <button class="btn-back-sm" onclick="goScreen('screen-menu')">← Menu</button>
-    <span id="explore-area-name">🏰 Jardim do Castelo</span>
-  </div>
-  <div id="explore-world">
-    <canvas id="explore-canvas"></canvas>
-    <!-- Interaction popup -->
-    <div id="interact-popup" class="interact-popup hidden">
-      <span id="interact-msg"></span>
-    </div>
-  </div>
-  <!-- Mobile D-Pad -->
-  <div class="dpad" id="dpad">
-    <button class="dpad-btn dpad-up" id="dpad-up">▲</button>
-    <button class="dpad-btn dpad-left" id="dpad-left">◀</button>
-    <button class="dpad-btn dpad-center">●</button>
-    <button class="dpad-btn dpad-right" id="dpad-right">▶</button>
-    <button class="dpad-btn dpad-down" id="dpad-down">▼</button>
-  </div>
-</div>
-
-<!-- CUSTOM (Avatar Shop) -->
+<!-- CUSTOM / AVATAR -->
 
 <div class="screen" id="screen-custom">
-  <div class="screen-header">
-    <button class="btn-back" onclick="goScreen('screen-menu')">← Voltar</button>
-    <h2>👗 Avatar Shop</h2>
-  </div>
-  <div class="custom-layout">
-    <div class="custom-preview">
-      <div id="custom-doll-large" class="roblox-doll-large"></div>
-      <div id="custom-char-name" class="custom-name"></div>
-      <div id="custom-char-job" class="custom-job-badge"></div>
-    </div>
-    <div class="custom-panels">
-      <div class="custom-section">
-        <p class="section-label">💇 Cabelo</p>
-        <div class="color-row" id="hair-colors"></div>
+  <div class="screen-inner">
+    <button class="btn-back" onclick="goScreen('screen-menu')">&#8592; Voltar</button>
+    <h2 class="section-title" id="txt-custom-title">Personalizar Avatar</h2>
+    <div class="custom-layout">
+      <div class="custom-preview-box">
+        <canvas id="custom-canvas" width="160" height="240"></canvas>
+        <p id="custom-char-name" class="custom-char-name"></p>
+        <p id="custom-char-job"  class="custom-char-job"></p>
       </div>
-      <div class="custom-section">
-        <p class="section-label">👗 Roupa</p>
-        <div class="color-row" id="outfit-colors"></div>
-      </div>
-      <div class="custom-section">
-        <p class="section-label">👟 Sapato</p>
-        <div class="color-row" id="shoe-colors"></div>
-      </div>
-      <div class="custom-section">
-        <p class="section-label">💼 Profissão</p>
-        <div class="job-row" id="job-row"></div>
+      <div class="custom-options">
+        <div class="custom-section">
+          <p class="opt-label" id="txt-opt-hair">Cabelo</p>
+          <div class="swatch-row" id="hair-swatches"></div>
+        </div>
+        <div class="custom-section">
+          <p class="opt-label" id="txt-opt-outfit">Roupa</p>
+          <div class="swatch-row" id="outfit-swatches"></div>
+        </div>
+        <div class="custom-section">
+          <p class="opt-label" id="txt-opt-shoes">Sapatos</p>
+          <div class="swatch-row" id="shoe-swatches"></div>
+        </div>
+        <div class="custom-section">
+          <p class="opt-label" id="txt-opt-job">Profissao</p>
+          <div class="job-row" id="job-buttons"></div>
+        </div>
+        <button class="btn-primary" onclick="saveCustom()" id="txt-btn-save">Salvar Look</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MEMORY GAME -->
+<!-- EXPLORE 3D -->
+
+<div class="screen" id="screen-explore">
+  <button class="btn-back" style="z-index:300;" onclick="stopExplore();goScreen('screen-menu')">&#8592; Voltar</button>
+  <div class="explore-hud" id="explore-hud">
+    <span id="explore-area-name">Jardim do Castelo</span>
+  </div>
+  <canvas id="three-canvas"></canvas>
+  <div id="interact-bubble" class="interact-bubble hidden"></div>
+  <div class="mobile-controls" id="mobile-controls">
+    <div class="dpad">
+      <div class="dpad-row"><button class="dpad-btn" id="btn-up">&#9650;</button></div>
+      <div class="dpad-row">
+        <button class="dpad-btn" id="btn-left">&#9664;</button>
+        <div class="dpad-center-dot"></div>
+        <button class="dpad-btn" id="btn-right">&#9654;</button>
+      </div>
+      <div class="dpad-row"><button class="dpad-btn" id="btn-down">&#9660;</button></div>
+    </div>
+    <div class="action-btns">
+      <button class="act-btn" id="btn-jump">Pular</button>
+      <button class="act-btn" id="btn-spin">Girar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CORRIDA -->
+
+<div class="screen" id="screen-race">
+  <button class="btn-back" style="z-index:300;" onclick="stopRace();goScreen('screen-menu')">&#8592; Voltar</button>
+  <div class="game-hud" id="race-hud">
+    <span id="txt-race-pts">Pontos: </span><span id="race-score">0</span>
+    <span id="txt-race-lives">  Vidas: </span><span id="race-lives">3</span>
+  </div>
+  <canvas id="race-canvas"></canvas>
+  <div id="race-overlay" class="game-overlay">
+    <img src="https://cdn-icons-png.flaticon.com/512/3875/3875172.png" alt="Corrida" class="overlay-icon">
+    <h2 id="txt-race-title">Corrida Real</h2>
+    <p id="txt-race-hint">Toque / Espaco / Seta para pular</p>
+    <button class="btn-primary" onclick="startRace()" id="txt-btn-race-start">Iniciar</button>
+  </div>
+  <div id="race-over" class="game-overlay hidden">
+    <h2 id="txt-race-over-title">Fim de Jogo!</h2>
+    <p id="race-final-msg"></p>
+    <button class="btn-primary" onclick="startRace()">Tentar Novamente</button>
+    <button class="btn-secondary" onclick="stopRace();goScreen('screen-menu')">Menu</button>
+  </div>
+  <button class="jump-float-btn hidden" id="race-jump-btn" onclick="raceJump()">PULAR</button>
+</div>
+
+<!-- MEMORIA -->
 
 <div class="screen" id="screen-memory">
-  <div class="screen-header">
-    <button class="btn-back" onclick="goScreen('screen-menu')">← Voltar</button>
-    <h2>🧩 Jogo da Memória</h2>
-  </div>
-  <div id="memory-difficulty" class="difficulty-row">
-    <button class="diff-btn" onclick="initMemory(4)">Fácil (4)</button>
-    <button class="diff-btn" onclick="initMemory(8)">Médio (8)</button>
-    <button class="diff-btn" onclick="initMemory(12)">Difícil (12)</button>
-  </div>
-  <div id="memory-stats" class="memory-stats hidden">
-    <span>⏱ <span id="mem-timer">0</span>s</span>
-    <span>✅ <span id="mem-pairs">0</span> pares</span>
-    <span>🔄 <span id="mem-moves">0</span> jogadas</span>
-  </div>
-  <div id="memory-grid" class="memory-grid"></div>
-</div>
-
-<!-- RUNNER GAME -->
-
-<div class="screen" id="screen-runner">
-  <div id="runner-hud">
-    <button class="btn-back-sm" onclick="stopRunner();goScreen('screen-menu')">← Sair</button>
-    <span>🌟 Pontos: <span id="runner-score">0</span></span>
-    <span>❤️ <span id="runner-lives">3</span></span>
-  </div>
-  <canvas id="runner-canvas"></canvas>
-  <div id="runner-start" class="runner-overlay">
-    <h2>🌟 Corrida Real</h2>
-    <p>Desvie dos obstáculos!</p>
-    <p class="hint">Toque/Espaço/Seta Cima = Pular</p>
-    <button class="btn-primary" onclick="runnerGo()">INICIAR</button>
-  </div>
-  <div id="runner-over" class="runner-overlay hidden">
-    <h2>💔 Game Over</h2>
-    <p>Pontos: <span id="final-score">0</span></p>
-    <button class="btn-primary" onclick="runnerGo()">Jogar de Novo</button>
-    <button class="btn-secondary" onclick="stopRunner();goScreen('screen-menu')">Menu</button>
+  <div class="screen-inner">
+    <button class="btn-back" onclick="stopMemory();goScreen('screen-menu')">&#8592; Voltar</button>
+    <h2 class="section-title" id="txt-memory-title">Jogo da Memoria</h2>
+    <div id="memory-diff-row" class="diff-row">
+      <button class="diff-btn" onclick="startMemory(4)"  id="txt-mem-easy">Facil (4 pares)</button>
+      <button class="diff-btn" onclick="startMemory(8)"  id="txt-mem-med">Medio (8 pares)</button>
+      <button class="diff-btn" onclick="startMemory(12)" id="txt-mem-hard">Dificil (12 pares)</button>
+    </div>
+    <div id="memory-stats" class="memory-stats hidden">
+      <span>Tempo: <b id="mem-timer">0</b>s</span>
+      <span>Pares: <b id="mem-pairs">0</b></span>
+      <span>Jogadas: <b id="mem-moves">0</b></span>
+    </div>
+    <div id="memory-grid" class="memory-grid"></div>
+    <div id="memory-win" class="game-overlay hidden">
+      <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" alt="Trofeu" class="overlay-icon">
+      <h2 id="txt-mem-win">Parabens!</h2>
+      <p id="mem-win-msg"></p>
+      <button class="btn-primary" onclick="document.getElementById('memory-win').classList.add('hidden');document.getElementById('memory-diff-row').classList.remove('hidden');document.getElementById('memory-stats').classList.add('hidden');document.getElementById('memory-grid').innerHTML=''">Jogar Novamente</button>
+    </div>
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- COBRINHA -->
 
-<div id="toast" class="toast hidden"></div>
+<div class="screen" id="screen-snake">
+  <button class="btn-back" style="z-index:300;" onclick="stopSnake();goScreen('screen-menu')">&#8592; Voltar</button>
+  <div class="game-hud" id="snake-hud">
+    <span>Pontos: <b id="snake-score">0</b></span>
+    <span>Melhor: <b id="snake-best">0</b></span>
+  </div>
+  <canvas id="snake-canvas"></canvas>
+  <div id="snake-overlay" class="game-overlay">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Cobra" class="overlay-icon">
+    <h2 id="txt-snake-title">Cobrinha Magica</h2>
+    <p id="txt-snake-hint">Setas ou D-Pad para mover</p>
+    <button class="btn-primary" onclick="startSnake()">Jogar</button>
+  </div>
+  <div id="snake-over" class="game-overlay hidden">
+    <h2>Fim!</h2>
+    <p id="snake-final-msg"></p>
+    <button class="btn-primary" onclick="startSnake()">Jogar Novamente</button>
+    <button class="btn-secondary" onclick="stopSnake();goScreen('screen-menu')">Menu</button>
+  </div>
+  <div class="snake-dpad" id="snake-dpad">
+    <div class="dpad-row"><button class="dpad-btn" onclick="snakeDir(0,-1)">&#9650;</button></div>
+    <div class="dpad-row">
+      <button class="dpad-btn" onclick="snakeDir(-1,0)">&#9664;</button>
+      <div class="dpad-center-dot"></div>
+      <button class="dpad-btn" onclick="snakeDir(1,0)">&#9654;</button>
+    </div>
+    <div class="dpad-row"><button class="dpad-btn" onclick="snakeDir(0,1)">&#9660;</button></div>
+  </div>
+</div>
 
-<script src="script.js"></script>
+<!-- QUIZ -->
+
+<div class="screen" id="screen-quiz">
+  <div class="screen-inner">
+    <button class="btn-back" onclick="goScreen('screen-menu')">&#8592; Voltar</button>
+    <h2 class="section-title" id="txt-quiz-title">Quiz Educativo</h2>
+    <div id="quiz-start-panel" class="quiz-panel">
+      <img src="https://cdn-icons-png.flaticon.com/512/2436/2436874.png" alt="Quiz" class="overlay-icon">
+      <p id="txt-quiz-desc">Responda e aprenda brincando!</p>
+      <div class="diff-row">
+        <button class="diff-btn" onclick="startQuiz('easy')"   id="txt-quiz-easy">Facil</button>
+        <button class="diff-btn" onclick="startQuiz('medium')" id="txt-quiz-med">Medio</button>
+        <button class="diff-btn" onclick="startQuiz('hard')"   id="txt-quiz-hard">Dificil</button>
+      </div>
+    </div>
+    <div id="quiz-play-panel" class="quiz-panel hidden">
+      <div class="quiz-progress-bar"><div id="quiz-progress-fill" class="quiz-progress-fill"></div></div>
+      <div class="quiz-meta">
+        <span id="quiz-counter">1/10</span>
+        <span id="quiz-score-display" class="quiz-score-display">0 pts</span>
+      </div>
+      <div id="quiz-question" class="quiz-question"></div>
+      <div id="quiz-options"  class="quiz-options"></div>
+      <div id="quiz-feedback" class="quiz-feedback hidden"></div>
+    </div>
+    <div id="quiz-result-panel" class="quiz-panel hidden">
+      <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" alt="Trofeu" class="overlay-icon">
+      <h3 id="quiz-result-title">Parabens!</h3>
+      <p  id="quiz-result-msg"></p>
+      <button class="btn-primary" onclick="resetQuiz()">Jogar Novamente</button>
+      <button class="btn-secondary" onclick="goScreen('screen-menu')">Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Three.js CDN -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- Game scripts -->
+
+<script src="script-data.js"></script>
+
+<script src="script-audio.js"></script>
+
+<script src="script-games.js"></script>
+
+<script src="script-explore.js"></script>
+
+<script src="script-main.js"></script>
 
 </body>
 </html>
