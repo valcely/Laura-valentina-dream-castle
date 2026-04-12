@@ -1,114 +1,209 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laura Valentina ✨ Dream Castle</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Laura Valentina - Dream Castle</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="stars-bg"></div>
+<!-- HUD -->
 
-<div class="screen active" id="home">
-  <div class="home-doll-container" id="home-doll">
-    </div>
-  <div class="home-logo">Laura Valentina</div>
-  <div class="home-sub">✨ DREAM CASTLE ✨</div>
-  <button class="enter-btn" onclick="go('select')">ENTRAR NO CASTELO</button>
+<div id="hud" class="hud hidden">
+  <div class="hud-left">
+    <span id="hud-char">👸 Laura</span>
+  </div>
+  <div class="hud-center">
+    <span id="hud-time">00:00</span>
+    <span id="hud-session">⏱ 0s</span>
+  </div>
+  <div class="hud-right">
+    <span id="hud-date">01/01</span>
+  </div>
 </div>
 
-<div class="screen" id="select">
-  <button class="back-btn" onclick="go('home')">← Voltar</button>
-  <h2 class="section-title">Escolha sua Boneca 🎀</h2>
+<!-- SCREENS -->
+
+<!-- HOME -->
+
+<div class="screen active" id="screen-home">
+  <canvas id="bg-canvas"></canvas>
+  <div class="home-content">
+    <div class="castle-logo">
+      <div class="logo-tower">🏰</div>
+      <h1 class="logo-title">Laura Valentina</h1>
+      <p class="logo-sub">✨ DREAM CASTLE ✨</p>
+    </div>
+    <div class="home-chars">
+      <div class="home-char" style="--c:#ff6eb4">
+        <div class="roblox-doll" data-hair="#ff2d7a" data-outfit="#ff6eb4" data-job="ARQ"></div>
+        <span>Laura</span>
+      </div>
+      <div class="home-char" style="--c:#b76eff">
+        <div class="roblox-doll" data-hair="#7b00ff" data-outfit="#b76eff" data-job="CIE"></div>
+        <span>Valentina</span>
+      </div>
+      <div class="home-char" style="--c:#ff4fb8">
+        <div class="roblox-doll" data-hair="#c200a0" data-outfit="#ff4fb8" data-job="MED"></div>
+        <span>Giovanna</span>
+      </div>
+    </div>
+    <button class="btn-primary btn-pulse" onclick="goScreen('screen-select')">
+      🏰 ENTRAR NO CASTELO
+    </button>
+  </div>
+</div>
+
+<!-- SELECT CHARACTER -->
+
+<div class="screen" id="screen-select">
+  <div class="screen-header">
+    <button class="btn-back" onclick="goScreen('screen-home')">← Voltar</button>
+    <h2>Escolha sua Princesa 👑</h2>
+  </div>
   <div class="chars-grid" id="chars-grid"></div>
 </div>
 
-<div class="screen" id="castle">
-  <button class="back-btn" onclick="go('select')">← Trocar</button>
-  <div class="castle-header" id="castle-header"></div>
-  <div class="menu-grid">
-    <div class="menu-tile" onclick="go('vestir')">
-      <div class="tile-icon">👗</div>
-      <div class="tile-label">Vestir</div>
-      <p class="tile-sub">Monte o look</p>
+<!-- MAIN MENU (Castle Hub) -->
+
+<div class="screen" id="screen-menu">
+  <div class="screen-header">
+    <button class="btn-back" onclick="goScreen('screen-select')">← Trocar</button>
+    <div id="menu-char-display"></div>
+  </div>
+  <div class="menu-tiles">
+    <div class="menu-tile tile-explore" onclick="goScreen('screen-explore')">
+      <span class="tile-emoji">🏰</span>
+      <span class="tile-title">EXPLORAR</span>
+      <span class="tile-desc">Explore o castelo</span>
+      <span class="tile-badge">NOVO</span>
     </div>
-    <div class="menu-tile" onclick="go('passarela')">
-      <div class="tile-icon">💃</div>
-      <div class="tile-label">Passarela</div>
-      <p class="tile-sub">Mostre estilo</p>
+    <div class="menu-tile tile-custom" onclick="goScreen('screen-custom')">
+      <span class="tile-emoji">👗</span>
+      <span class="tile-title">AVATAR</span>
+      <span class="tile-desc">Customize seu look</span>
     </div>
-    <div class="menu-tile" onclick="go('aventura');startStory()">
-      <div class="tile-icon">🌟</div>
-      <div class="tile-label">Aventura</div>
-      <p class="tile-sub">Escolha o caminho</p>
+    <div class="menu-tile tile-memory" onclick="startMemory()">
+      <span class="tile-emoji">🧩</span>
+      <span class="tile-title">MEMÓRIA</span>
+      <span class="tile-desc">Jogo dos pares</span>
     </div>
-    <div class="menu-tile" onclick="go('salao')">
-      <div class="tile-icon">💄</div>
-      <div class="tile-label">Salão</div>
-      <p class="tile-sub">Beleza total</p>
-    </div>
-    <div class="menu-tile" onclick="go('quiz');startQuiz()">
-      <div class="tile-icon">🧠</div>
-      <div class="tile-label">Quiz</div>
-      <p class="tile-sub">Teste seu estilo</p>
+    <div class="menu-tile tile-runner" onclick="goScreen('screen-runner');startRunner()">
+      <span class="tile-emoji">🌟</span>
+      <span class="tile-title">CORRIDA</span>
+      <span class="tile-desc">Desvie obstáculos</span>
     </div>
   </div>
 </div>
 
-<div class="screen" id="vestir">
-  <button class="back-btn" onclick="go('castle')">← Voltar</button>
-  <h2 class="section-title">👗 Closet Real</h2>
-  <div class="doll-stage" id="vestir-doll"></div>
-  <div class="outfits-panel">
-    <p class="section-label">Escolha o Look</p>
-    <div class="outfit-row" id="outfit-row"></div>
-  </div>
-</div>
+<!-- EXPLORE (Castle RPG) -->
 
-<div class="screen" id="passarela">
-  <button class="back-btn" onclick="go('castle')">← Voltar</button>
-  <h2 class="section-title">💃 Grande Desfile</h2>
-  <div class="runway-stage">
-    <div id="runway-lights" class="runway-lights"></div>
-    <div class="runway-model" id="runway-model">
-      <div id="runway-doll"></div>
+<div class="screen" id="screen-explore">
+  <div id="explore-hud">
+    <button class="btn-back-sm" onclick="goScreen('screen-menu')">← Menu</button>
+    <span id="explore-area-name">🏰 Jardim do Castelo</span>
+  </div>
+  <div id="explore-world">
+    <canvas id="explore-canvas"></canvas>
+    <!-- Interaction popup -->
+    <div id="interact-popup" class="interact-popup hidden">
+      <span id="interact-msg"></span>
     </div>
   </div>
-  <div class="score-bar">⭐ Pontuação: <span id="runway-score">0</span></div>
-  <div class="action-row">
-    <button class="action-btn" onclick="runwayDo('walk')">Caminhar</button>
-    <button class="action-btn" onclick="runwayDo('pose')">Posar</button>
-    <button class="action-btn" onclick="runwayDo('kiss')">Beijo</button>
+  <!-- Mobile D-Pad -->
+  <div class="dpad" id="dpad">
+    <button class="dpad-btn dpad-up" id="dpad-up">▲</button>
+    <button class="dpad-btn dpad-left" id="dpad-left">◀</button>
+    <button class="dpad-btn dpad-center">●</button>
+    <button class="dpad-btn dpad-right" id="dpad-right">▶</button>
+    <button class="dpad-btn dpad-down" id="dpad-down">▼</button>
   </div>
 </div>
 
-<div class="screen" id="salao">
-  <button class="back-btn" onclick="go('castle')">← Voltar</button>
-  <h2 class="section-title">💄 Camarim Mágico</h2>
-  <div id="salao-doll"></div>
-  <div class="beauty-grid" id="beauty-grid"></div>
-</div>
+<!-- CUSTOM (Avatar Shop) -->
 
-<div class="screen" id="aventura">
-  <button class="back-btn" onclick="go('castle')">← Voltar</button>
-  <div class="story-card">
-    <div id="story-scene" style="font-size: 4rem;">🏰</div>
-    <p id="story-text"></p>
-    <div id="story-choices"></div>
+<div class="screen" id="screen-custom">
+  <div class="screen-header">
+    <button class="btn-back" onclick="goScreen('screen-menu')">← Voltar</button>
+    <h2>👗 Avatar Shop</h2>
+  </div>
+  <div class="custom-layout">
+    <div class="custom-preview">
+      <div id="custom-doll-large" class="roblox-doll-large"></div>
+      <div id="custom-char-name" class="custom-name"></div>
+      <div id="custom-char-job" class="custom-job-badge"></div>
+    </div>
+    <div class="custom-panels">
+      <div class="custom-section">
+        <p class="section-label">💇 Cabelo</p>
+        <div class="color-row" id="hair-colors"></div>
+      </div>
+      <div class="custom-section">
+        <p class="section-label">👗 Roupa</p>
+        <div class="color-row" id="outfit-colors"></div>
+      </div>
+      <div class="custom-section">
+        <p class="section-label">👟 Sapato</p>
+        <div class="color-row" id="shoe-colors"></div>
+      </div>
+      <div class="custom-section">
+        <p class="section-label">💼 Profissão</p>
+        <div class="job-row" id="job-row"></div>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="screen" id="quiz">
-  <button class="back-btn" onclick="go('castle')">← Voltar</button>
-  <div class="quiz-card">
-    <div id="quiz-score">0 pts</div>
-    <div id="quiz-q"></div>
-    <div id="quiz-opts"></div>
+<!-- MEMORY GAME -->
+
+<div class="screen" id="screen-memory">
+  <div class="screen-header">
+    <button class="btn-back" onclick="goScreen('screen-menu')">← Voltar</button>
+    <h2>🧩 Jogo da Memória</h2>
+  </div>
+  <div id="memory-difficulty" class="difficulty-row">
+    <button class="diff-btn" onclick="initMemory(4)">Fácil (4)</button>
+    <button class="diff-btn" onclick="initMemory(8)">Médio (8)</button>
+    <button class="diff-btn" onclick="initMemory(12)">Difícil (12)</button>
+  </div>
+  <div id="memory-stats" class="memory-stats hidden">
+    <span>⏱ <span id="mem-timer">0</span>s</span>
+    <span>✅ <span id="mem-pairs">0</span> pares</span>
+    <span>🔄 <span id="mem-moves">0</span> jogadas</span>
+  </div>
+  <div id="memory-grid" class="memory-grid"></div>
+</div>
+
+<!-- RUNNER GAME -->
+
+<div class="screen" id="screen-runner">
+  <div id="runner-hud">
+    <button class="btn-back-sm" onclick="stopRunner();goScreen('screen-menu')">← Sair</button>
+    <span>🌟 Pontos: <span id="runner-score">0</span></span>
+    <span>❤️ <span id="runner-lives">3</span></span>
+  </div>
+  <canvas id="runner-canvas"></canvas>
+  <div id="runner-start" class="runner-overlay">
+    <h2>🌟 Corrida Real</h2>
+    <p>Desvie dos obstáculos!</p>
+    <p class="hint">Toque/Espaço/Seta Cima = Pular</p>
+    <button class="btn-primary" onclick="runnerGo()">INICIAR</button>
+  </div>
+  <div id="runner-over" class="runner-overlay hidden">
+    <h2>💔 Game Over</h2>
+    <p>Pontos: <span id="final-score">0</span></p>
+    <button class="btn-primary" onclick="runnerGo()">Jogar de Novo</button>
+    <button class="btn-secondary" onclick="stopRunner();goScreen('screen-menu')">Menu</button>
   </div>
 </div>
+
+<!-- TOAST -->
+
+<div id="toast" class="toast hidden"></div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
