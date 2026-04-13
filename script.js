@@ -1,266 +1,568 @@
 ‘use strict’;
 
 // ═══════════════════════════════════════════════════
-//  PERSONAGENS
+//  ESTADO GLOBAL
 // ═══════════════════════════════════════════════════
-var CHARACTERS = [
-{ id:‘laura’,     name:‘Laura’,     job:‘Arquiteta’, hair:’#ff2d7a’, outfit:’#ff6eb4’, shoe:’#c200a0’, skin:’#f5c5a3’ },
-{ id:‘valentina’, name:‘Valentina’, job:‘Cientista’,  hair:’#7b00ff’, outfit:’#b76eff’, shoe:’#3d00cc’, skin:’#f5c5a3’ },
-{ id:‘giovanna’,  name:‘Giovanna’,  job:‘Medica’,     hair:’#c200a0’, outfit:’#ff4fb8’, shoe:’#7a0070’, skin:’#e8b89a’ },
-{ id:‘valcely’,   name:‘Valcely’,   job:‘Estilista’,  hair:’#e6a817’, outfit:’#ffd700’, shoe:’#a07000’, skin:’#d4956a’ },
-{ id:‘lidiane’,   name:‘Lidiane’,   job:‘Biomedica’,  hair:’#00bfff’, outfit:’#00b4d8’, shoe:’#005f73’, skin:’#f0d5b0’ }
-];
-
-var JOBS = [‘Arquiteta’,‘Cientista’,‘Medica’,‘Estilista’,‘Biomedica’,‘Rainha’,‘Astronauta’,‘Programadora’];
-
-var HAIR_COLORS   = [’#ff2d7a’,’#7b00ff’,’#ffd700’,’#00bfff’,’#ff6600’,’#39ff14’,’#ffffff’,’#3d2000’,’#c200a0’,’#e6a817’];
-var OUTFIT_COLORS = [’#ff6eb4’,’#b76eff’,’#00b4d8’,’#ffd700’,’#ff4500’,’#39ff14’,’#c0c0c0’,’#e8d5b7’,’#ff4fb8’,’#00e5ff’];
-var SHOE_COLORS   = [’#c200a0’,’#3d00cc’,’#005f73’,’#a07000’,’#7a0070’,’#003d00’,’#555555’,’#8b4513’,’#ff2d7a’,’#0077ff’];
-
-// Conteúdo das cartas de memória (imagens via URL)
-var MEMORY_CARDS = [
-{ label:‘Castelo’,   img:‘https://cdn-icons-png.flaticon.com/512/3820/3820331.png’ },
-{ label:‘Coroa’,     img:‘https://cdn-icons-png.flaticon.com/512/3820/3820381.png’ },
-{ label:‘Estrela’,   img:‘https://cdn-icons-png.flaticon.com/512/616/616490.png’   },
-{ label:‘Unicornio’, img:‘https://cdn-icons-png.flaticon.com/512/616/616464.png’   },
-{ label:‘Borboleta’, img:‘https://cdn-icons-png.flaticon.com/512/3069/3069172.png’ },
-{ label:‘Flor’,      img:‘https://cdn-icons-png.flaticon.com/512/628/628283.png’   },
-{ label:‘Diamante’,  img:‘https://cdn-icons-png.flaticon.com/512/2583/2583344.png’ },
-{ label:‘Arco-iris’, img:‘https://cdn-icons-png.flaticon.com/512/616/616430.png’   },
-{ label:‘Lua’,       img:‘https://cdn-icons-png.flaticon.com/512/740/740878.png’   },
-{ label:‘Presente’,  img:‘https://cdn-icons-png.flaticon.com/512/3388/3388380.png’ },
-{ label:‘Bolo’,      img:‘https://cdn-icons-png.flaticon.com/512/3176/3176370.png’ },
-{ label:‘Balao’,     img:‘https://cdn-icons-png.flaticon.com/512/3208/3208738.png’ }
-];
+var curChar      = null;
+var curLang      = ‘pt’;
+var sessionStart = Date.now();
+var hudInterval  = null;
 
 // ═══════════════════════════════════════════════════
-//  PERGUNTAS DO QUIZ (PT / EN / ES)
+//  NAVEGACAO
 // ═══════════════════════════════════════════════════
-var QUIZ_QUESTIONS = {
-pt: {
-easy: [
-{ q:‘Qual e a capital do Brasil?’, opts:[‘Sao Paulo’,‘Rio de Janeiro’,‘Brasilia’,‘Salvador’], ans:2, exp:‘Brasilia e a capital federal do Brasil desde 1960.’ },
-{ q:‘Quantas cores tem o arco-iris?’, opts:[‘5’,‘6’,‘7’,‘8’], ans:2, exp:‘O arco-iris tem 7 cores: vermelho, laranja, amarelo, verde, azul, anil e violeta.’ },
-{ q:‘Qual animal e o maior do mundo?’, opts:[‘Elefante’,‘Baleia Azul’,‘Girafa’,‘Tubarao’], ans:1, exp:‘A baleia azul e o maior animal que ja existiu na Terra.’ },
-{ q:‘Quantos planetas tem o Sistema Solar?’, opts:[‘7’,‘8’,‘9’,‘10’], ans:1, exp:‘O Sistema Solar tem 8 planetas: Mercurio, Venus, Terra, Marte, Jupiter, Saturno, Urano e Netuno.’ },
-{ q:‘De que cor e o Sol?’, opts:[‘Amarelo’,‘Branco’,‘Laranja’,‘Vermelho’], ans:1, exp:‘O Sol parece amarelo daqui, mas na verdade e uma estrela branca-amarelada.’ },
-{ q:‘Qual e o maior oceano do mundo?’, opts:[‘Atlantico’,‘Indico’,‘Pacifico’,‘Artico’], ans:2, exp:‘O Oceano Pacifico e o maior e mais profundo do mundo.’ },
-{ q:‘Quantas pernas tem uma aranha?’, opts:[‘6’,‘8’,‘10’,‘4’], ans:1, exp:‘As aranhas sao aracnideos e possuem 8 pernas.’ },
-{ q:‘Qual e o pais mais populoso do mundo?’, opts:[‘India’,‘China’,‘EUA’,‘Brasil’], ans:0, exp:‘A India ultrapassou a China em 2023 e agora e o pais mais populoso.’ }
-],
-medium: [
-{ q:‘Quem escreveu “Dom Casmurro”?’, opts:[‘Jose de Alencar’,‘Machado de Assis’,‘Clarice Lispector’,‘Jorge Amado’], ans:1, exp:’“Dom Casmurro” foi escrito por Machado de Assis em 1899.’ },
-{ q:‘Em que ano o Brasil foi descoberto?’, opts:[‘1492’,‘1500’,‘1510’,‘1498’], ans:1, exp:‘Pedro Alvares Cabral chegou ao Brasil em 22 de abril de 1500.’ },
-{ q:‘Qual e o maior pais do mundo em area?’, opts:[‘Canada’,‘EUA’,‘Russia’,‘China’], ans:2, exp:‘A Russia e o maior pais do mundo, com mais de 17 milhoes de km2.’ },
-{ q:‘Quanto e a raiz quadrada de 144?’, opts:[‘11’,‘12’,‘13’,‘14’], ans:1, exp:‘12 x 12 = 144, entao a raiz quadrada de 144 e 12.’ },
-{ q:‘O que e fotossintese?’, opts:[‘Respiracao de animais’,‘Processo que plantas usam para fazer alimento’,‘Tipo de doenca’,‘Movimento da Terra’], ans:1, exp:‘Fotossintese e o processo que plantas usam para converter luz solar em alimento.’ },
-{ q:‘Qual elemento e representado pelo simbolo “O”?’, opts:[‘Ouro’,‘Osmio’,‘Oxigenio’,‘Oganesson’], ans:2, exp:‘O simbolo “O” representa o Oxigenio, essential para a vida.’ }
-],
-hard: [
-{ q:‘Qual e a formula quimica da agua?’, opts:[‘CO2’,‘H2O’,‘O2’,‘NaCl’], ans:1, exp:‘A agua e formada por 2 atomos de Hidrogenio e 1 de Oxigenio.’ },
-{ q:‘Quem desenvolveu a teoria da relatividade?’, opts:[‘Newton’,‘Edison’,‘Einstein’,‘Darwin’], ans:2, exp:‘Albert Einstein publicou a teoria da relatividade especial em 1905.’ },
-{ q:‘Quantos ossos tem o corpo humano adulto?’, opts:[‘206’,‘196’,‘256’,‘180’], ans:0, exp:‘O corpo humano adulto possui 206 ossos.’ },
-{ q:‘Qual e o menor pais do mundo?’, opts:[‘Monaco’,‘Maldivas’,‘San Marino’,‘Vaticano’], ans:3, exp:‘O Vaticano e o menor pais do mundo com apenas 0,44 km2.’ },
-{ q:‘Quem pintou a Mona Lisa?’, opts:[‘Michelangelo’,‘Rafael’,‘Leonardo da Vinci’,‘Botticelli’], ans:2, exp:‘A Mona Lisa foi pintada por Leonardo da Vinci entre 1503 e 1519.’ },
-{ q:‘O que significa a sigla DNA?’, opts:[‘Acido Desoxi-ribonucleico’,‘Dado Natural Animal’,‘Acido Natural Diluido’,‘Deoxi Nitrato Alcalino’], ans:0, exp:‘DNA e Acido Desoxirribonucleico, a molecula que carrega informacao genetica.’ }
-]
-},
-en: {
-easy: [
-{ q:‘What is the capital of Brazil?’, opts:[‘Sao Paulo’,‘Rio de Janeiro’,‘Brasilia’,‘Salvador’], ans:2, exp:‘Brasilia has been the federal capital of Brazil since 1960.’ },
-{ q:‘How many colors are in a rainbow?’, opts:[‘5’,‘6’,‘7’,‘8’], ans:2, exp:‘A rainbow has 7 colors: red, orange, yellow, green, blue, indigo, and violet.’ },
-{ q:‘Which is the largest animal in the world?’, opts:[‘Elephant’,‘Blue Whale’,‘Giraffe’,‘Shark’], ans:1, exp:‘The blue whale is the largest animal ever known to have existed.’ },
-{ q:‘How many planets are in the Solar System?’, opts:[‘7’,‘8’,‘9’,‘10’], ans:1, exp:‘The Solar System has 8 planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune.’ },
-{ q:‘What color is the Sun actually?’, opts:[‘Yellow’,‘White’,‘Orange’,‘Red’], ans:1, exp:‘The Sun appears yellow from Earth but is actually a white-yellow star.’ },
-{ q:‘What is the largest ocean on Earth?’, opts:[‘Atlantic’,‘Indian’,‘Pacific’,‘Arctic’], ans:2, exp:‘The Pacific Ocean is the largest and deepest ocean on Earth.’ },
-{ q:‘How many legs does a spider have?’, opts:[‘6’,‘8’,‘10’,‘4’], ans:1, exp:‘Spiders are arachnids and have 8 legs.’ },
-{ q:‘Which country has the largest population?’, opts:[‘India’,‘China’,‘USA’,‘Brazil’], ans:0, exp:‘India surpassed China in 2023 and is now the most populous country.’ }
-],
-medium: [
-{ q:‘What is the square root of 144?’, opts:[‘11’,‘12’,‘13’,‘14’], ans:1, exp:‘12 x 12 = 144, so the square root of 144 is 12.’ },
-{ q:‘What is photosynthesis?’, opts:[‘Animal breathing’,‘Plants making food from sunlight’,‘A type of disease’,‘Movement of Earth’], ans:1, exp:‘Photosynthesis is the process plants use to convert sunlight into food.’ },
-{ q:‘Which element is represented by “O”?’, opts:[‘Gold’,‘Osmium’,‘Oxygen’,‘Oganesson’], ans:2, exp:‘The symbol “O” represents Oxygen, essential for life.’ },
-{ q:‘What is the largest country by area?’, opts:[‘Canada’,‘USA’,‘Russia’,‘China’], ans:2, exp:‘Russia is the largest country with over 17 million km2.’ },
-{ q:‘Who wrote Romeo and Juliet?’, opts:[‘Charles Dickens’,‘William Shakespeare’,‘Jane Austen’,‘Mark Twain’], ans:1, exp:‘Romeo and Juliet was written by William Shakespeare around 1594-1596.’ },
-{ q:‘How many continents are there?’, opts:[‘5’,‘6’,‘7’,‘8’], ans:2, exp:‘There are 7 continents: Africa, Antarctica, Asia, Australia, Europe, North America, South America.’ }
-],
-hard: [
-{ q:‘What is the chemical formula for water?’, opts:[‘CO2’,‘H2O’,‘O2’,‘NaCl’], ans:1, exp:‘Water is formed by 2 Hydrogen atoms and 1 Oxygen atom.’ },
-{ q:‘Who developed the theory of relativity?’, opts:[‘Newton’,‘Edison’,‘Einstein’,‘Darwin’], ans:2, exp:‘Albert Einstein published the special theory of relativity in 1905.’ },
-{ q:‘How many bones are in the adult human body?’, opts:[‘206’,‘196’,‘256’,‘180’], ans:0, exp:‘The adult human body has 206 bones.’ },
-{ q:‘What is the smallest country in the world?’, opts:[‘Monaco’,‘Maldives’,‘San Marino’,‘Vatican’], ans:3, exp:‘Vatican City is the smallest country with only 0.44 km2.’ },
-{ q:‘Who painted the Mona Lisa?’, opts:[‘Michelangelo’,‘Raphael’,‘Leonardo da Vinci’,‘Botticelli’], ans:2, exp:‘The Mona Lisa was painted by Leonardo da Vinci between 1503 and 1519.’ },
-{ q:‘What does DNA stand for?’, opts:[‘Deoxyribonucleic Acid’,‘Direct Nucleic Acid’,‘Dynamic Natural Agent’,‘Dense Nuclear Array’], ans:0, exp:‘DNA stands for Deoxyribonucleic Acid, the molecule that carries genetic information.’ }
-]
-},
-es: {
-easy: [
-{ q:‘Cual es la capital de Brasil?’, opts:[‘Sao Paulo’,‘Rio de Janeiro’,‘Brasilia’,‘Salvador’], ans:2, exp:‘Brasilia es la capital federal de Brasil desde 1960.’ },
-{ q:‘Cuantos colores tiene el arcoiris?’, opts:[‘5’,‘6’,‘7’,‘8’], ans:2, exp:‘El arcoiris tiene 7 colores: rojo, naranja, amarillo, verde, azul, indigo y violeta.’ },
-{ q:‘Cual es el animal mas grande del mundo?’, opts:[‘Elefante’,‘Ballena azul’,‘Jirafa’,‘Tiburon’], ans:1, exp:‘La ballena azul es el animal mas grande que ha existido en la Tierra.’ },
-{ q:‘Cuantos planetas tiene el Sistema Solar?’, opts:[‘7’,‘8’,‘9’,‘10’], ans:1, exp:‘El Sistema Solar tiene 8 planetas: Mercurio, Venus, Tierra, Marte, Jupiter, Saturno, Urano y Neptuno.’ },
-{ q:‘De que color es el Sol realmente?’, opts:[‘Amarillo’,‘Blanco’,‘Naranja’,‘Rojo’], ans:1, exp:‘El Sol parece amarillo desde la Tierra, pero en realidad es una estrella blanco-amarillenta.’ },
-{ q:‘Cual es el oceano mas grande del mundo?’, opts:[‘Atlantico’,‘Indico’,‘Pacifico’,‘Artico’], ans:2, exp:‘El Oceano Pacifico es el mas grande y profundo del mundo.’ },
-{ q:‘Cuantas patas tiene una arana?’, opts:[‘6’,‘8’,‘10’,‘4’], ans:1, exp:‘Las aranas son aracnidos y tienen 8 patas.’ },
-{ q:‘Cual es el pais mas poblado del mundo?’, opts:[‘India’,‘China’,‘EE.UU.’,‘Brasil’], ans:0, exp:‘India supero a China en 2023 y ahora es el pais mas poblado.’ }
-],
-medium: [
-{ q:‘Cual es la raiz cuadrada de 144?’, opts:[‘11’,‘12’,‘13’,‘14’], ans:1, exp:‘12 x 12 = 144, entonces la raiz cuadrada de 144 es 12.’ },
-{ q:‘Que es la fotosintesis?’, opts:[‘Respiracion animal’,‘Las plantas hacen alimento con luz solar’,‘Un tipo de enfermedad’,‘Movimiento de la Tierra’], ans:1, exp:‘La fotosintesis es el proceso que las plantas usan para convertir la luz solar en alimento.’ },
-{ q:‘Que elemento representa el simbolo O?’, opts:[‘Oro’,‘Osmio’,‘Oxigeno’,‘Oganesson’], ans:2, exp:‘El simbolo “O” representa el Oxigeno, esencial para la vida.’ },
-{ q:‘Cual es el pais mas grande del mundo?’, opts:[‘Canada’,‘EE.UU.’,‘Rusia’,‘China’], ans:2, exp:‘Rusia es el pais mas grande con mas de 17 millones de km2.’ },
-{ q:‘Quien escribio Don Quijote?’, opts:[‘Lope de Vega’,‘Miguel de Cervantes’,‘Garcia Lorca’,‘Quevedo’], ans:1, exp:‘Don Quijote de la Mancha fue escrito por Miguel de Cervantes en 1605.’ },
-{ q:‘Cuantos continentes hay?’, opts:[‘5’,‘6’,‘7’,‘8’], ans:2, exp:‘Hay 7 continentes: Africa, Antartida, Asia, Australia, Europa, America del Norte, America del Sur.’ }
-],
-hard: [
-{ q:‘Cual es la formula quimica del agua?’, opts:[‘CO2’,‘H2O’,‘O2’,‘NaCl’], ans:1, exp:‘El agua esta formada por 2 atomos de Hidrogeno y 1 de Oxigeno.’ },
-{ q:‘Quien desarrollo la teoria de la relatividad?’, opts:[‘Newton’,‘Edison’,‘Einstein’,‘Darwin’], ans:2, exp:‘Albert Einstein publico la teoria de la relatividad especial en 1905.’ },
-{ q:‘Cuantos huesos tiene el cuerpo humano adulto?’, opts:[‘206’,‘196’,‘256’,‘180’], ans:0, exp:‘El cuerpo humano adulto tiene 206 huesos.’ },
-{ q:‘Cual es el pais mas pequeno del mundo?’, opts:[‘Monaco’,‘Maldivas’,‘San Marino’,‘Vaticano’], ans:3, exp:‘El Vaticano es el pais mas pequeno con solo 0,44 km2.’ },
-{ q:‘Quien pinto la Mona Lisa?’, opts:[‘Miguel Angel’,‘Rafael’,‘Leonardo da Vinci’,‘Botticelli’], ans:2, exp:‘La Mona Lisa fue pintada por Leonardo da Vinci entre 1503 y 1519.’ },
-{ q:‘Que significa ADN?’, opts:[‘Acido Desoxirribonucleico’,‘Agente Dinamico Natural’,‘Acido Diluido Natural’,‘Anillo Doblado Nitrogeno’], ans:0, exp:‘ADN significa Acido Desoxirribonucleico, la molecula que lleva informacion genetica.’ }
-]
+function goScreen(id) {
+// Para jogos ao sair
+if (id !== ‘screen-explore’) { try { stopExplore(); } catch(e){} }
+if (id !== ‘screen-race’)    { try { stopRace();    } catch(e){} }
+if (id !== ‘screen-snake’)   { try { stopSnake();   } catch(e){} }
+if (id !== ‘screen-memory’)  { try { stopMemory();  } catch(e){} }
+
+document.querySelectorAll(’.screen’).forEach(function(s) {
+s.classList.remove(‘active’);
+});
+var el = document.getElementById(id);
+if (el) el.classList.add(‘active’);
+
+// HUD visivel em todas exceto home e select
+var showHud = (id !== ‘screen-home’ && id !== ‘screen-select’);
+var hud = document.getElementById(‘global-hud’);
+if (hud) {
+if (showHud) hud.classList.remove(‘hidden’);
+else         hud.classList.add(‘hidden’);
 }
-};
 
-// ═══════════════════════════════════════════════════
-//  TRADUCOES DA INTERFACE
-// ═══════════════════════════════════════════════════
-var TRANSLATIONS = {
-pt: {
-‘txt-btn-enter’:         ‘Entrar no Castelo’,
-‘txt-select-title’:      ‘Escolha sua Princesa’,
-‘txt-menu-explore’:      ‘Explorar’,
-‘txt-menu-explore-sub’:  ‘Castelo 3D’,
-‘txt-menu-custom’:       ‘Avatar’,
-‘txt-menu-custom-sub’:   ‘Personalizar’,
-‘txt-menu-race’:         ‘Corrida’,
-‘txt-menu-race-sub’:     ‘Obstaculos’,
-‘txt-menu-memory’:       ‘Memoria’,
-‘txt-menu-memory-sub’:   ‘Pares’,
-‘txt-menu-snake’:        ‘Cobrinha’,
-‘txt-menu-snake-sub’:    ‘Arcade’,
-‘txt-menu-quiz’:         ‘Quiz’,
-‘txt-menu-quiz-sub’:     ‘Educativo’,
-‘txt-custom-title’:      ‘Personalizar Avatar’,
-‘txt-opt-hair’:          ‘Cabelo’,
-‘txt-opt-outfit’:        ‘Roupa’,
-‘txt-opt-shoes’:         ‘Sapatos’,
-‘txt-opt-job’:           ‘Profissao’,
-‘txt-btn-save’:          ‘Salvar Look’,
-‘txt-race-pts’:          ’Pontos: ’,
-‘txt-race-lives’:        ’  Vidas: ’,
-‘txt-race-title’:        ‘Corrida Real’,
-‘txt-race-hint’:         ‘Toque / Espaco / Seta para pular’,
-‘txt-btn-race-start’:    ‘Iniciar’,
-‘txt-race-over-title’:   ‘Fim de Jogo!’,
-‘txt-memory-title’:      ‘Jogo da Memoria’,
-‘txt-mem-easy’:          ‘Facil (4 pares)’,
-‘txt-mem-med’:           ‘Medio (8 pares)’,
-‘txt-mem-hard’:          ‘Dificil (12 pares)’,
-‘txt-mem-win’:           ‘Parabens!’,
-‘txt-snake-title’:       ‘Cobrinha Magica’,
-‘txt-snake-hint’:        ‘Setas ou D-Pad para mover’,
-‘txt-quiz-title’:        ‘Quiz Educativo’,
-‘txt-quiz-desc’:         ‘Responda e aprenda brincando!’,
-‘txt-quiz-easy’:         ‘Facil’,
-‘txt-quiz-med’:          ‘Medio’,
-‘txt-quiz-hard’:         ‘Dificil’,
-‘hud-session-lbl’:       ’Sessao: ’
-},
-en: {
-‘txt-btn-enter’:         ‘Enter the Castle’,
-‘txt-select-title’:      ‘Choose your Princess’,
-‘txt-menu-explore’:      ‘Explore’,
-‘txt-menu-explore-sub’:  ‘3D Castle’,
-‘txt-menu-custom’:       ‘Avatar’,
-‘txt-menu-custom-sub’:   ‘Customize’,
-‘txt-menu-race’:         ‘Race’,
-‘txt-menu-race-sub’:     ‘Obstacles’,
-‘txt-menu-memory’:       ‘Memory’,
-‘txt-menu-memory-sub’:   ‘Pairs’,
-‘txt-menu-snake’:        ‘Snake’,
-‘txt-menu-snake-sub’:    ‘Arcade’,
-‘txt-menu-quiz’:         ‘Quiz’,
-‘txt-menu-quiz-sub’:     ‘Educational’,
-‘txt-custom-title’:      ‘Customize Avatar’,
-‘txt-opt-hair’:          ‘Hair’,
-‘txt-opt-outfit’:        ‘Outfit’,
-‘txt-opt-shoes’:         ‘Shoes’,
-‘txt-opt-job’:           ‘Profession’,
-‘txt-btn-save’:          ‘Save Look’,
-‘txt-race-pts’:          ’Score: ’,
-‘txt-race-lives’:        ’  Lives: ’,
-‘txt-race-title’:        ‘Royal Race’,
-‘txt-race-hint’:         ‘Tap / Space / Up Arrow to jump’,
-‘txt-btn-race-start’:    ‘Start’,
-‘txt-race-over-title’:   ‘Game Over!’,
-‘txt-memory-title’:      ‘Memory Game’,
-‘txt-mem-easy’:          ‘Easy (4 pairs)’,
-‘txt-mem-med’:           ‘Medium (8 pairs)’,
-‘txt-mem-hard’:          ‘Hard (12 pairs)’,
-‘txt-mem-win’:           ‘Congratulations!’,
-‘txt-snake-title’:       ‘Magic Snake’,
-‘txt-snake-hint’:        ‘Arrow keys or D-Pad to move’,
-‘txt-quiz-title’:        ‘Educational Quiz’,
-‘txt-quiz-desc’:         ‘Answer and learn while playing!’,
-‘txt-quiz-easy’:         ‘Easy’,
-‘txt-quiz-med’:          ‘Medium’,
-‘txt-quiz-hard’:         ‘Hard’,
-‘hud-session-lbl’:       ’Session: ’
-},
-es: {
-‘txt-btn-enter’:         ‘Entrar al Castillo’,
-‘txt-select-title’:      ‘Elige tu Princesa’,
-‘txt-menu-explore’:      ‘Explorar’,
-‘txt-menu-explore-sub’:  ‘Castillo 3D’,
-‘txt-menu-custom’:       ‘Avatar’,
-‘txt-menu-custom-sub’:   ‘Personalizar’,
-‘txt-menu-race’:         ‘Carrera’,
-‘txt-menu-race-sub’:     ‘Obstaculos’,
-‘txt-menu-memory’:       ‘Memoria’,
-‘txt-menu-memory-sub’:   ‘Pares’,
-‘txt-menu-snake’:        ‘Serpiente’,
-‘txt-menu-snake-sub’:    ‘Arcade’,
-‘txt-menu-quiz’:         ‘Quiz’,
-‘txt-menu-quiz-sub’:     ‘Educativo’,
-‘txt-custom-title’:      ‘Personalizar Avatar’,
-‘txt-opt-hair’:          ‘Cabello’,
-‘txt-opt-outfit’:        ‘Ropa’,
-‘txt-opt-shoes’:         ‘Zapatos’,
-‘txt-opt-job’:           ‘Profesion’,
-‘txt-btn-save’:          ‘Guardar Look’,
-‘txt-race-pts’:          ’Puntos: ’,
-‘txt-race-lives’:        ’  Vidas: ’,
-‘txt-race-title’:        ‘Carrera Real’,
-‘txt-race-hint’:         ‘Toca / Espacio / Flecha Arriba’,
-‘txt-btn-race-start’:    ‘Iniciar’,
-‘txt-race-over-title’:   ‘Fin del Juego!’,
-‘txt-memory-title’:      ‘Juego de Memoria’,
-‘txt-mem-easy’:          ‘Facil (4 pares)’,
-‘txt-mem-med’:           ‘Medio (8 pares)’,
-‘txt-mem-hard’:          ‘Dificil (12 pares)’,
-‘txt-mem-win’:           ‘Felicitaciones!’,
-‘txt-snake-title’:       ‘Serpiente Magica’,
-‘txt-snake-hint’:        ‘Flechas o D-Pad para mover’,
-‘txt-quiz-title’:        ‘Quiz Educativo’,
-‘txt-quiz-desc’:         ‘Responde y aprende jugando!’,
-‘txt-quiz-easy’:         ‘Facil’,
-‘txt-quiz-med’:          ‘Medio’,
-‘txt-quiz-hard’:         ‘Dificil’,
-‘hud-session-lbl’:       ’Sesion: ’
+// Init por tela
+if (id === ‘screen-menu’)   buildMenuHeader();
+if (id === ‘screen-custom’) buildCustom();
+if (id === ‘screen-select’) buildCharSelect();
+if (id === ‘screen-memory’) resetMemoryScreen();
+if (id === ‘screen-snake’)  resetSnakeScreen();
+if (id === ‘screen-quiz’)   resetQuiz();
+
+if (audioUnlocked) playClick();
 }
-};
+
+function resetMemoryScreen() {
+var d = document.getElementById(‘memory-diff-row’);
+var s = document.getElementById(‘memory-stats’);
+var w = document.getElementById(‘memory-win’);
+var g = document.getElementById(‘memory-grid’);
+if (d) d.classList.remove(‘hidden’);
+if (s) s.classList.add(‘hidden’);
+if (w) w.classList.add(‘hidden’);
+if (g) g.innerHTML = ‘’;
+}
+function resetSnakeScreen() {
+var ov = document.getElementById(‘snake-overlay’);
+var oe = document.getElementById(‘snake-over’);
+if (ov) ov.classList.remove(‘hidden’);
+if (oe) oe.classList.add(‘hidden’);
+}
 
 // ═══════════════════════════════════════════════════
-//  OBSTACULOS DA CORRIDA
+//  HUD — data, hora, nome da princesa, tempo de sessao
 // ═══════════════════════════════════════════════════
-var RACE_OBSTACLES = [
-{ icon:‘https://cdn-icons-png.flaticon.com/512/2107/2107845.png’, label:‘Pedra’    },
-{ icon:‘https://cdn-icons-png.flaticon.com/512/3069/3069080.png’, label:‘Arvore’   },
-{ icon:‘https://cdn-icons-png.flaticon.com/512/3176/3176370.png’, label:‘Bolo’     },
-{ icon:‘https://cdn-icons-png.flaticon.com/512/616/616408.png’,   label:‘Cobra’    }
-];
+function startHud() {
+if (hudInterval) clearInterval(hudInterval);
+hudInterval = setInterval(updateHud, 1000);
+updateHud();
+}
+
+function updateHud() {
+var now  = new Date();
+var hh   = String(now.getHours()).padStart(2, ‘0’);
+var mm   = String(now.getMinutes()).padStart(2, ‘0’);
+var dd   = String(now.getDate()).padStart(2, ‘0’);
+var mo   = String(now.getMonth() + 1).padStart(2, ‘0’);
+var yr   = now.getFullYear();
+var secs = Math.floor((Date.now() - sessionStart) / 1000);
+
+// Formata sessao: mostra min:seg se >= 60s
+var sessionStr;
+if (secs >= 60) {
+var m2 = Math.floor(secs / 60);
+var s2 = secs % 60;
+sessionStr = m2 + ’m ’ + String(s2).padStart(2, ‘0’) + ‘s’;
+} else {
+sessionStr = secs + ‘s’;
+}
+
+var e;
+e = document.getElementById(‘hud-date’);    if (e) e.textContent = dd + ‘/’ + mo + ‘/’ + yr;
+e = document.getElementById(‘hud-time’);    if (e) e.textContent = hh + ‘:’ + mm;
+e = document.getElementById(‘hud-session’); if (e) e.textContent = sessionStr;
+e = document.getElementById(‘hud-char-name’);
+if (e && curChar) e.textContent = curChar.name;
+}
+
+// ═══════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════
+function showToast(msg, dur) {
+var t = document.getElementById(‘toast-msg’);
+if (!t) return;
+t.textContent = msg;
+t.classList.remove(‘hidden’);
+clearTimeout(t._tid);
+t._tid = setTimeout(function() { t.classList.add(‘hidden’); }, dur || 2500);
+}
+
+// ═══════════════════════════════════════════════════
+//  CANVAS DE FUNDO — estrelas VIVAS + glitter + meteoros
+//  Totalmente animado: pisca, flutua, gira, spawna meteoros
+// ═══════════════════════════════════════════════════
+var ParticleBg = (function() {
+var canvas, ctx;
+var stars    = [];
+var glitters = [];
+var meteors  = [];
+var W = 0, H = 0;
+var startTime = 0;
+
+var GC = [’#ff4fa3’,’#c77dff’,’#ffd700’,’#00e5ff’,’#ff9de2’,’#39ff14’];
+
+function init() {
+canvas = document.getElementById(‘bg-particles’);
+if (!canvas) return;
+ctx = canvas.getContext(‘2d’);
+resize();
+window.addEventListener(‘resize’, resize);
+build();
+startTime = performance.now();
+requestAnimationFrame(loop);
+}
+
+function resize() {
+W = canvas.width  = window.innerWidth;
+H = canvas.height = window.innerHeight;
+}
+
+function build() {
+stars = []; glitters = []; meteors = [];
+
+```
+// 200 estrelas com velocidades de piscar unicas
+for (var i = 0; i < 200; i++) {
+  stars.push({
+    x:    Math.random(),
+    y:    Math.random(),
+    r:    Math.random() * 1.8 + 0.2,
+    freq: Math.random() * 0.004 + 0.0006,
+    phase:Math.random() * Math.PI * 2,
+    col:  Math.random() < 0.18 ? GC[Math.floor(Math.random() * GC.length)] : '#ffffff'
+  });
+}
+
+// 60 glitters coloridos
+for (var j = 0; j < 60; j++) {
+  glitters.push({
+    x:     Math.random(),
+    y:     Math.random(),
+    sz:    Math.random() * 5.5 + 1.5,
+    col:   GC[j % GC.length],
+    phase: Math.random() * Math.PI * 2,
+    bf:    Math.random() * 0.0018 + 0.0004,  // bob freq
+    rf:    Math.random() * 0.0022 + 0.0008,  // rot freq
+    af:    Math.random() * 0.0020 + 0.0006   // alpha freq
+  });
+}
+```
+
+}
+
+function spawnMeteor() {
+meteors.push({
+x:     Math.random() * W * 1.2,
+y:     -20,
+vx:    1.5 + Math.random() * 3,
+vy:    3   + Math.random() * 5,
+len:   55  + Math.random() * 90,
+alpha: 0.9,
+col:   GC[Math.floor(Math.random() * GC.length)]
+});
+}
+
+function loop(now) {
+requestAnimationFrame(loop);
+
+```
+var t = (now - startTime) * 0.001; // segundos reais
+
+// Gradiente de ceu — hue levemente oscila
+var hShift = Math.sin(t * 0.04) * 12;
+var grd = ctx.createLinearGradient(0, 0, W, H);
+grd.addColorStop(0,   'hsl(' + (258 + hShift) + ',62%,5%)');
+grd.addColorStop(0.5, 'hsl(' + (268 + hShift) + ',60%,7%)');
+grd.addColorStop(1,   'hsl(' + (278 + hShift) + ',56%,11%)');
+ctx.fillStyle = grd;
+ctx.fillRect(0, 0, W, H);
+
+// Nebulosa de fundo (3 radiais pulsantes)
+[
+  { cx: 0.14, cy: 0.22, r: 0.32, col: 'rgba(155,46,255,' },
+  { cx: 0.82, cy: 0.58, r: 0.26, col: 'rgba(255,79,163,' },
+  { cx: 0.50, cy: 0.08, r: 0.22, col: 'rgba(0,229,255,'  }
+].forEach(function(n) {
+  var a  = 0.022 + 0.014 * Math.sin(t * 0.06 + n.cx * 3);
+  var rg = ctx.createRadialGradient(n.cx*W, n.cy*H, 0, n.cx*W, n.cy*H, n.r*W);
+  rg.addColorStop(0, n.col + a + ')');
+  rg.addColorStop(1, n.col + '0)');
+  ctx.fillStyle = rg;
+  ctx.fillRect(0, 0, W, H);
+});
+
+// ── Estrelas piscando e variando de tamanho ──
+stars.forEach(function(s) {
+  var bright = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.freq * 6283 + s.phase));
+  var radius = s.r * (0.7 + 0.6 * bright);
+  ctx.globalAlpha = bright * 0.92;
+  ctx.fillStyle   = s.col;
+  ctx.beginPath();
+  ctx.arc(s.x * W, s.y * H, radius, 0, Math.PI * 2);
+  ctx.fill();
+  // Cruz de luz nas estrelas maiores
+  if (s.r > 1.2 && bright > 0.72) {
+    ctx.globalAlpha  = bright * 0.30;
+    ctx.strokeStyle  = s.col;
+    ctx.lineWidth    = 0.7;
+    var arm = radius * 4.5;
+    ctx.beginPath();
+    ctx.moveTo(s.x*W - arm, s.y*H); ctx.lineTo(s.x*W + arm, s.y*H);
+    ctx.moveTo(s.x*W, s.y*H - arm); ctx.lineTo(s.x*W, s.y*H + arm);
+    ctx.stroke();
+  }
+});
+ctx.globalAlpha = 1;
+
+// ── Glitters giratórios flutuantes ──
+glitters.forEach(function(g) {
+  var bob   = Math.sin(t * g.bf * 6283 + g.phase) * 0.042 * H;
+  var rot   = t * g.rf * 6283;
+  var alpha = 0.25 + 0.75 * Math.abs(Math.sin(t * g.af * 6283 + g.phase));
+  var sz    = g.sz * (0.65 + 0.55 * alpha);
+
+  ctx.save();
+  ctx.translate(g.x * W, g.y * H + bob);
+  ctx.rotate(rot);
+  ctx.globalAlpha = alpha;
+
+  // Losango principal
+  ctx.fillStyle = g.col;
+  ctx.beginPath();
+  ctx.moveTo(0, -sz);
+  ctx.lineTo(sz * 0.52, 0);
+  ctx.lineTo(0,  sz);
+  ctx.lineTo(-sz * 0.52, 0);
+  ctx.closePath();
+  ctx.fill();
+
+  // Centro branco (brilho)
+  ctx.fillStyle   = '#ffffff';
+  ctx.globalAlpha = alpha * 0.38;
+  ctx.beginPath();
+  ctx.arc(0, 0, sz * 0.22, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+  ctx.globalAlpha = 1;
+});
+
+// ── Meteoros ocasionais ──
+if (Math.random() < 0.0022) spawnMeteor();
+
+meteors = meteors.filter(function(m) { return m.alpha > 0.02; });
+meteors.forEach(function(m) {
+  ctx.save();
+  ctx.globalAlpha = m.alpha;
+  var ratio  = m.vx / Math.max(m.vy, 0.001);
+  var endX   = m.x - ratio * m.len;
+  var endY   = m.y - m.len;
+  var gm     = ctx.createLinearGradient(m.x, m.y, endX, endY);
+  gm.addColorStop(0, m.col);
+  gm.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.strokeStyle = gm;
+  ctx.lineWidth   = 1.8;
+  ctx.beginPath();
+  ctx.moveTo(m.x, m.y);
+  ctx.lineTo(endX, endY);
+  ctx.stroke();
+  ctx.restore();
+
+  m.x     += m.vx;
+  m.y     += m.vy;
+  m.alpha -= 0.022;
+});
+
+ctx.globalAlpha = 1;
+```
+
+}
+
+return { init: init };
+}());
+
+// ═══════════════════════════════════════════════════
+//  HOME — PRINCESAS ANIMADAS NA ENTRADA DO CASTELO
+// ═══════════════════════════════════════════════════
+var _homeAnims = [];
+
+function buildHomeChars() {
+var row = document.getElementById(‘home-chars-row’);
+if (!row) return;
+row.innerHTML = ‘’;
+
+// Para animacoes anteriores
+_homeAnims.forEach(function(a) { a.running = false; });
+_homeAnims = [];
+
+// Mostra as 3 primeiras princesas
+[0, 1, 2].forEach(function(i) {
+var c = CHARACTERS[i];
+
+```
+var wrap = document.createElement('div');
+wrap.className = 'home-mini-char';
+wrap.title = c.name + ' — ' + c.job;
+
+// Estrela acima da cabeca
+var star = document.createElement('div');
+star.className = 'doll-star';
+star.textContent = '\u2606'; // estrela vazada
+wrap.appendChild(star);
+
+var cvs = document.createElement('canvas');
+cvs.width  = 80;
+cvs.height = 118;
+wrap.appendChild(cvs);
+
+var lbl = document.createElement('span');
+lbl.textContent = c.name;
+wrap.appendChild(lbl);
+
+// Clicar na princesa ja seleciona e entra no jogo
+wrap.addEventListener('click', function() { selectChar(c); });
+row.appendChild(wrap);
+
+// Inicia animacao individual
+var anim = { running: true, phase: i * 1.15 };
+_homeAnims.push(anim);
+_animateDoll(cvs, c, anim);
+```
+
+});
+}
+
+// Animacao idle de cada princesa: balanco suave + estrela piscando
+function _animateDoll(cvs, charData, anim) {
+var ctx  = cvs.getContext(‘2d’);
+var t0   = performance.now();
+var ch   = Object.assign({}, charData); // copia segura
+
+function frame(now) {
+if (!anim.running) return;
+var t = (now - t0) * 0.001 + anim.phase;
+
+```
+ctx.clearRect(0, 0, cvs.width, cvs.height);
+ctx.save();
+
+// Balanco suave esquerda-direita (simula respiracao / aceno)
+var sway = Math.sin(t * 1.1) * 0.038;
+ctx.translate(cvs.width / 2, cvs.height);
+ctx.rotate(sway);
+ctx.translate(-cvs.width / 2, -cvs.height);
+
+// Desenha a princesa (definida em script-games.js)
+drawPrincess(cvs, ch, 1);
+
+// Partícula de brilho piscando acima da cabeca
+var sa = 0.4 + 0.6 * Math.abs(Math.sin(t * 2.8));
+ctx.globalAlpha = sa;
+ctx.fillStyle   = '#ffd700';
+var px = cvs.width / 2 + Math.sin(t * 2.0) * 12;
+var py = 5 + Math.abs(Math.sin(t * 1.5)) * 6;
+_drawStar4(ctx, px, py, 4.5);
+ctx.globalAlpha = 1;
+
+ctx.restore();
+requestAnimationFrame(frame);
+```
+
+}
+requestAnimationFrame(frame);
+}
+
+// Estrela de 4 pontas simples
+function _drawStar4(ctx, x, y, r) {
+ctx.beginPath();
+ctx.moveTo(x,       y - r);
+ctx.lineTo(x + r*0.28, y - r*0.28);
+ctx.lineTo(x + r,   y);
+ctx.lineTo(x + r*0.28, y + r*0.28);
+ctx.lineTo(x,       y + r);
+ctx.lineTo(x - r*0.28, y + r*0.28);
+ctx.lineTo(x - r,   y);
+ctx.lineTo(x - r*0.28, y - r*0.28);
+ctx.closePath();
+ctx.fill();
+}
+
+// ═══════════════════════════════════════════════════
+//  SELECAO DE PERSONAGEM
+// ═══════════════════════════════════════════════════
+function buildCharSelect() {
+var grid = document.getElementById(‘chars-grid’);
+if (!grid) return;
+grid.innerHTML = ‘’;
+
+CHARACTERS.forEach(function(c) {
+var card = document.createElement(‘div’);
+card.className = ‘char-card’;
+
+```
+var cvs = document.createElement('canvas');
+cvs.width = 110; cvs.height = 160;
+drawPrincess(cvs, c, 1);
+
+var nm = document.createElement('div');
+nm.className = 'char-name'; nm.textContent = c.name;
+
+var jb = document.createElement('div');
+jb.className = 'char-job'; jb.textContent = c.job;
+
+card.appendChild(cvs); card.appendChild(nm); card.appendChild(jb);
+card.addEventListener('click', function() { selectChar(c); });
+grid.appendChild(card);
+```
+
+});
+}
+
+function selectChar(c) {
+curChar = Object.assign({}, c);
+if (audioUnlocked) playSuccess();
+var msgs = {
+pt: c.name + ’ selecionada!’,
+en: c.name + ’ selected!’,
+es: c.name + ’ seleccionada!’
+};
+showToast(msgs[curLang] || msgs.pt);
+goScreen(‘screen-menu’);
+}
+
+// ═══════════════════════════════════════════════════
+//  CABECALHO DO MENU (princesa ativa)
+// ═══════════════════════════════════════════════════
+function buildMenuHeader() {
+var el = document.getElementById(‘menu-char-header’);
+if (!el || !curChar) return;
+el.innerHTML = ‘’;
+
+var cvs = document.createElement(‘canvas’);
+cvs.width = 70; cvs.height = 100;
+drawPrincess(cvs, curChar, 1);
+
+var info = document.createElement(‘div’);
+info.className = ‘menu-header-info’;
+
+var nm = document.createElement(‘div’);
+nm.className = ‘menu-header-name’; nm.textContent = curChar.name;
+
+var jb = document.createElement(‘div’);
+jb.className = ‘menu-header-job’; jb.textContent = curChar.job;
+
+info.appendChild(nm); info.appendChild(jb);
+el.appendChild(cvs); el.appendChild(info);
+}
+
+// ═══════════════════════════════════════════════════
+//  IDIOMA
+// ═══════════════════════════════════════════════════
+function setLang(lang) {
+curLang = lang;
+
+document.querySelectorAll(’.lang-btn’).forEach(function(b) {
+b.classList.toggle(‘active’, b.getAttribute(‘data-lang’) === lang);
+});
+
+var root = document.getElementById(‘html-root’);
+if (root) root.lang = lang === ‘pt’ ? ‘pt-BR’ : lang;
+
+// Atualiza labels do HUD
+var labels = {
+pt: { date:‘DATA’, time:‘HORA’, char:‘PRINCESA’, session:‘SESSAO’ },
+en: { date:‘DATE’, time:‘TIME’, char:‘PRINCESS’, session:‘SESSION’ },
+es: { date:‘FECHA’,time:‘HORA’, char:‘PRINCESA’, session:‘SESION’  }
+};
+var L = labels[lang] || labels.pt;
+var e;
+e = document.getElementById(‘lbl-date’);    if (e) e.textContent = L.date;
+e = document.getElementById(‘lbl-time’);    if (e) e.textContent = L.time;
+e = document.getElementById(‘lbl-char’);    if (e) e.textContent = L.char;
+e = document.getElementById(‘lbl-session’); if (e) e.textContent = L.session;
+
+applyTranslations();
+try { resetQuiz(); } catch(ex) {}
+
+if (audioUnlocked) playClick();
+
+var msgs = { pt:‘Idioma: Portugues’, en:‘Language: English’, es:‘Idioma: Espanol’ };
+showToast(msgs[lang] || msgs.pt);
+}
+
+function applyTranslations() {
+var T = TRANSLATIONS[curLang];
+if (!T) return;
+Object.keys(T).forEach(function(id) {
+var el = document.getElementById(id);
+if (el) el.textContent = T[id];
+});
+}
+
+// ═══════════════════════════════════════════════════
+//  INICIALIZACAO
+// ═══════════════════════════════════════════════════
+window.addEventListener(‘DOMContentLoaded’, function() {
+
+// 1. Personagem padrao
+curChar = Object.assign({}, CHARACTERS[0]);
+
+// 2. Canvas de fundo (estrelas vivas)
+ParticleBg.init();
+
+// 3. Princesas animadas na home
+buildHomeChars();
+
+// 4. Grade de selecao pre-construida
+buildCharSelect();
+
+// 5. HUD relogio
+startHud();
+
+// 6. Traducoes iniciais
+applyTranslations();
+
+// 7. Desbloqueia audio no primeiro toque/clique
+document.addEventListener(‘click’,      unlockAndStartMusic);
+document.addEventListener(‘touchstart’, unlockAndStartMusic, { passive: true });
+
+// 8. Ajusta canvases ao redimensionar
+window.addEventListener(‘resize’, function() {
+var rc = document.getElementById(‘race-canvas’);
+var sc = document.getElementById(‘snake-canvas’);
+var rScreen = document.getElementById(‘screen-race’);
+var sScreen = document.getElementById(‘screen-snake’);
+if (rc && rScreen && rScreen.classList.contains(‘active’)) {
+rc.width = window.innerWidth; rc.height = window.innerHeight;
+}
+if (sc && sScreen && sScreen.classList.contains(‘active’)) {
+sc.width = window.innerWidth; sc.height = window.innerHeight;
+}
+});
+
+console.log(’[Dream Castle] Pronto!’);
+});
 ‘use strict’;
 
 // ═══════════════════════════════════════════════════
@@ -2415,565 +2717,263 @@ if (ThreeExp.running) ThreeExp.doSpin();
 ‘use strict’;
 
 // ═══════════════════════════════════════════════════
-//  ESTADO GLOBAL
+//  PERSONAGENS
 // ═══════════════════════════════════════════════════
-var curChar      = null;  // definido apos CHARACTERS carregar
-var curLang      = ‘pt’;
-var sessionStart = Date.now();
-var hudInterval  = null;
+var CHARACTERS = [
+{ id:‘laura’,     name:‘Laura’,     job:‘Arquiteta’, hair:’#ff2d7a’, outfit:’#ff6eb4’, shoe:’#c200a0’, skin:’#f5c5a3’ },
+{ id:‘valentina’, name:‘Valentina’, job:‘Cientista’,  hair:’#7b00ff’, outfit:’#b76eff’, shoe:’#3d00cc’, skin:’#f5c5a3’ },
+{ id:‘giovanna’,  name:‘Giovanna’,  job:‘Medica’,     hair:’#c200a0’, outfit:’#ff4fb8’, shoe:’#7a0070’, skin:’#e8b89a’ },
+{ id:‘valcely’,   name:‘Valcely’,   job:‘Estilista’,  hair:’#e6a817’, outfit:’#ffd700’, shoe:’#a07000’, skin:’#d4956a’ },
+{ id:‘lidiane’,   name:‘Lidiane’,   job:‘Biomedica’,  hair:’#00bfff’, outfit:’#00b4d8’, shoe:’#005f73’, skin:’#f0d5b0’ }
+];
 
-// ═══════════════════════════════════════════════════
-//  NAVEGACAO
-// ═══════════════════════════════════════════════════
-function goScreen(id) {
-// Para jogos ao sair da tela deles
-if (id !== ‘screen-explore’) { try { stopExplore(); } catch(e){} }
-if (id !== ‘screen-race’)    { try { stopRace();    } catch(e){} }
-if (id !== ‘screen-snake’)   { try { stopSnake();   } catch(e){} }
-if (id !== ‘screen-memory’)  { try { stopMemory();  } catch(e){} }
+var JOBS = [‘Arquiteta’,‘Cientista’,‘Medica’,‘Estilista’,‘Biomedica’,‘Rainha’,‘Astronauta’,‘Programadora’];
 
-document.querySelectorAll(’.screen’).forEach(function(s) {
-s.classList.remove(‘active’);
-});
+var HAIR_COLORS   = [’#ff2d7a’,’#7b00ff’,’#ffd700’,’#00bfff’,’#ff6600’,’#39ff14’,’#ffffff’,’#3d2000’,’#c200a0’,’#e6a817’];
+var OUTFIT_COLORS = [’#ff6eb4’,’#b76eff’,’#00b4d8’,’#ffd700’,’#ff4500’,’#39ff14’,’#c0c0c0’,’#e8d5b7’,’#ff4fb8’,’#00e5ff’];
+var SHOE_COLORS   = [’#c200a0’,’#3d00cc’,’#005f73’,’#a07000’,’#7a0070’,’#003d00’,’#555555’,’#8b4513’,’#ff2d7a’,’#0077ff’];
 
-var el = document.getElementById(id);
-if (el) el.classList.add(‘active’);
-
-// Mostrar/ocultar HUD global
-var showHud = (id !== ‘screen-home’ && id !== ‘screen-select’);
-var hud = document.getElementById(‘global-hud’);
-if (hud) {
-if (showHud) hud.classList.remove(‘hidden’);
-else         hud.classList.add(‘hidden’);
-}
-
-// Inicializacoes por tela
-if (id === ‘screen-menu’)   buildMenuHeader();
-if (id === ‘screen-custom’) buildCustom();
-if (id === ‘screen-select’) buildCharSelect();
-if (id === ‘screen-memory’) resetMemoryScreen();
-if (id === ‘screen-snake’)  resetSnakeScreen();
-if (id === ‘screen-quiz’)   resetQuiz();
-
-// Som de clique (apenas se audio desbloqueado)
-if (audioUnlocked) playClick();
-}
-
-function resetMemoryScreen() {
-var d = document.getElementById(‘memory-diff-row’);
-var s = document.getElementById(‘memory-stats’);
-var w = document.getElementById(‘memory-win’);
-var g = document.getElementById(‘memory-grid’);
-if (d) d.classList.remove(‘hidden’);
-if (s) s.classList.add(‘hidden’);
-if (w) w.classList.add(‘hidden’);
-if (g) g.innerHTML = ‘’;
-}
-
-function resetSnakeScreen() {
-var ov = document.getElementById(‘snake-overlay’);
-var oe = document.getElementById(‘snake-over’);
-if (ov) ov.classList.remove(‘hidden’);
-if (oe) oe.classList.add(‘hidden’);
-}
+// Conteúdo das cartas de memória (imagens via URL)
+var MEMORY_CARDS = [
+{ label:‘Castelo’,   img:‘https://cdn-icons-png.flaticon.com/512/3820/3820331.png’ },
+{ label:‘Coroa’,     img:‘https://cdn-icons-png.flaticon.com/512/3820/3820381.png’ },
+{ label:‘Estrela’,   img:‘https://cdn-icons-png.flaticon.com/512/616/616490.png’   },
+{ label:‘Unicornio’, img:‘https://cdn-icons-png.flaticon.com/512/616/616464.png’   },
+{ label:‘Borboleta’, img:‘https://cdn-icons-png.flaticon.com/512/3069/3069172.png’ },
+{ label:‘Flor’,      img:‘https://cdn-icons-png.flaticon.com/512/628/628283.png’   },
+{ label:‘Diamante’,  img:‘https://cdn-icons-png.flaticon.com/512/2583/2583344.png’ },
+{ label:‘Arco-iris’, img:‘https://cdn-icons-png.flaticon.com/512/616/616430.png’   },
+{ label:‘Lua’,       img:‘https://cdn-icons-png.flaticon.com/512/740/740878.png’   },
+{ label:‘Presente’,  img:‘https://cdn-icons-png.flaticon.com/512/3388/3388380.png’ },
+{ label:‘Bolo’,      img:‘https://cdn-icons-png.flaticon.com/512/3176/3176370.png’ },
+{ label:‘Balao’,     img:‘https://cdn-icons-png.flaticon.com/512/3208/3208738.png’ }
+];
 
 // ═══════════════════════════════════════════════════
-//  HUD GLOBAL — data, hora, sessao
+//  PERGUNTAS DO QUIZ (PT / EN / ES)
 // ═══════════════════════════════════════════════════
-function startHud() {
-if (hudInterval) clearInterval(hudInterval);
-hudInterval = setInterval(updateHud, 1000);
-updateHud();
+var QUIZ_QUESTIONS = {
+pt: {
+easy: [
+{ q:‘Qual e a capital do Brasil?’, opts:[‘Sao Paulo’,‘Rio de Janeiro’,‘Brasilia’,‘Salvador’], ans:2, exp:‘Brasilia e a capital federal do Brasil desde 1960.’ },
+{ q:‘Quantas cores tem o arco-iris?’, opts:[‘5’,‘6’,‘7’,‘8’], ans:2, exp:‘O arco-iris tem 7 cores: vermelho, laranja, amarelo, verde, azul, anil e violeta.’ },
+{ q:‘Qual animal e o maior do mundo?’, opts:[‘Elefante’,‘Baleia Azul’,‘Girafa’,‘Tubarao’], ans:1, exp:‘A baleia azul e o maior animal que ja existiu na Terra.’ },
+{ q:‘Quantos planetas tem o Sistema Solar?’, opts:[‘7’,‘8’,‘9’,‘10’], ans:1, exp:‘O Sistema Solar tem 8 planetas: Mercurio, Venus, Terra, Marte, Jupiter, Saturno, Urano e Netuno.’ },
+{ q:‘De que cor e o Sol?’, opts:[‘Amarelo’,‘Branco’,‘Laranja’,‘Vermelho’], ans:1, exp:‘O Sol parece amarelo daqui, mas na verdade e uma estrela branca-amarelada.’ },
+{ q:‘Qual e o maior oceano do mundo?’, opts:[‘Atlantico’,‘Indico’,‘Pacifico’,‘Artico’], ans:2, exp:‘O Oceano Pacifico e o maior e mais profundo do mundo.’ },
+{ q:‘Quantas pernas tem uma aranha?’, opts:[‘6’,‘8’,‘10’,‘4’], ans:1, exp:‘As aranhas sao aracnideos e possuem 8 pernas.’ },
+{ q:‘Qual e o pais mais populoso do mundo?’, opts:[‘India’,‘China’,‘EUA’,‘Brasil’], ans:0, exp:‘A India ultrapassou a China em 2023 e agora e o pais mais populoso.’ }
+],
+medium: [
+{ q:‘Quem escreveu “Dom Casmurro”?’, opts:[‘Jose de Alencar’,‘Machado de Assis’,‘Clarice Lispector’,‘Jorge Amado’], ans:1, exp:’“Dom Casmurro” foi escrito por Machado de Assis em 1899.’ },
+{ q:‘Em que ano o Brasil foi descoberto?’, opts:[‘1492’,‘1500’,‘1510’,‘1498’], ans:1, exp:‘Pedro Alvares Cabral chegou ao Brasil em 22 de abril de 1500.’ },
+{ q:‘Qual e o maior pais do mundo em area?’, opts:[‘Canada’,‘EUA’,‘Russia’,‘China’], ans:2, exp:‘A Russia e o maior pais do mundo, com mais de 17 milhoes de km2.’ },
+{ q:‘Quanto e a raiz quadrada de 144?’, opts:[‘11’,‘12’,‘13’,‘14’], ans:1, exp:‘12 x 12 = 144, entao a raiz quadrada de 144 e 12.’ },
+{ q:‘O que e fotossintese?’, opts:[‘Respiracao de animais’,‘Processo que plantas usam para fazer alimento’,‘Tipo de doenca’,‘Movimento da Terra’], ans:1, exp:‘Fotossintese e o processo que plantas usam para converter luz solar em alimento.’ },
+{ q:‘Qual elemento e representado pelo simbolo “O”?’, opts:[‘Ouro’,‘Osmio’,‘Oxigenio’,‘Oganesson’], ans:2, exp:‘O simbolo “O” representa o Oxigenio, essential para a vida.’ }
+],
+hard: [
+{ q:‘Qual e a formula quimica da agua?’, opts:[‘CO2’,‘H2O’,‘O2’,‘NaCl’], ans:1, exp:‘A agua e formada por 2 atomos de Hidrogenio e 1 de Oxigenio.’ },
+{ q:‘Quem desenvolveu a teoria da relatividade?’, opts:[‘Newton’,‘Edison’,‘Einstein’,‘Darwin’], ans:2, exp:‘Albert Einstein publicou a teoria da relatividade especial em 1905.’ },
+{ q:‘Quantos ossos tem o corpo humano adulto?’, opts:[‘206’,‘196’,‘256’,‘180’], ans:0, exp:‘O corpo humano adulto possui 206 ossos.’ },
+{ q:‘Qual e o menor pais do mundo?’, opts:[‘Monaco’,‘Maldivas’,‘San Marino’,‘Vaticano’], ans:3, exp:‘O Vaticano e o menor pais do mundo com apenas 0,44 km2.’ },
+{ q:‘Quem pintou a Mona Lisa?’, opts:[‘Michelangelo’,‘Rafael’,‘Leonardo da Vinci’,‘Botticelli’], ans:2, exp:‘A Mona Lisa foi pintada por Leonardo da Vinci entre 1503 e 1519.’ },
+{ q:‘O que significa a sigla DNA?’, opts:[‘Acido Desoxi-ribonucleico’,‘Dado Natural Animal’,‘Acido Natural Diluido’,‘Deoxi Nitrato Alcalino’], ans:0, exp:‘DNA e Acido Desoxirribonucleico, a molecula que carrega informacao genetica.’ }
+]
+},
+en: {
+easy: [
+{ q:‘What is the capital of Brazil?’, opts:[‘Sao Paulo’,‘Rio de Janeiro’,‘Brasilia’,‘Salvador’], ans:2, exp:‘Brasilia has been the federal capital of Brazil since 1960.’ },
+{ q:‘How many colors are in a rainbow?’, opts:[‘5’,‘6’,‘7’,‘8’], ans:2, exp:‘A rainbow has 7 colors: red, orange, yellow, green, blue, indigo, and violet.’ },
+{ q:‘Which is the largest animal in the world?’, opts:[‘Elephant’,‘Blue Whale’,‘Giraffe’,‘Shark’], ans:1, exp:‘The blue whale is the largest animal ever known to have existed.’ },
+{ q:‘How many planets are in the Solar System?’, opts:[‘7’,‘8’,‘9’,‘10’], ans:1, exp:‘The Solar System has 8 planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune.’ },
+{ q:‘What color is the Sun actually?’, opts:[‘Yellow’,‘White’,‘Orange’,‘Red’], ans:1, exp:‘The Sun appears yellow from Earth but is actually a white-yellow star.’ },
+{ q:‘What is the largest ocean on Earth?’, opts:[‘Atlantic’,‘Indian’,‘Pacific’,‘Arctic’], ans:2, exp:‘The Pacific Ocean is the largest and deepest ocean on Earth.’ },
+{ q:‘How many legs does a spider have?’, opts:[‘6’,‘8’,‘10’,‘4’], ans:1, exp:‘Spiders are arachnids and have 8 legs.’ },
+{ q:‘Which country has the largest population?’, opts:[‘India’,‘China’,‘USA’,‘Brazil’], ans:0, exp:‘India surpassed China in 2023 and is now the most populous country.’ }
+],
+medium: [
+{ q:‘What is the square root of 144?’, opts:[‘11’,‘12’,‘13’,‘14’], ans:1, exp:‘12 x 12 = 144, so the square root of 144 is 12.’ },
+{ q:‘What is photosynthesis?’, opts:[‘Animal breathing’,‘Plants making food from sunlight’,‘A type of disease’,‘Movement of Earth’], ans:1, exp:‘Photosynthesis is the process plants use to convert sunlight into food.’ },
+{ q:‘Which element is represented by “O”?’, opts:[‘Gold’,‘Osmium’,‘Oxygen’,‘Oganesson’], ans:2, exp:‘The symbol “O” represents Oxygen, essential for life.’ },
+{ q:‘What is the largest country by area?’, opts:[‘Canada’,‘USA’,‘Russia’,‘China’], ans:2, exp:‘Russia is the largest country with over 17 million km2.’ },
+{ q:‘Who wrote Romeo and Juliet?’, opts:[‘Charles Dickens’,‘William Shakespeare’,‘Jane Austen’,‘Mark Twain’], ans:1, exp:‘Romeo and Juliet was written by William Shakespeare around 1594-1596.’ },
+{ q:‘How many continents are there?’, opts:[‘5’,‘6’,‘7’,‘8’], ans:2, exp:‘There are 7 continents: Africa, Antarctica, Asia, Australia, Europe, North America, South America.’ }
+],
+hard: [
+{ q:‘What is the chemical formula for water?’, opts:[‘CO2’,‘H2O’,‘O2’,‘NaCl’], ans:1, exp:‘Water is formed by 2 Hydrogen atoms and 1 Oxygen atom.’ },
+{ q:‘Who developed the theory of relativity?’, opts:[‘Newton’,‘Edison’,‘Einstein’,‘Darwin’], ans:2, exp:‘Albert Einstein published the special theory of relativity in 1905.’ },
+{ q:‘How many bones are in the adult human body?’, opts:[‘206’,‘196’,‘256’,‘180’], ans:0, exp:‘The adult human body has 206 bones.’ },
+{ q:‘What is the smallest country in the world?’, opts:[‘Monaco’,‘Maldives’,‘San Marino’,‘Vatican’], ans:3, exp:‘Vatican City is the smallest country with only 0.44 km2.’ },
+{ q:‘Who painted the Mona Lisa?’, opts:[‘Michelangelo’,‘Raphael’,‘Leonardo da Vinci’,‘Botticelli’], ans:2, exp:‘The Mona Lisa was painted by Leonardo da Vinci between 1503 and 1519.’ },
+{ q:‘What does DNA stand for?’, opts:[‘Deoxyribonucleic Acid’,‘Direct Nucleic Acid’,‘Dynamic Natural Agent’,‘Dense Nuclear Array’], ans:0, exp:‘DNA stands for Deoxyribonucleic Acid, the molecule that carries genetic information.’ }
+]
+},
+es: {
+easy: [
+{ q:‘Cual es la capital de Brasil?’, opts:[‘Sao Paulo’,‘Rio de Janeiro’,‘Brasilia’,‘Salvador’], ans:2, exp:‘Brasilia es la capital federal de Brasil desde 1960.’ },
+{ q:‘Cuantos colores tiene el arcoiris?’, opts:[‘5’,‘6’,‘7’,‘8’], ans:2, exp:‘El arcoiris tiene 7 colores: rojo, naranja, amarillo, verde, azul, indigo y violeta.’ },
+{ q:‘Cual es el animal mas grande del mundo?’, opts:[‘Elefante’,‘Ballena azul’,‘Jirafa’,‘Tiburon’], ans:1, exp:‘La ballena azul es el animal mas grande que ha existido en la Tierra.’ },
+{ q:‘Cuantos planetas tiene el Sistema Solar?’, opts:[‘7’,‘8’,‘9’,‘10’], ans:1, exp:‘El Sistema Solar tiene 8 planetas: Mercurio, Venus, Tierra, Marte, Jupiter, Saturno, Urano y Neptuno.’ },
+{ q:‘De que color es el Sol realmente?’, opts:[‘Amarillo’,‘Blanco’,‘Naranja’,‘Rojo’], ans:1, exp:‘El Sol parece amarillo desde la Tierra, pero en realidad es una estrella blanco-amarillenta.’ },
+{ q:‘Cual es el oceano mas grande del mundo?’, opts:[‘Atlantico’,‘Indico’,‘Pacifico’,‘Artico’], ans:2, exp:‘El Oceano Pacifico es el mas grande y profundo del mundo.’ },
+{ q:‘Cuantas patas tiene una arana?’, opts:[‘6’,‘8’,‘10’,‘4’], ans:1, exp:‘Las aranas son aracnidos y tienen 8 patas.’ },
+{ q:‘Cual es el pais mas poblado del mundo?’, opts:[‘India’,‘China’,‘EE.UU.’,‘Brasil’], ans:0, exp:‘India supero a China en 2023 y ahora es el pais mas poblado.’ }
+],
+medium: [
+{ q:‘Cual es la raiz cuadrada de 144?’, opts:[‘11’,‘12’,‘13’,‘14’], ans:1, exp:‘12 x 12 = 144, entonces la raiz cuadrada de 144 es 12.’ },
+{ q:‘Que es la fotosintesis?’, opts:[‘Respiracion animal’,‘Las plantas hacen alimento con luz solar’,‘Un tipo de enfermedad’,‘Movimiento de la Tierra’], ans:1, exp:‘La fotosintesis es el proceso que las plantas usan para convertir la luz solar en alimento.’ },
+{ q:‘Que elemento representa el simbolo O?’, opts:[‘Oro’,‘Osmio’,‘Oxigeno’,‘Oganesson’], ans:2, exp:‘El simbolo “O” representa el Oxigeno, esencial para la vida.’ },
+{ q:‘Cual es el pais mas grande del mundo?’, opts:[‘Canada’,‘EE.UU.’,‘Rusia’,‘China’], ans:2, exp:‘Rusia es el pais mas grande con mas de 17 millones de km2.’ },
+{ q:‘Quien escribio Don Quijote?’, opts:[‘Lope de Vega’,‘Miguel de Cervantes’,‘Garcia Lorca’,‘Quevedo’], ans:1, exp:‘Don Quijote de la Mancha fue escrito por Miguel de Cervantes en 1605.’ },
+{ q:‘Cuantos continentes hay?’, opts:[‘5’,‘6’,‘7’,‘8’], ans:2, exp:‘Hay 7 continentes: Africa, Antartida, Asia, Australia, Europa, America del Norte, America del Sur.’ }
+],
+hard: [
+{ q:‘Cual es la formula quimica del agua?’, opts:[‘CO2’,‘H2O’,‘O2’,‘NaCl’], ans:1, exp:‘El agua esta formada por 2 atomos de Hidrogeno y 1 de Oxigeno.’ },
+{ q:‘Quien desarrollo la teoria de la relatividad?’, opts:[‘Newton’,‘Edison’,‘Einstein’,‘Darwin’], ans:2, exp:‘Albert Einstein publico la teoria de la relatividad especial en 1905.’ },
+{ q:‘Cuantos huesos tiene el cuerpo humano adulto?’, opts:[‘206’,‘196’,‘256’,‘180’], ans:0, exp:‘El cuerpo humano adulto tiene 206 huesos.’ },
+{ q:‘Cual es el pais mas pequeno del mundo?’, opts:[‘Monaco’,‘Maldivas’,‘San Marino’,‘Vaticano’], ans:3, exp:‘El Vaticano es el pais mas pequeno con solo 0,44 km2.’ },
+{ q:‘Quien pinto la Mona Lisa?’, opts:[‘Miguel Angel’,‘Rafael’,‘Leonardo da Vinci’,‘Botticelli’], ans:2, exp:‘La Mona Lisa fue pintada por Leonardo da Vinci entre 1503 y 1519.’ },
+{ q:‘Que significa ADN?’, opts:[‘Acido Desoxirribonucleico’,‘Agente Dinamico Natural’,‘Acido Diluido Natural’,‘Anillo Doblado Nitrogeno’], ans:0, exp:‘ADN significa Acido Desoxirribonucleico, la molecula que lleva informacion genetica.’ }
+]
 }
-
-function updateHud() {
-var now  = new Date();
-var h    = String(now.getHours()).padStart(2,‘0’);
-var mn   = String(now.getMinutes()).padStart(2,‘0’);
-var d    = String(now.getDate()).padStart(2,‘0’);
-var mo   = String(now.getMonth()+1).padStart(2,‘0’);
-var yr   = now.getFullYear();
-var secs = Math.floor((Date.now() - sessionStart) / 1000);
-var el;
-el = document.getElementById(‘hud-time’);     if (el) el.textContent = h + ‘:’ + mn;
-el = document.getElementById(‘hud-date’);     if (el) el.textContent = d + ‘/’ + mo + ‘/’ + yr;
-el = document.getElementById(‘hud-session’);  if (el) el.textContent = secs + ‘s’;
-el = document.getElementById(‘hud-char-name’);if (el && curChar) el.textContent = curChar.name;
-}
-
-// ═══════════════════════════════════════════════════
-//  TOAST
-// ═══════════════════════════════════════════════════
-function showToast(msg, dur) {
-var t = document.getElementById(‘toast-msg’);
-if (!t) return;
-t.textContent = msg;
-t.classList.remove(‘hidden’);
-clearTimeout(t._tid);
-t._tid = setTimeout(function() { t.classList.add(‘hidden’); }, dur || 2400);
-}
-
-// ═══════════════════════════════════════════════════
-//  FUNDO ANIMADO COM PARTICULAS
-//  Correcao: o parametro ‘t’ agora e real (timestamp)
-//  e as particulas se movem / brilham de forma viva
-// ═══════════════════════════════════════════════════
-var ParticleBg = (function() {
-var canvas, ctx;
-var stars    = [];
-var glitters = [];
-var meteors  = [];
-var t0       = 0;          // timestamp de inicio
-var W = 0, H = 0;
-
-var GLITTER_COLORS = [’#ff4fa3’,’#c77dff’,’#ffd700’,’#00e5ff’,’#ff9de2’,’#39ff14’];
-
-function init() {
-canvas = document.getElementById(‘bg-particles’);
-ctx    = canvas.getContext(‘2d’);
-resize();
-window.addEventListener(‘resize’, resize);
-build();
-t0 = performance.now();
-requestAnimationFrame(loop);
-}
-
-function resize() {
-W = canvas.width  = window.innerWidth;
-H = canvas.height = window.innerHeight;
-}
-
-function build() {
-stars    = [];
-glitters = [];
-meteors  = [];
-
-```
-// Estrelas: 180 de varios tamanhos e velocidades de piscar
-for (var i = 0; i < 180; i++) {
-  stars.push({
-    x:       Math.random() * 1.0,   // fração 0-1 da largura
-    y:       Math.random() * 1.0,
-    r:       Math.random() * 1.6 + 0.2,
-    twinkleFreq: Math.random() * 0.003 + 0.0008,  // freq de piscar
-    phase:   Math.random() * Math.PI * 2,
-    // cor: maioria branca, alguns coloridos
-    color:   Math.random() < 0.2 ? GLITTER_COLORS[Math.floor(Math.random()*GLITTER_COLORS.length)] : '#ffffff'
-  });
-}
-
-// Glitters flutuantes: 55
-for (var j = 0; j < 55; j++) {
-  glitters.push({
-    x:        Math.random(),
-    y:        Math.random(),
-    baseY:    Math.random(),          // Y base para calcular bob
-    size:     Math.random() * 5 + 2,
-    color:    GLITTER_COLORS[j % GLITTER_COLORS.length],
-    phase:    Math.random() * Math.PI * 2,
-    bobFreq:  Math.random() * 0.0015 + 0.0005,
-    rotFreq:  Math.random() * 0.002  + 0.001,
-    alphaFreq:Math.random() * 0.002  + 0.001
-  });
-}
-```
-
-}
-
-function spawnMeteor() {
-meteors.push({
-x:     Math.random() * W,
-y:     -10,
-vx:    2 + Math.random() * 3,
-vy:    3 + Math.random() * 4,
-len:   60 + Math.random() * 80,
-alpha: 1,
-color: GLITTER_COLORS[Math.floor(Math.random()*GLITTER_COLORS.length)]
-});
-}
-
-function loop(now) {
-requestAnimationFrame(loop);
-
-```
-var t = (now - t0) * 0.001;  // segundos desde inicio
-
-ctx.clearRect(0, 0, W, H);
-
-// Gradiente de fundo (leve variacao de cor ao longo do tempo)
-var shift = Math.sin(t * 0.05) * 0.06;
-var grd   = ctx.createLinearGradient(0, 0, W, H);
-grd.addColorStop(0,   'hsl(' + (260 + shift*30) + ',60%,6%)');
-grd.addColorStop(0.5, 'hsl(' + (270 + shift*20) + ',58%,8%)');
-grd.addColorStop(1,   'hsl(' + (280 + shift*15) + ',55%,12%)');
-ctx.fillStyle = grd;
-ctx.fillRect(0, 0, W, H);
-
-// Nebulosa sutil (círculos grandes e transparentes)
-[
-  { x:0.15, y:0.25, r:0.30, c:'rgba(155,46,255,' },
-  { x:0.80, y:0.60, r:0.25, c:'rgba(255,79,163,' },
-  { x:0.50, y:0.10, r:0.20, c:'rgba(0,229,255,'  }
-].forEach(function(n) {
-  var alpha = 0.025 + 0.015 * Math.sin(t * 0.07 + n.x);
-  var rg = ctx.createRadialGradient(n.x*W, n.y*H, 0, n.x*W, n.y*H, n.r*W);
-  rg.addColorStop(0,   n.c + alpha + ')');
-  rg.addColorStop(1,   n.c + '0)');
-  ctx.fillStyle = rg;
-  ctx.fillRect(0, 0, W, H);
-});
-
-// Estrelas piscando
-stars.forEach(function(s) {
-  var bright = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * s.twinkleFreq * 6283 + s.phase));
-  var r = s.r * (0.8 + 0.4 * bright);
-  ctx.globalAlpha = bright * 0.92;
-  ctx.fillStyle   = s.color;
-  ctx.beginPath();
-  ctx.arc(s.x * W, s.y * H, r, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Cruz de brilho nas estrelas maiores e mais brilhantes
-  if (s.r > 1.1 && bright > 0.75) {
-    ctx.globalAlpha  = bright * 0.35;
-    ctx.strokeStyle  = s.color;
-    ctx.lineWidth    = 0.6;
-    var arm = r * 4;
-    ctx.beginPath();
-    ctx.moveTo(s.x*W - arm, s.y*H);
-    ctx.lineTo(s.x*W + arm, s.y*H);
-    ctx.moveTo(s.x*W, s.y*H - arm);
-    ctx.lineTo(s.x*W, s.y*H + arm);
-    ctx.stroke();
-  }
-});
-ctx.globalAlpha = 1;
-
-// Glitters flutuantes e girando
-glitters.forEach(function(g) {
-  var bob   = Math.sin(t * g.bobFreq   * 6283 + g.phase) * 0.04 * H;
-  var rot   = t     * g.rotFreq   * 6283;
-  var alpha = 0.30 + 0.70 * Math.abs(Math.sin(t * g.alphaFreq * 6283 + g.phase));
-  var sz    = g.size * (0.7 + 0.5 * alpha);
-
-  ctx.save();
-  ctx.translate(g.x * W, g.y * H + bob);
-  ctx.rotate(rot);
-  ctx.globalAlpha = alpha;
-
-  // Losango
-  ctx.fillStyle = g.color;
-  ctx.beginPath();
-  ctx.moveTo(0, -sz);
-  ctx.lineTo(sz * 0.55, 0);
-  ctx.lineTo(0,  sz);
-  ctx.lineTo(-sz * 0.55, 0);
-  ctx.closePath();
-  ctx.fill();
-
-  // Mini quadrado dentro (brilho)
-  ctx.fillStyle = '#ffffff';
-  ctx.globalAlpha = alpha * 0.4;
-  ctx.fillRect(-sz*0.18, -sz*0.18, sz*0.36, sz*0.36);
-
-  ctx.restore();
-  ctx.globalAlpha = 1;
-});
-
-// Meteoros ocasionais
-if (Math.random() < 0.002) spawnMeteor();
-meteors = meteors.filter(function(m) { return m.alpha > 0.02; });
-meteors.forEach(function(m) {
-  ctx.save();
-  ctx.globalAlpha = m.alpha;
-  var gm = ctx.createLinearGradient(m.x, m.y, m.x - m.vx/m.vy*m.len, m.y - m.len);
-  gm.addColorStop(0, m.color);
-  gm.addColorStop(1, 'transparent');
-  ctx.strokeStyle = gm;
-  ctx.lineWidth   = 2;
-  ctx.beginPath();
-  ctx.moveTo(m.x, m.y);
-  ctx.lineTo(m.x - m.vx/m.vy*m.len, m.y - m.len);
-  ctx.stroke();
-  ctx.restore();
-
-  m.x     += m.vx;
-  m.y     += m.vy;
-  m.alpha -= 0.025;
-  ctx.globalAlpha = 1;
-});
-```
-
-}
-
-return { init: init };
-}());
-
-// ═══════════════════════════════════════════════════
-//  HOME — PRINCESAS ANIMADAS NA ENTRADA
-// ═══════════════════════════════════════════════════
-
-// Cada princesa tem seu canvas + animacao de idle via RequestAnimationFrame
-var homeCharAnims = [];
-
-function buildHomeChars() {
-var row = document.getElementById(‘home-chars-row’);
-if (!row) return;
-row.innerHTML = ‘’;
-
-// Cancela animacoes anteriores
-homeCharAnims.forEach(function(a) { a.running = false; });
-homeCharAnims = [];
-
-// Exibe 3 primeiras princesas
-[0, 1, 2].forEach(function(i) {
-var c   = CHARACTERS[i];
-var div = document.createElement(‘div’);
-div.className = ‘home-mini-char’;
-div.title = c.name + ’ - ’ + c.job;
-
-```
-var cvs = document.createElement('canvas');
-cvs.width  = 80;
-cvs.height = 118;
-
-var lbl = document.createElement('span');
-lbl.textContent = c.name;
-
-div.appendChild(cvs);
-div.appendChild(lbl);
-
-// Clique: vai para selecao
-div.addEventListener('click', function() {
-  selectChar(c);
-});
-
-row.appendChild(div);
-
-// Animacao idle: a princesa "acena" levemente
-var anim = { running: true, phase: i * 1.1 };
-homeCharAnims.push(anim);
-animateHomeChar(cvs, c, anim);
-```
-
-});
-}
-
-function animateHomeChar(cvs, char, anim) {
-var ctx   = cvs.getContext(‘2d’);
-var t0    = performance.now();
-var baseChar = Object.assign({}, char);
-
-function frame(now) {
-if (!anim.running) return;
-var t = (now - t0) * 0.001 + anim.phase;
-
-```
-ctx.clearRect(0, 0, cvs.width, cvs.height);
-
-// Salva estado e aplica transformacao de "balancar"
-ctx.save();
-// Pequeno balancar esquerda-direita (aceno suave)
-var swayAngle = Math.sin(t * 1.2) * 0.04;
-ctx.translate(cvs.width / 2, cvs.height);
-ctx.rotate(swayAngle);
-ctx.translate(-cvs.width / 2, -cvs.height);
-
-// Desenha a princesa normalmente
-drawPrincess(cvs, baseChar, 1);
-
-// Brilhinho piscando (estrela pequena acima da cabeca)
-var starAlpha = 0.4 + 0.6 * Math.abs(Math.sin(t * 2.5));
-ctx.globalAlpha = starAlpha;
-ctx.fillStyle   = '#ffd700';
-var sx = cvs.width / 2 + Math.sin(t * 1.8) * 10;
-var sy = 6 + Math.abs(Math.sin(t * 1.3)) * 4;
-drawStar4(ctx, sx, sy, 5);
-ctx.globalAlpha = 1;
-
-ctx.restore();
-
-requestAnimationFrame(frame);
-```
-
-}
-requestAnimationFrame(frame);
-}
-
-// Estrela de 4 pontas pequena
-function drawStar4(ctx, x, y, r) {
-ctx.beginPath();
-ctx.moveTo(x, y - r);
-ctx.lineTo(x + r*0.3, y - r*0.3);
-ctx.lineTo(x + r, y);
-ctx.lineTo(x + r*0.3, y + r*0.3);
-ctx.lineTo(x, y + r);
-ctx.lineTo(x - r*0.3, y + r*0.3);
-ctx.lineTo(x - r, y);
-ctx.lineTo(x - r*0.3, y - r*0.3);
-ctx.closePath();
-ctx.fill();
-}
-
-// ═══════════════════════════════════════════════════
-//  SELECAO DE PERSONAGEM
-// ═══════════════════════════════════════════════════
-function buildCharSelect() {
-var grid = document.getElementById(‘chars-grid’);
-if (!grid) return;
-grid.innerHTML = ‘’;
-
-CHARACTERS.forEach(function(c) {
-var card = document.createElement(‘div’);
-card.className = ‘char-card’;
-
-```
-var cvs = document.createElement('canvas');
-cvs.width  = 110;
-cvs.height = 160;
-drawPrincess(cvs, c, 1);
-
-var nm = document.createElement('div');
-nm.className   = 'char-name';
-nm.textContent = c.name;
-
-var jb = document.createElement('div');
-jb.className   = 'char-job';
-jb.textContent = c.job;
-
-card.appendChild(cvs);
-card.appendChild(nm);
-card.appendChild(jb);
-
-card.addEventListener('click', function() { selectChar(c); });
-grid.appendChild(card);
-```
-
-});
-}
-
-function selectChar(c) {
-curChar = Object.assign({}, c);
-if (audioUnlocked) playSuccess();
-var msgs = {
-pt: c.name + ’ selecionada!’,
-en: c.name + ’ selected!’,
-es: c.name + ’ seleccionada!’
 };
-showToast(msgs[curLang] || msgs.pt);
-goScreen(‘screen-menu’);
+
+// ═══════════════════════════════════════════════════
+//  TRADUCOES DA INTERFACE
+// ═══════════════════════════════════════════════════
+var TRANSLATIONS = {
+pt: {
+‘txt-btn-enter’:         ‘Entrar no Castelo’,
+‘txt-select-title’:      ‘Escolha sua Princesa’,
+‘txt-menu-explore’:      ‘Explorar’,
+‘txt-menu-explore-sub’:  ‘Castelo 3D’,
+‘txt-menu-custom’:       ‘Avatar’,
+‘txt-menu-custom-sub’:   ‘Personalizar’,
+‘txt-menu-race’:         ‘Corrida’,
+‘txt-menu-race-sub’:     ‘Obstaculos’,
+‘txt-menu-memory’:       ‘Memoria’,
+‘txt-menu-memory-sub’:   ‘Pares’,
+‘txt-menu-snake’:        ‘Cobrinha’,
+‘txt-menu-snake-sub’:    ‘Arcade’,
+‘txt-menu-quiz’:         ‘Quiz’,
+‘txt-menu-quiz-sub’:     ‘Educativo’,
+‘txt-custom-title’:      ‘Personalizar Avatar’,
+‘txt-opt-hair’:          ‘Cabelo’,
+‘txt-opt-outfit’:        ‘Roupa’,
+‘txt-opt-shoes’:         ‘Sapatos’,
+‘txt-opt-job’:           ‘Profissao’,
+‘txt-btn-save’:          ‘Salvar Look’,
+‘txt-race-pts’:          ’Pontos: ’,
+‘txt-race-lives’:        ’  Vidas: ’,
+‘txt-race-title’:        ‘Corrida Real’,
+‘txt-race-hint’:         ‘Toque / Espaco / Seta para pular’,
+‘txt-btn-race-start’:    ‘Iniciar’,
+‘txt-race-over-title’:   ‘Fim de Jogo!’,
+‘txt-memory-title’:      ‘Jogo da Memoria’,
+‘txt-mem-easy’:          ‘Facil (4 pares)’,
+‘txt-mem-med’:           ‘Medio (8 pares)’,
+‘txt-mem-hard’:          ‘Dificil (12 pares)’,
+‘txt-mem-win’:           ‘Parabens!’,
+‘txt-snake-title’:       ‘Cobrinha Magica’,
+‘txt-snake-hint’:        ‘Setas ou D-Pad para mover’,
+‘txt-quiz-title’:        ‘Quiz Educativo’,
+‘txt-quiz-desc’:         ‘Responda e aprenda brincando!’,
+‘txt-quiz-easy’:         ‘Facil’,
+‘txt-quiz-med’:          ‘Medio’,
+‘txt-quiz-hard’:         ‘Dificil’,
+‘hud-session-lbl’:       ’Sessao: ’
+},
+en: {
+‘txt-btn-enter’:         ‘Enter the Castle’,
+‘txt-select-title’:      ‘Choose your Princess’,
+‘txt-menu-explore’:      ‘Explore’,
+‘txt-menu-explore-sub’:  ‘3D Castle’,
+‘txt-menu-custom’:       ‘Avatar’,
+‘txt-menu-custom-sub’:   ‘Customize’,
+‘txt-menu-race’:         ‘Race’,
+‘txt-menu-race-sub’:     ‘Obstacles’,
+‘txt-menu-memory’:       ‘Memory’,
+‘txt-menu-memory-sub’:   ‘Pairs’,
+‘txt-menu-snake’:        ‘Snake’,
+‘txt-menu-snake-sub’:    ‘Arcade’,
+‘txt-menu-quiz’:         ‘Quiz’,
+‘txt-menu-quiz-sub’:     ‘Educational’,
+‘txt-custom-title’:      ‘Customize Avatar’,
+‘txt-opt-hair’:          ‘Hair’,
+‘txt-opt-outfit’:        ‘Outfit’,
+‘txt-opt-shoes’:         ‘Shoes’,
+‘txt-opt-job’:           ‘Profession’,
+‘txt-btn-save’:          ‘Save Look’,
+‘txt-race-pts’:          ’Score: ’,
+‘txt-race-lives’:        ’  Lives: ’,
+‘txt-race-title’:        ‘Royal Race’,
+‘txt-race-hint’:         ‘Tap / Space / Up Arrow to jump’,
+‘txt-btn-race-start’:    ‘Start’,
+‘txt-race-over-title’:   ‘Game Over!’,
+‘txt-memory-title’:      ‘Memory Game’,
+‘txt-mem-easy’:          ‘Easy (4 pairs)’,
+‘txt-mem-med’:           ‘Medium (8 pairs)’,
+‘txt-mem-hard’:          ‘Hard (12 pairs)’,
+‘txt-mem-win’:           ‘Congratulations!’,
+‘txt-snake-title’:       ‘Magic Snake’,
+‘txt-snake-hint’:        ‘Arrow keys or D-Pad to move’,
+‘txt-quiz-title’:        ‘Educational Quiz’,
+‘txt-quiz-desc’:         ‘Answer and learn while playing!’,
+‘txt-quiz-easy’:         ‘Easy’,
+‘txt-quiz-med’:          ‘Medium’,
+‘txt-quiz-hard’:         ‘Hard’,
+‘hud-session-lbl’:       ’Session: ’
+},
+es: {
+‘txt-btn-enter’:         ‘Entrar al Castillo’,
+‘txt-select-title’:      ‘Elige tu Princesa’,
+‘txt-menu-explore’:      ‘Explorar’,
+‘txt-menu-explore-sub’:  ‘Castillo 3D’,
+‘txt-menu-custom’:       ‘Avatar’,
+‘txt-menu-custom-sub’:   ‘Personalizar’,
+‘txt-menu-race’:         ‘Carrera’,
+‘txt-menu-race-sub’:     ‘Obstaculos’,
+‘txt-menu-memory’:       ‘Memoria’,
+‘txt-menu-memory-sub’:   ‘Pares’,
+‘txt-menu-snake’:        ‘Serpiente’,
+‘txt-menu-snake-sub’:    ‘Arcade’,
+‘txt-menu-quiz’:         ‘Quiz’,
+‘txt-menu-quiz-sub’:     ‘Educativo’,
+‘txt-custom-title’:      ‘Personalizar Avatar’,
+‘txt-opt-hair’:          ‘Cabello’,
+‘txt-opt-outfit’:        ‘Ropa’,
+‘txt-opt-shoes’:         ‘Zapatos’,
+‘txt-opt-job’:           ‘Profesion’,
+‘txt-btn-save’:          ‘Guardar Look’,
+‘txt-race-pts’:          ’Puntos: ’,
+‘txt-race-lives’:        ’  Vidas: ’,
+‘txt-race-title’:        ‘Carrera Real’,
+‘txt-race-hint’:         ‘Toca / Espacio / Flecha Arriba’,
+‘txt-btn-race-start’:    ‘Iniciar’,
+‘txt-race-over-title’:   ‘Fin del Juego!’,
+‘txt-memory-title’:      ‘Juego de Memoria’,
+‘txt-mem-easy’:          ‘Facil (4 pares)’,
+‘txt-mem-med’:           ‘Medio (8 pares)’,
+‘txt-mem-hard’:          ‘Dificil (12 pares)’,
+‘txt-mem-win’:           ‘Felicitaciones!’,
+‘txt-snake-title’:       ‘Serpiente Magica’,
+‘txt-snake-hint’:        ‘Flechas o D-Pad para mover’,
+‘txt-quiz-title’:        ‘Quiz Educativo’,
+‘txt-quiz-desc’:         ‘Responde y aprende jugando!’,
+‘txt-quiz-easy’:         ‘Facil’,
+‘txt-quiz-med’:          ‘Medio’,
+‘txt-quiz-hard’:         ‘Dificil’,
+‘hud-session-lbl’:       ’Sesion: ’
 }
+};
 
 // ═══════════════════════════════════════════════════
-//  MENU HEADER
+//  OBSTACULOS DA CORRIDA
 // ═══════════════════════════════════════════════════
-function buildMenuHeader() {
-var el = document.getElementById(‘menu-char-header’);
-if (!el || !curChar) return;
-el.innerHTML = ‘’;
-
-var cvs = document.createElement(‘canvas’);
-cvs.width = 70; cvs.height = 100;
-drawPrincess(cvs, curChar, 1);
-
-var info = document.createElement(‘div’);
-info.className = ‘menu-header-info’;
-
-var nm = document.createElement(‘div’);
-nm.className   = ‘menu-header-name’;
-nm.textContent = curChar.name;
-
-var jb = document.createElement(‘div’);
-jb.className   = ‘menu-header-job’;
-jb.textContent = curChar.job;
-
-info.appendChild(nm);
-info.appendChild(jb);
-el.appendChild(cvs);
-el.appendChild(info);
-}
-
-// ═══════════════════════════════════════════════════
-//  IDIOMA — aplica em TODOS os elementos da pagina
-// ═══════════════════════════════════════════════════
-function setLang(lang) {
-curLang = lang;
-
-// Destaca botao ativo
-document.querySelectorAll(’.lang-btn’).forEach(function(b) {
-b.classList.toggle(‘active’, b.getAttribute(‘data-lang’) === lang);
-});
-
-// Atualiza lang no html
-var root = document.getElementById(‘html-root’);
-if (root) root.lang = lang === ‘pt’ ? ‘pt-BR’ : lang;
-
-// Aplica traducoes
-applyTranslations();
-
-// Atualiza quiz se estiver em andamento
-try { resetQuiz(); } catch(e) {}
-
-if (audioUnlocked) playClick();
-
-showToast(lang === ‘pt’ ? ‘Idioma: Portugues’ : lang === ‘en’ ? ‘Language: English’ : ‘Idioma: Espanol’);
-}
-
-function applyTranslations() {
-var T = TRANSLATIONS[curLang];
-if (!T) return;
-Object.keys(T).forEach(function(id) {
-var el = document.getElementById(id);
-if (el) el.textContent = T[id];
-});
-}
-
-// ═══════════════════════════════════════════════════
-//  MUSICA
-// ═══════════════════════════════════════════════════
-// toggleMusic ja definida em script-audio.js
-
-// ═══════════════════════════════════════════════════
-//  INICIALIZACAO
-// ═══════════════════════════════════════════════════
-window.addEventListener(‘DOMContentLoaded’, function() {
-
-// 1. Curchar padrao
-curChar = Object.assign({}, CHARACTERS[0]);
-
-// 2. Fundo animado
-ParticleBg.init();
-
-// 3. Princesas na home com animacao
-buildHomeChars();
-
-// 4. Selecao pre-construida
-buildCharSelect();
-
-// 5. HUD
-startHud();
-
-// 6. Traducoes iniciais
-applyTranslations();
-
-// 7. Desbloqueio de audio no PRIMEIRO toque/clique
-//    Necessario para que a musica funcione em todos os navegadores
-document.addEventListener(‘click’,      unlockAndStartMusic);
-document.addEventListener(‘touchstart’, unlockAndStartMusic, { passive: true });
-
-// 8. Redimensionamento de canvases de jogo
-window.addEventListener(‘resize’, function() {
-var rc = document.getElementById(‘race-canvas’);
-var sc = document.getElementById(‘snake-canvas’);
-if (rc && document.getElementById(‘screen-race’).classList.contains(‘active’)) {
-rc.width  = window.innerWidth;
-rc.height = window.innerHeight;
-}
-if (sc && document.getElementById(‘screen-snake’).classList.contains(‘active’)) {
-sc.width  = window.innerWidth;
-sc.height = window.innerHeight;
-}
-});
-
-console.log(’[Dream Castle] Carregado com sucesso!’);
-});
+var RACE_OBSTACLES = [
+{ icon:‘https://cdn-icons-png.flaticon.com/512/2107/2107845.png’, label:‘Pedra’    },
+{ icon:‘https://cdn-icons-png.flaticon.com/512/3069/3069080.png’, label:‘Arvore’   },
+{ icon:‘https://cdn-icons-png.flaticon.com/512/3176/3176370.png’, label:‘Bolo’     },
+{ icon:‘https://cdn-icons-png.flaticon.com/512/616/616408.png’,   label:‘Cobra’    }
+];
