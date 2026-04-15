@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Laura Valentina - Dream Castle">
     <title>Laura Valentina - Dream Castle</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
 <body>
+
     <!-- HUD GLOBAL -->
     <div class="global-hud">
         <div class="hud-block hud-left">
@@ -34,18 +36,119 @@
     <!-- CANVAS DE FUNDO (estrelas) -->
     <canvas id="bg-particles"></canvas>
 
-    <!-- TELAS DO JOGO (todas as telas que você tinha) -->
-    <div id="screen-home" class="screen active"> ... (todo o conteúdo que você já tinha) </div>
-    <!-- As outras telas (char-select, customize, race, memory, snake, quiz, etc.) continuam exatamente como você tinha, só com as IDs corretas. -->
+    <!-- TELA HOME -->
+    <div id="screen-home" class="screen active">
+        <div class="screen-inner">
+            <h1 class="title">Laura Valentina</h1>
+            <h2 class="subtitle">Dream Castle</h2>
+            <button id="btn-enter" class="btn-primary">Entrar no Castelo</button>
+            <div class="music-note">♫ Musica: ON</div>
+        </div>
+    </div>
 
-    <!-- Language switcher -->
+    <!-- TELA ESCOLHA DE PRINCESA -->
+    <div id="screen-char-select" class="screen">
+        <div class="screen-inner">
+            <h2>Escolha sua Princesa</h2>
+            <div id="char-grid" class="char-grid"></div>
+            <button class="btn-secondary" id="btn-back-char">← Voltar</button>
+        </div>
+    </div>
+
+    <!-- TELA PERSONALIZAR AVATAR -->
+    <div id="screen-customize" class="screen">
+        <div class="screen-inner">
+            <h2>Personalizar Avatar</h2>
+            <div class="avatar-preview" id="avatar-preview"></div>
+            <div class="custom-options">
+                <label>Cabelo</label>
+                <div id="hair-colors" class="color-picker"></div>
+                <label>Roupa</label>
+                <div id="outfit-colors" class="color-picker"></div>
+                <label>Sapatos</label>
+                <div id="shoe-colors" class="color-picker"></div>
+                <label>Profissão</label>
+                <select id="job-select"></select>
+            </div>
+            <button id="btn-save-look" class="btn-primary">Salvar Look</button>
+            <button class="btn-secondary" id="btn-back-custom">← Voltar</button>
+        </div>
+    </div>
+
+    <!-- TELA CORRIDA REAL -->
+    <div id="screen-race" class="screen">
+        <div class="screen-inner">
+            <h2>Corrida Real</h2>
+            <canvas id="race-canvas" width="800" height="400"></canvas>
+            <p>Toque / Espaço / Seta para pular</p>
+            <button id="btn-start-race" class="btn-primary">Iniciar</button>
+            <button class="btn-secondary" id="btn-back-race">← Voltar</button>
+            <div id="race-score">Pontos: 0 Vidas: 3</div>
+        </div>
+    </div>
+
+    <!-- TELA JOGO DA MEMÓRIA -->
+    <div id="screen-memory" class="screen">
+        <div class="screen-inner">
+            <h2>Jogo da Memoria</h2>
+            <div class="difficulty">
+                <button data-diff="4">Fácil (4 pares)</button>
+                <button data-diff="8">Médio (8 pares)</button>
+                <button data-diff="12">Difícil (12 pares)</button>
+            </div>
+            <div id="memory-grid" class="memory-grid"></div>
+            <div>Tempo: <span id="memory-time">0</span>s | Pares: <span id="memory-pairs">0</span> | Jogadas: <span id="memory-moves">0</span></div>
+            <button class="btn-secondary" id="btn-back-memory">← Voltar</button>
+        </div>
+    </div>
+
+    <!-- TELA COBRINHA MÁGICA -->
+    <div id="screen-snake" class="screen">
+        <div class="screen-inner">
+            <h2>Cobrinha Magica</h2>
+            <canvas id="snake-canvas" width="600" height="600"></canvas>
+            <p>Setas ou D-Pad para mover</p>
+            <button id="btn-start-snake" class="btn-primary">Jogar</button>
+            <button class="btn-secondary" id="btn-back-snake">← Voltar</button>
+        </div>
+    </div>
+
+    <!-- TELA QUIZ -->
+    <div id="screen-quiz" class="screen">
+        <div class="screen-inner">
+            <h2>Quiz Educativo</h2>
+            <div id="quiz-difficulty" class="difficulty">
+                <button data-diff="easy">Fácil</button>
+                <button data-diff="medium">Médio</button>
+                <button data-diff="hard">Difícil</button>
+            </div>
+            <div id="quiz-container">
+                <div id="question-text"></div>
+                <div id="options"></div>
+                <div id="quiz-progress">1/8 0 pts</div>
+            </div>
+            <button class="btn-secondary" id="btn-back-quiz">← Voltar</button>
+        </div>
+    </div>
+
+    <!-- TELA FIM DE JOGO GENÉRICA -->
+    <div id="screen-gameover" class="screen">
+        <div class="screen-inner">
+            <h2>Fim de Jogo!</h2>
+            <button id="btn-restart" class="btn-primary">Tentar Novamente</button>
+            <button class="btn-secondary" id="btn-back-gameover">← Voltar</button>
+        </div>
+    </div>
+
+    <!-- LANGUAGE SWITCHER -->
     <div class="lang-switcher">
         <button class="lang-btn active" data-lang="pt">PT</button>
         <button class="lang-btn" data-lang="en">EN</button>
         <button class="lang-btn" data-lang="es">ES</button>
     </div>
 
-    <!-- Toast -->
+    <!-- TOAST -->
     <div id="toast" class="toast-msg"></div>
+
 </body>
 </html>
