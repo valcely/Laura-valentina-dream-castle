@@ -1,154 +1,325 @@
 <!DOCTYPE html>
-<html lang="pt">
+
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Laura Valentina - Dream Castle">
-    <title>Laura Valentina - Dream Castle</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0a0318">
+  <title>Laura Valentina - Dream Castle 👑</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- FUNDO ANIMADO -->
+  <canvas id="bg-particles" class="bg-canvas"></canvas>
 
-    <!-- HUD GLOBAL -->
-    <div class="global-hud">
-        <div class="hud-block hud-left">
-            <div id="lbl-date" class="hud-label">DATA</div>
-            <div id="hud-date" class="hud-value">01/01/2026</div>
-        </div>
-        <div class="hud-divider"></div>
-        <div class="hud-block hud-center">
-            <div id="lbl-time" class="hud-label">HORA</div>
-            <div id="hud-time" class="hud-value">00:00</div>
-        </div>
-        <div class="hud-divider"></div>
-        <div class="hud-block hud-right">
-            <div id="lbl-char" class="hud-label">PRINCESA</div>
-            <div id="hud-char" class="hud-value">Laura</div>
-        </div>
-        <div class="hud-divider"></div>
-        <div class="hud-block">
-            <div id="lbl-session" class="hud-label">SESSAO</div>
-            <div id="hud-session" class="hud-value">0s</div>
-        </div>
+  <!-- TOAST -->
+
+  <div id="toast" class="toast"></div>
+
+  <!-- SPARKLES CURSOR (criado via JS) -->
+
+  <!-- ==================== SCREENS ==================== -->
+
+  <!-- HOME SCREEN -->
+
+  <div id="screen-home" class="screen active">
+    <div class="home-container">
+      <div class="home-title">
+        <h1>👑 Laura Valentina 👑</h1>
+        <p class="home-subtitle">Dream Castle</p>
+      </div>
+      <div class="home-chars-row" id="home-chars-row"></div>
+      <button class="btn-large btn-primary" onclick="showScreen('select')">
+        <span class="btn-icon">✨</span> Escolha a sua Princesa
+      </button>
     </div>
+  </div>
 
-    <!-- CANVAS DE FUNDO (estrelas) -->
-    <canvas id="bg-particles"></canvas>
+  <!-- SELECT SCREEN -->
 
-    <!-- TELA HOME -->
-    <div id="screen-home" class="screen active">
-        <div class="screen-inner">
-            <h1 class="title">Laura Valentina</h1>
-            <h2 class="subtitle">Dream Castle</h2>
-            <button id="btn-enter" class="btn-primary">Entrar no Castelo</button>
-            <div class="music-note">♫ Musica: ON</div>
+  <div id="screen-select" class="screen">
+    <div class="select-header">
+      <button class="btn-back" onclick="showScreen('home')">← Voltar</button>
+      <h2>Escolha a sua Princesa</h2>
+    </div>
+    <div class="char-grid" id="char-grid"></div>
+  </div>
+
+  <!-- MENU SCREEN -->
+
+  <div id="screen-menu" class="screen">
+    <div class="menu-left">
+      <div class="menu-princess-card">
+        <canvas id="menu-princess-canvas" width="130" height="170"></canvas>
+        <h3 id="menu-princess-name"></h3>
+        <p id="menu-princess-job"></p>
+        <button class="btn-menu-action" onclick="showScreen('select')">
+          <span>👯</span> Trocar Princesa
+        </button>
+      </div>
+    </div>
+    <div class="menu-right">
+      <h2>Escolha um Jogo</h2>
+      <div class="games-grid">
+        <!-- Explorar -->
+        <div class="game-card" onclick="showScreen('explore'); startExplore()">
+          <div class="game-icon">🏰</div>
+          <h3 id="explore-title">Explorar</h3>
+          <p>Castelo 3D</p>
         </div>
-    </div>
-
-    <!-- TELA ESCOLHA DE PRINCESA -->
-    <div id="screen-char-select" class="screen">
-        <div class="screen-inner">
-            <h2>Escolha sua Princesa</h2>
-            <div id="char-grid" class="char-grid"></div>
-            <button class="btn-secondary" id="btn-back-char">← Voltar</button>
+        <!-- Avatar -->
+        <div class="game-card" onclick="showScreen('avatar'); buildAvatar()">
+          <div class="game-icon">✨</div>
+          <h3>Avatar</h3>
+          <p>Personalizar</p>
         </div>
-    </div>
-
-    <!-- TELA PERSONALIZAR AVATAR -->
-    <div id="screen-customize" class="screen">
-        <div class="screen-inner">
-            <h2>Personalizar Avatar</h2>
-            <div class="avatar-preview" id="avatar-preview"></div>
-            <div class="custom-options">
-                <label>Cabelo</label>
-                <div id="hair-colors" class="color-picker"></div>
-                <label>Roupa</label>
-                <div id="outfit-colors" class="color-picker"></div>
-                <label>Sapatos</label>
-                <div id="shoe-colors" class="color-picker"></div>
-                <label>Profissão</label>
-                <select id="job-select"></select>
-            </div>
-            <button id="btn-save-look" class="btn-primary">Salvar Look</button>
-            <button class="btn-secondary" id="btn-back-custom">← Voltar</button>
+        <!-- Corrida -->
+        <div class="game-card" onclick="showScreen('race'); startRace()">
+          <div class="game-icon">🏃‍♀️</div>
+          <h3>Corrida</h3>
+          <p>Obstáculos</p>
         </div>
-    </div>
-
-    <!-- TELA CORRIDA REAL -->
-    <div id="screen-race" class="screen">
-        <div class="screen-inner">
-            <h2>Corrida Real</h2>
-            <canvas id="race-canvas" width="800" height="400"></canvas>
-            <p>Toque / Espaço / Seta para pular</p>
-            <button id="btn-start-race" class="btn-primary">Iniciar</button>
-            <button class="btn-secondary" id="btn-back-race">← Voltar</button>
-            <div id="race-score">Pontos: 0 Vidas: 3</div>
+        <!-- Memória -->
+        <div class="game-card" onclick="showScreen('memory'); buildMemoryDiff()">
+          <div class="game-icon">🧠</div>
+          <h3>Memória</h3>
+          <p>Pares</p>
         </div>
-    </div>
-
-    <!-- TELA JOGO DA MEMÓRIA -->
-    <div id="screen-memory" class="screen">
-        <div class="screen-inner">
-            <h2>Jogo da Memoria</h2>
-            <div class="difficulty">
-                <button data-diff="4">Fácil (4 pares)</button>
-                <button data-diff="8">Médio (8 pares)</button>
-                <button data-diff="12">Difícil (12 pares)</button>
-            </div>
-            <div id="memory-grid" class="memory-grid"></div>
-            <div>Tempo: <span id="memory-time">0</span>s | Pares: <span id="memory-pairs">0</span> | Jogadas: <span id="memory-moves">0</span></div>
-            <button class="btn-secondary" id="btn-back-memory">← Voltar</button>
+        <!-- Cobra -->
+        <div class="game-card" onclick="showScreen('snake'); startSnake()">
+          <div class="game-icon">🐍</div>
+          <h3>Cobrinha</h3>
+          <p>Arcade</p>
         </div>
-    </div>
-
-    <!-- TELA COBRINHA MÁGICA -->
-    <div id="screen-snake" class="screen">
-        <div class="screen-inner">
-            <h2>Cobrinha Magica</h2>
-            <canvas id="snake-canvas" width="600" height="600"></canvas>
-            <p>Setas ou D-Pad para mover</p>
-            <button id="btn-start-snake" class="btn-primary">Jogar</button>
-            <button class="btn-secondary" id="btn-back-snake">← Voltar</button>
+        <!-- Quiz -->
+        <div class="game-card" onclick="showScreen('quiz'); buildQuizDiff()">
+          <div class="game-icon">🧩</div>
+          <h3>Quiz</h3>
+          <p>Educativo</p>
         </div>
+      </div>
     </div>
+  </div>
 
-    <!-- TELA QUIZ -->
-    <div id="screen-quiz" class="screen">
-        <div class="screen-inner">
-            <h2>Quiz Educativo</h2>
-            <div id="quiz-difficulty" class="difficulty">
-                <button data-diff="easy">Fácil</button>
-                <button data-diff="medium">Médio</button>
-                <button data-diff="hard">Difícil</button>
-            </div>
-            <div id="quiz-container">
-                <div id="question-text"></div>
-                <div id="options"></div>
-                <div id="quiz-progress">1/8 0 pts</div>
-            </div>
-            <button class="btn-secondary" id="btn-back-quiz">← Voltar</button>
+  <!-- AVATAR SCREEN -->
+
+  <div id="screen-avatar" class="screen">
+    <div class="avatar-container">
+      <div class="avatar-left">
+        <canvas id="avatar-preview" width="180" height="240"></canvas>
+        <button class="btn-primary" onclick="saveLook()">💾 Salvar Look</button>
+        <button class="btn-secondary" onclick="showScreen('menu')">← Voltar</button>
+      </div>
+      <div class="avatar-right">
+        <h3>Cabelo</h3>
+        <div class="swatch-container" id="swatch-hair"></div>
+
+```
+    <h3>Roupa</h3>
+    <div class="swatch-container" id="swatch-outfit"></div>
+
+    <h3>Sapatos</h3>
+    <div class="swatch-container" id="swatch-shoe"></div>
+
+    <h3>Profissão</h3>
+    <div class="job-row" id="job-row"></div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- RACE SCREEN -->
+
+  <div id="screen-race" class="screen">
+    <canvas id="race-canvas"></canvas>
+    <div class="race-hud">
+      <div class="race-stat">❤️ Vidas: <span id="race-lives">3</span></div>
+      <div class="race-stat">⭐ Pontos: <span id="race-score">0</span></div>
+      <button id="race-jump-btn" class="race-jump-btn">PULAR</button>
+    </div>
+    <div id="race-start" class="game-overlay">
+      <button class="btn-large btn-primary" onclick="startRace()">Começar Corrida</button>
+    </div>
+    <div id="race-gameover" class="game-overlay hidden">
+      <div class="game-end">
+        <h2>Fim de Jogo!</h2>
+        <p>Pontos: <span id="race-final-score">0</span></p>
+        <button class="btn-primary" onclick="startRace()">Jogar Novamente</button>
+        <button class="btn-secondary" onclick="showScreen('menu')">← Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMORY SCREEN -->
+
+  <div id="screen-memory" class="screen">
+    <div class="memory-container">
+      <div class="mem-header">
+        <h2>Jogo da Memória</h2>
+        <div class="mem-stats">
+          <span>Total: <strong id="mem-total">4</strong></span>
+          <span>Pares: <strong id="mem-pairs">0</strong></span>
+          <span>Jogadas: <strong id="mem-moves">0</strong></span>
+          <span>Tempo: <strong id="mem-time">0s</strong></span>
         </div>
+      </div>
+      <div id="memory-diff-select" class="difficulty-select">
+        <h3>Escolha a Dificuldade</h3>
+        <button class="btn-difficulty" onclick="startMemory(4)">🟢 Fácil (4 pares)</button>
+        <button class="btn-difficulty" onclick="startMemory(8)">🟡 Médio (8 pares)</button>
+        <button class="btn-difficulty" onclick="startMemory(12)">🔴 Difícil (12 pares)</button>
+        <button class="btn-secondary" onclick="showScreen('menu')">← Menu</button>
+      </div>
+      <div id="memory-game" class="hidden">
+        <div class="memory-grid" id="memory-grid"></div>
+        <button class="btn-secondary" onclick="stopMemory(); showScreen('menu')">← Menu</button>
+      </div>
     </div>
+  </div>
 
-    <!-- TELA FIM DE JOGO GENÉRICA -->
-    <div id="screen-gameover" class="screen">
-        <div class="screen-inner">
-            <h2>Fim de Jogo!</h2>
-            <button id="btn-restart" class="btn-primary">Tentar Novamente</button>
-            <button class="btn-secondary" id="btn-back-gameover">← Voltar</button>
+  <!-- SNAKE SCREEN -->
+
+  <div id="screen-snake" class="screen">
+    <canvas id="snake-canvas"></canvas>
+    <div class="snake-hud">
+      <div class="snake-stat">🎮 Pontos: <span id="snake-score">0</span></div>
+      <div class="snake-stat">🏆 Recorde: <span id="snake-best">0</span></div>
+    </div>
+    <div id="snake-start" class="game-overlay">
+      <button class="btn-large btn-primary" onclick="startSnake()">Começar Cobrinha</button>
+      <button class="btn-secondary" onclick="showScreen('menu')">← Menu</button>
+    </div>
+    <div id="snake-gameover" class="game-overlay hidden">
+      <div class="game-end">
+        <h2>Game Over!</h2>
+        <p>Pontos: <span id="snake-final-score">0</span></p>
+        <p>Recorde: <span id="snake-best">0</span></p>
+        <button class="btn-primary" onclick="startSnake()">Jogar Novamente</button>
+        <button class="btn-secondary" onclick="showScreen('menu')">← Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-container">
+      <div id="quiz-start" class="quiz-section">
+        <h2>Quiz Mágico</h2>
+        <p>Teste seus conhecimentos e ganhe pontos!</p>
+        <div class="difficulty-select">
+          <h3>Escolha a Dificuldade</h3>
+          <button class="btn-difficulty" onclick="setQuizDiff('easy'); startQuiz()">🟢 Fácil (5 perguntas)</button>
+          <button class="btn-difficulty" onclick="setQuizDiff('medium'); startQuiz()">🟡 Médio (7 perguntas)</button>
+          <button class="btn-difficulty" onclick="setQuizDiff('hard'); startQuiz()">🔴 Difícil (8 perguntas)</button>
+          <button class="btn-secondary" onclick="showScreen('menu')">← Menu</button>
         </div>
-    </div>
+      </div>
 
-    <!-- LANGUAGE SWITCHER -->
-    <div class="lang-switcher">
-        <button class="lang-btn active" data-lang="pt">PT</button>
-        <button class="lang-btn" data-lang="en">EN</button>
-        <button class="lang-btn" data-lang="es">ES</button>
+```
+  <div id="quiz-play" class="quiz-section hidden">
+    <div class="quiz-header">
+      <div class="quiz-progress">
+        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+      </div>
+      <span id="quiz-count">1/5</span>
+      <span>Score: <strong id="quiz-score">0</strong></span>
     </div>
+    <h2 id="quiz-question">Pergunta?</h2>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div id="quiz-exp" class="quiz-explanation hidden"></div>
+    <button id="btn-quiz-next" class="btn-primary hidden" onclick="nextQuiz()">Próxima Questão</button>
+  </div>
 
-    <!-- TOAST -->
-    <div id="toast" class="toast-msg"></div>
+  <div id="quiz-end" class="quiz-section hidden">
+    <h2>Parabéns!</h2>
+    <div class="quiz-result">
+      <div class="medal" id="quiz-medal">🥇</div>
+      <p>Pontuação: <span id="quiz-final-score">0</span></p>
+      <p>Acertos: <span id="quiz-correct">0</span>/<span id="quiz-total">5</span></p>
+    </div>
+    <button class="btn-primary" onclick="showScreen('quiz'); buildQuizDiff()">Jogar Novamente</button>
+    <button class="btn-secondary" onclick="showScreen('menu')">← Menu</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- EXPLORE SCREEN (3D) -->
+
+  <div id="screen-explore" class="screen">
+    <div id="three-container" class="three-container"></div>
+    <div id="interact-bubble" class="interact-bubble hidden"></div>
+    <div class="explore-controls">
+      <div class="dpad-3d" id="dpad-3d">
+        <button class="dpad-btn" data-dir="up">▲</button>
+        <button class="dpad-btn" data-dir="left">◄</button>
+        <button class="dpad-btn" data-dir="down">▼</button>
+        <button class="dpad-btn" data-dir="right">►</button>
+      </div>
+      <button class="btn-secondary explore-back" onclick="stopExplore(); showScreen('menu')">← Menu</button>
+    </div>
+  </div>
+
+  <!-- GLOBAL HUD -->
+
+  <div id="global-hud" class="global-hud hud-hidden">
+    <div class="hud-item">
+      <span class="hud-label">DATA</span>
+      <span class="hud-value" id="hud-date">--/--/--</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">HORA</span>
+      <span class="hud-value" id="hud-time">--:--</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">PRINCESA</span>
+      <span class="hud-value" id="hud-princess">--</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">SESSÃO</span>
+      <span class="hud-value" id="hud-session">0s</span>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script src="script.js"></script>
+
+  <!-- INIT -->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initBg();
+      initCursorSparkles();
+      buildHome();
+      unlockAudio();
+      startMusic();
+      setInterval(updateHUD, 1000);
+      updateHUD();
+    });
+
+    // Helper para difficulty
+    function buildMemoryDiff() {
+      showScreen('memory');
+      document.getElementById('memory-diff-select').classList.remove('hidden');
+      document.getElementById('memory-game').classList.add('hidden');
+    }
+
+    function buildQuizDiff() {
+      showScreen('quiz');
+    }
+
+    function setQuizDiff(diff) {
+      state.quizDiff = diff;
+    }
+  </script>
 
 </body>
 </html>
